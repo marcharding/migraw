@@ -1,0 +1,10 @@
+[Oo]bj/
+[Bb]in/
+.nuget/
+.vs/
+packages/
+artifacts/
+*.user
+*.suo
+*.userprefs
+*.sln.ide
