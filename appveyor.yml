@@ -3,8 +3,8 @@ before_build:
     - nuget restore
 
 build_script:
-- cmd:
-    - dotnet build -c Release
+- cmd: >-
+    dotnet build -c Release
 
 artifacts:
-  - path: bin/Release
+    - path: bin/Release
