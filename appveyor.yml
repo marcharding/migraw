@@ -2,8 +2,8 @@ before_build:
     - nuget restore
 
 build_script:
-- cmd: >-
-    msbuild build -c Release
+    - cmd: >-
+        msbuild Migraw.sln /property:Configuration=Release
 
 artifacts:
     - path: bin/Release
