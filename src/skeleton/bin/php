@@ -1,0 +1,7 @@
+#!/bin/bash
+# https://github.com/Microsoft/vscode/issues/22391
+# https://gist.github.com/aseering/a06219e74c7f96ccea5ec65d5b2483b5
+# Windowspath to Unix path echo "$@" | sed -e 's|\\|/|g' -e 's|^\([A-Za-z]\)\:/\(.*\)|/mnt/\L\1\E/\2|'
+CMD=$(echo $@ | sed -e 's|/mnt/\([A-Za-z]\)/|\1:\\|' -e 's|/|\\|g')
+cmd.exe /c "php.bat $CMD"
+echo

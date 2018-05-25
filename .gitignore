@@ -1,5 +1,6 @@
 [Oo]bj/
 [Bb]in/
+!skeleton/bin
 .nuget/
 .vs/
 packages/
