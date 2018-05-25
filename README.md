@@ -1,6 +1,6 @@
 # Migraw
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/marcharding/DellFanControl?svg=true)](https://ci.appveyor.com/project/MarcHarding/dellfancontrol)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/marcharding/migraw?svg=true)](https://ci.appveyor.com/project/MarcHarding/migraw)
 
 ## Introduction
 

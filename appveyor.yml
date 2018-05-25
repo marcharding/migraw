@@ -6,4 +6,4 @@ build_script:
         msbuild Migraw.sln /property:Configuration=Release
 
 artifacts:
-    - path: bin/Release
+    - path: src/bin/Release
