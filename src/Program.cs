@@ -1,5 +1,6 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using System;
+using System.Reflection;
 
 namespace Migraw
 {
@@ -20,7 +21,9 @@ namespace Migraw
 
             CommandLineApplication cliApp = new CommandLineApplication();
 
-            cliApp.Name = "migraw";
+            cliApp.VersionOption("-v|--version", () => Version(), () => Version());
+
+            cliApp.Name = "migraw (";
 
             cliApp.OnExecute(() => {
                 if(args.Length == 0)
@@ -166,6 +169,11 @@ namespace Migraw
                 Console.ResetColor();
             }
          
+        }
+
+        static String Version()
+        {
+            return CustomAttributeExtensions.GetCustomAttribute<AssemblyInformationalVersionAttribute>(Assembly.GetExecutingAssembly()).InformationalVersion.ToString();
         }
 
     }
