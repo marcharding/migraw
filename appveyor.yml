@@ -6,10 +6,11 @@ build_script:
         msbuild Migraw.sln /property:Configuration=Release
 
 assembly_info:
-  patch: true
-  file: src/Properties/AssemblyInfo.cs
-  assembly_version: $(appveyor_build_version)
-  assembly_file_version: $(appveyor_build_version)
+    patch: true
+    file: src/Properties/AssemblyInfo.cs
+    assembly_version: $(APPVEYOR_BUILD_VERSION)
+    assembly_file_version: $(APPVEYOR_BUILD_VERSION)
+    assembly_informational_version: '$(APPVEYOR_BUILD_VERSION)-$(APPVEYOR_REPO_COMMIT)'
 
 artifacts:
     - path: src/bin/Release
