@@ -21,9 +21,9 @@ namespace Migraw
 
             CommandLineApplication cliApp = new CommandLineApplication();
 
-            cliApp.VersionOption("-v|--version", () => Version(), () => Version());
+            cliApp.Name = "migraw";
 
-            cliApp.Name = "migraw (";
+            cliApp.VersionOption("-v|--version", () => { return Version(); }, () => { return Version(); });
 
             cliApp.OnExecute(() => {
                 if(args.Length == 0)
@@ -173,7 +173,7 @@ namespace Migraw
 
         static String Version()
         {
-            return CustomAttributeExtensions.GetCustomAttribute<AssemblyInformationalVersionAttribute>(Assembly.GetExecutingAssembly()).InformationalVersion.ToString();
+            return "migraw, version "+CustomAttributeExtensions.GetCustomAttribute<AssemblyInformationalVersionAttribute>(Assembly.GetExecutingAssembly()).InformationalVersion.ToString();
         }
 
     }
