@@ -131,12 +131,6 @@ namespace Migraw
                 new String[] {
                     "https://github.com/composer/composer/releases/download/1.6.5/composer.phar"
                 }
-            },
-            {
-                "4de22fc817d4162c1a3b575310b4cdcc",
-                new String[] {
-                    "https://aka.ms/vs/15/release/VC_redist.x64.exe"
-                }
             }
         };
     }
