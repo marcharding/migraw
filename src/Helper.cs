@@ -59,80 +59,13 @@ namespace Migraw
             }
         }
 
-        // https://gist.github.com/rivy/030df34899e4305ea5837586bf1ff7a4
         static public void PrintStdOutErrOut(Process process)
         {
-            using (StreamReader reader = process.StandardOutput)
-            {
-                while (!reader.EndOfStream)
-                {
-                    string line = reader.ReadLine();
-                    Console.WriteLine(line);
-                }
-            }
-            using (StreamReader reader = process.StandardError)
-            {
-                while (!reader.EndOfStream)
-                {
-                    string line = reader.ReadLine();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(line);
-                    Console.ResetColor();
-                }
-            }
+            ProccessStreamPrinter myProcessStream = new ProccessStreamPrinter();
+            myProcessStream.Read(ref process);
+          
         }
-
-        // https://gist.github.com/rivy/030df34899e4305ea5837586bf1ff7a4
-        // TODO: Look into this further
-        public static void PrintCombinedStdOutErrOut(Process process)
-        {
-            Thread thread = new Thread(() =>
-            {
-                using (Task<bool> processWaiter = Task.Factory.StartNew(() => process.WaitForExit(-1)))
-                using (Task outputReader = Task.Factory.StartNew((Action<object>)AppendLinesFunc, Tuple.Create("stdout", process.StandardOutput)))
-                using (Task errorReader = Task.Factory.StartNew((Action<object>)AppendLinesFunc, Tuple.Create("stderr", process.StandardError)))
-                {
-                    bool waitResult = processWaiter.Result;
-
-                    if (!waitResult)
-                    {
-                        process.Kill();
-                    }
-
-                    Task.WaitAll(outputReader, errorReader);
-
-                    if (!waitResult)
-                    {
-                        throw new TimeoutException("Process wait timeout expired");
-                    }
-
-
-                }
-            })
-            {
-                IsBackground = true
-            };
-            thread.Start();
-        }
-        
-        private static void AppendLinesFunc(object packedParams)
-        {
-            var paramsTuple = (Tuple<string, StreamReader>)packedParams;
-            StreamReader reader  = paramsTuple.Item2;
-            string marker = paramsTuple.Item1;
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (marker == "stderr") { 
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(line);
-                    Console.ResetColor();
-                } else {
-                    Console.WriteLine(line);
-                }
-            }
-        }
-
+           
         /// <summary>
         /// Depth-first recursive delete, with handling for descendant 
         /// directories open in Windows Explorer.

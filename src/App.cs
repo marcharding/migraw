@@ -243,13 +243,17 @@ namespace Migraw
             {
                 Console.WriteLine("Shutdown migraw.");
                 Stop();
-                Environment.Exit(0);
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(-1);
             };
 
             if (Directory.Exists(@".migraw"))
             {
                 Console.WriteLine(".migraw already exists.");
                 Console.WriteLine("Try migraw resume or migraw destroy && migraw up");
+                Console.ResetColor();
+                Console.Out.Flush();
                 Environment.Exit(0);
             }
 
@@ -336,6 +340,7 @@ namespace Migraw
             process.StartInfo.Arguments = "/c " + '"' + command + '"';
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.Start();
@@ -382,6 +387,13 @@ namespace Migraw
         public void Destroy()
         {
             this.Stop();
+            if (!Directory.Exists(@".migraw"))
+            {
+                Console.WriteLine(".migraw does not exist.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
             Helper.DeleteDirectory(@".migraw");
         }
 
@@ -489,6 +501,15 @@ namespace Migraw
 
         public string ApacheStart()
         {
+            if (Migraw.Network.PortInUse(80))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Port 80 already in use. Unable to start migraw.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
             Process process = new Process();
             process.StartInfo.FileName = this.migrawUserDataPath + @"\bin\httpd-2.4.33-Win64-VC15\Apache24\bin\httpd.exe";
             process.StartInfo.Arguments = $@"-f ""{cwd}\.migraw\conf\apache\httpd.conf""";
@@ -511,15 +532,25 @@ namespace Migraw
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo = UpdateEnv(process.StartInfo);
             process.Start();
-            Helper.PrintCombinedStdOutErrOut(process);
+            Helper.PrintStdOutErrOut(process);
             return process.Id.ToString();
         }
         
         public string MysqlSetup()
         {
+            if (Migraw.Network.PortInUse(3306))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Port 3306 already in use. Unable to start migraw.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
             Process process = new Process();
             // mysql_install_db when mariadb
             process.StartInfo.FileName = this.migrawUserDataPath + @"\bin\mysql-5.7.21-winx64\mysql-5.7.21-winx64\bin\mysqld.exe";
@@ -530,6 +561,7 @@ namespace Migraw
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
             process.Start();
             Helper.PrintStdOutErrOut(process);
             process.WaitForExit(-1);
@@ -538,6 +570,15 @@ namespace Migraw
 
         public string MysqlStart()
         {
+            if (Migraw.Network.PortInUse(3306))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Port 3306 already in use. Unable to start migraw.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
             Process process = new Process();
             // mysql_install_db when mariadb
             process.StartInfo.FileName = this.migrawUserDataPath + @"\bin\mysql-5.7.21-winx64\mysql-5.7.21-winx64\bin\mysqld.exe";
@@ -551,6 +592,7 @@ namespace Migraw
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
             process.Start();
             Helper.PrintStdOutErrOut(process);
             return process.Id.ToString();
@@ -565,6 +607,7 @@ namespace Migraw
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.RedirectStandardInput = true;
                 process.StartInfo.CreateNoWindow = true;
                 process.Start();
                 Helper.PrintStdOutErrOut(process);
