@@ -608,11 +608,12 @@ namespace Migraw
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.RedirectStandardInput = true;
-                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.CreateNoWindow = false;
                 process.Start();
-                Helper.PrintStdOutErrOut(process);
-                
+                Console.WriteLine("Mailhog started.");
                 File.WriteAllText(this.cwd + @"\.migraw\mailhog.pid", process.Id.ToString());
+                // Helper.PrintStdOutErrOut(process);
+                process.WaitForExit(-1);
             })
             {
                 IsBackground = true
