@@ -34,9 +34,9 @@ namespace Migraw
                 }
             },
             {
-                    "93946259050ba1901e71fc3621724a92",
+                    "676B822647BB3101A764216D1E5DEC49",
                     new String[] {
-                    "https://windows.php.net/downloads/releases/archives/php-7.2.3-Win32-VC15-x64.zip"
+                    "https://windows.php.net/downloads/releases/archives/php-7.2.7-Win32-VC15-x64.zip"
                 }
             },
             {
