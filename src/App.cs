@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSHostsFile;
+using SevenZipExtractor;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -104,6 +105,8 @@ namespace Migraw
 
             switch (this.config["config"]["php"].ToString())
             {
+                case "5.6":
+                    break;
                 case "7.0":
                     phpIniSettings += $@"zend_extension={GetMigrawUserFolder()}/bin/ioncube_loaders_win_vc14_x86-64/ioncube/ioncube_loader_win_7.0.dll" + "\n";
                     phpIniSettings += $@"extension=../../../../bin/php_imagick-3.4.3-7.0-ts-vc14-x64/php_imagick.dll" + "\n";
@@ -167,6 +170,7 @@ namespace Migraw
             this.env["PATH"] += ";" + this.migrawUserDataPath + @"\bin\node-v8.11.1-win-x64\node-v8.11.1-win-x64";
             this.env["PATH"] += ";" + this.migrawUserDataPath + @"\bin\composer";
             this.env["PATH"] += ";" + this.migrawUserDataPath + @"\bin\mysql-5.7.21-winx64\mysql-5.7.21-winx64\bin";
+            this.env["PATH"] += ";" + this.migrawUserDataPath + @"\bin\rubyinstaller-2.4.4-2-x64\rubyinstaller-2.4.4-2-x64\bin";
             this.env["PATH"] += ";" + this.migrawUserDataPath + @"\bin\additional";
             this.env["PATH"] += ";" + $@"{this.cwd}\.migraw\node";
             this.env["NPM_CONFIG_PREFIX"] = $@"{this.cwd}\.migraw\node";
@@ -467,8 +471,11 @@ namespace Migraw
 
                     var path = Path.GetFileName(file);
 
-                    if (!Directory.Exists($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}") &&
-                        Path.GetExtension(path).ToLower() == ".zip")
+                    if (
+                        !Directory.Exists($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}")
+                        &&
+                        Path.GetExtension(path).ToLower() == ".zip"
+                    )
                     {
                         System.IO.Compression.ZipFile.ExtractToDirectory(
                             $@"{GetMigrawUserFolder()}\zip\{path}",
@@ -476,8 +483,24 @@ namespace Migraw
                         );
                     }
 
-                    if (!Directory.Exists($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}") &&
-                          Path.GetExtension(path).ToLower() != ".zip")
+                    if (!Directory.Exists($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}")
+                        &&
+                        Path.GetExtension(path).ToLower() == ".7z"
+                    )
+                    {
+                        using (ArchiveFile archiveFile = new ArchiveFile($@"{GetMigrawUserFolder()}\zip\{path}"))
+                        {
+                            archiveFile.Extract($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}"); // extract all
+                        }
+                    }
+
+
+                    if (!Directory.Exists($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}")
+                        &&
+                        Path.GetExtension(path).ToLower() != ".zip"
+                        &&
+                        Path.GetExtension(path).ToLower() == ".7z"
+                    )
                     {
                         Directory.CreateDirectory($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}");
                         File.Copy($@"{GetMigrawUserFolder()}\zip\{path}", $@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}\{path}");

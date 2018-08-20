@@ -34,8 +34,8 @@ namespace Migraw
                 }
             },
             {
-                    "676B822647BB3101A764216D1E5DEC49",
-                    new String[] {
+                "676b822647bb3101a764216d1e5dec49",
+                 new String[] {
                     "https://windows.php.net/downloads/releases/archives/php-7.2.7-Win32-VC15-x64.zip"
                 }
             },
@@ -130,6 +130,12 @@ namespace Migraw
                 "5969d20761e89e8cffb8288c4587f699",
                 new String[] {
                     "https://github.com/composer/composer/releases/download/1.6.5/composer.phar"
+                }
+            },
+            {
+                "c07c016c94799b933536867a54422ef5",
+                new String[] {
+                    "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-2.4.4-2/rubyinstaller-2.4.4-2-x64.7z"
                 }
             }
         };
