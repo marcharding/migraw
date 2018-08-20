@@ -39,7 +39,7 @@ namespace Migraw
             { "5.6", "php-5.6.34-Win32-VC11-x64" },
             { "7.0", "php-7.0.28-Win32-VC14-x64" },
             { "7.1", "php-7.1.15-Win32-VC14-x64" },
-            { "7.2", "php-7.2.7-Win32-VC15-x64"  },
+            { "7.2", "php-7.2.8-Win32-VC15-x64"  },
         };
         private string phpFolder;
 
