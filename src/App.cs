@@ -520,8 +520,8 @@ namespace Migraw
             File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.0.28-Win32-VC14-x64\php", Migraw.Properties.Resources.php_sh);
             File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.1.15-Win32-VC14-x64\php.bat", Migraw.Properties.Resources.php_bat);
             File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.1.15-Win32-VC14-x64\php", Migraw.Properties.Resources.php_sh);
-            File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.2.3-Win32-VC15-x64\php.bat", Migraw.Properties.Resources.php_bat);
-            File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.2.3-Win32-VC15-x64\php", Migraw.Properties.Resources.php_sh);
+            File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.2.8-Win32-VC15-x64\php.bat", Migraw.Properties.Resources.php_bat);
+            File.WriteAllText($@"{GetMigrawUserFolder()}\bin\php-7.2.8-Win32-VC15-x64\php", Migraw.Properties.Resources.php_sh);
             File.WriteAllText($@"{GetMigrawUserFolder()}\bin\composer\composer.bat", Migraw.Properties.Resources.composer_bat);
         }
 
