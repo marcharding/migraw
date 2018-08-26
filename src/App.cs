@@ -658,24 +658,16 @@ namespace Migraw
 
         public void MailhogStart()
         {
-            new Thread(() =>
-            {
-                Process process = new Process();
-                process.StartInfo.FileName = this.migrawUserDataPath + @"\bin\MailHog_windows_amd64\MailHog_windows_amd64.exe";
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.RedirectStandardInput = true;
-                process.StartInfo.CreateNoWindow = false;
-                process.Start();
-                Console.WriteLine("Mailhog started.");
-                File.WriteAllText(this.cwd + @"\.migraw\mailhog.pid", process.Id.ToString());
-                // Helper.PrintStdOutErrOut(process);
-                process.WaitForExit(-1);
-            })
-            {
-                IsBackground = true
-            }.Start();
+            Process process = new Process();
+            process.StartInfo.FileName = this.migrawUserDataPath + @"\bin\MailHog_windows_amd64\MailHog_windows_amd64.exe";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            Console.WriteLine("Mailhog started.");
+            File.WriteAllText(this.cwd + @"\.migraw\mailhog.pid", process.Id.ToString());
         }
 
     }
