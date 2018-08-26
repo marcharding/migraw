@@ -255,6 +255,13 @@ namespace Migraw
                 Environment.Exit(-1);
             };
 
+            if (!File.Exists(this.cwd + @"\migraw.json")) {
+                Console.WriteLine("File migraw.json not found.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
             if (Directory.Exists(@".migraw"))
             {
                 Console.WriteLine(".migraw already exists.");
@@ -308,7 +315,6 @@ namespace Migraw
             Deps();
         }
 
-
         public void Pause()
         {
             Stop();
@@ -316,6 +322,23 @@ namespace Migraw
 
         public void Resume()
         {
+            if (!File.Exists(this.cwd + @"\migraw.json"))
+            {
+                Console.WriteLine("File migraw.json not found.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
+            if (!Directory.Exists(@".migraw"))
+            {
+                Console.WriteLine(".migraw does not exist.");
+                Console.WriteLine("Run 'migraw up' before 'migraw resume'.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
             File.WriteAllText(this.cwd + @"\.migraw\apache.pid", ApacheStart());
 
             if (this.config["config"]["mysql"] != null && this.config["config"]["mysql"].ToString() == true.ToString())
@@ -357,6 +380,15 @@ namespace Migraw
 
         public void Cli()
         {
+            if (!Directory.Exists(@".migraw"))
+            {
+                Console.WriteLine(".migraw does not exist.");
+                Console.WriteLine("Run 'migraw up' before 'migraw cmd'.");
+                Console.ResetColor();
+                Console.Out.Flush();
+                Environment.Exit(0);
+            }
+
             // see https://superuser.com/questions/413073/windows-console-with-ansi-colors-handling
             // process.StartInfo.Arguments = "/k ansicon.exe";
             Process process = new Process();
