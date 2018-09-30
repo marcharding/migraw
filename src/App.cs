@@ -244,7 +244,7 @@ namespace Migraw
             return startInfo;
         }
 
-        public void Up()
+        public void Up(bool force)
         {
             Console.CancelKeyPress += delegate
             {
@@ -262,13 +262,20 @@ namespace Migraw
                 Environment.Exit(0);
             }
 
-            if (Directory.Exists(@".migraw"))
+            if (Directory.Exists(@".migraw") && !force)
             {
                 Console.WriteLine(".migraw already exists.");
                 Console.WriteLine("Try migraw resume or migraw destroy && migraw up");
                 Console.ResetColor();
                 Console.Out.Flush();
                 Environment.Exit(0);
+            }
+
+            if (Directory.Exists(@".migraw") && force)
+            {
+                Console.WriteLine(".migraw already exists.");
+                Console.WriteLine("Since --force is used, current migraw instance is destroyed.");
+                this.Destroy();
             }
 
             Console.WriteLine("Starting migraw setup.");
@@ -525,7 +532,6 @@ namespace Migraw
                             archiveFile.Extract($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}"); // extract all
                         }
                     }
-
 
                     if (!Directory.Exists($@"{GetMigrawUserFolder()}\bin\{Path.GetFileNameWithoutExtension(path)}")
                         &&

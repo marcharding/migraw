@@ -109,11 +109,12 @@ namespace Migraw
 
             cliApp.Command("up", (command) =>
             {
+                CommandOption force = command.Option("-f|--force", "Force new migraw install", CommandOptionType.NoValue);
                 command.Description = "Setup & start migraw instance.";
                 command.HelpOption("-?|-h|--help");
                 command.OnExecute(() =>
                 {
-                    app.Up();
+                    app.Up(force.HasValue());
                 });
             });
 
