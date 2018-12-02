@@ -99,8 +99,9 @@ namespace Migraw
             String phpIniSettings = $@"extension_dir=../../../../bin/{this.phpFolder}/ext" + "\n";
 
             // set session save
-            phpIniSettings += @".migraw\var\session" + "\n";
+            phpIniSettings += @"session.save_path = "".migraw\var\session""" + "\n";
 
+            // set curl ca
             String cacert = $@"curl.cainfo='{GetMigrawUserFolder()}\bin\cacert.pem'";
 
             switch (this.config["config"]["php"].ToString())
