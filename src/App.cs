@@ -68,6 +68,7 @@ namespace Migraw
                 @".migraw\conf\mariadb",
                 @".migraw\mariadb\data",
                 @".migraw\conf\php",
+                @".migraw\var\session",
             };
 
             foreach (String folder in folders)
@@ -99,7 +100,7 @@ namespace Migraw
             String phpIniSettings = $@"extension_dir=../../../../bin/{this.phpFolder}/ext" + "\n";
 
             // set session save
-            phpIniSettings += @"session.save_path = "".migraw\var\session""" + "\n";
+            phpIniSettings += $@"session.save_path = ""{this.cwd}\.migraw\var\session""" + "\n";
 
             // set curl ca
             String cacert = $@"curl.cainfo='{GetMigrawUserFolder()}\bin\cacert.pem'";
