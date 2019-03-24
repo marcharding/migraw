@@ -2,7 +2,7 @@
 
 VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
-UPDATE_URL="https://www.marcharding.de/test.test";
+UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/master/migraw.sh";
 
 # colors
 COLOR_NC='\e[0m'
