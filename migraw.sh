@@ -390,7 +390,6 @@ function install {
     curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
     apt-get download nodejs
 
-
     # ruby
     apt-get download ruby2.5 libruby2.5
 
@@ -403,7 +402,7 @@ function install {
     # extract files
     echo "Extracting:"
 
-    for filename in $DOWNLOAD/*.dupdateeb
+    for filename in $DOWNLOAD/*.deb
     do
         FILENAME=$(dpkg -f $filename Package)
         echo "Extracting" $filename
