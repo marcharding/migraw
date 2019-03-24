@@ -773,7 +773,6 @@ BIN=$BASE/bin
 
 # .migraw base
 MIGRAW_BASE=$BASE/.migraw
-mkdir -p $MIGRAW_BASE
 
 MIGRAW_YAML=$(find_migraw_yaml)
 if [ "$MIGRAW_YAML" != "" ]; then
