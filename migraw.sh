@@ -330,11 +330,12 @@ function install {
     sudo add-apt-repository ppa:ondrej/php -y
     sudo apt-get update
 
-    rm -rf $DOWNLOAD
-    rm -rf $BIN
+    sudo rm -rf $DOWNLOAD
+    sudo rm -rf $BIN
 
-    mkdir -p $DOWNLOAD
-    mkdir -p $BIN
+    sudo mkdir -p $DOWNLOAD
+    sudo mkdir -p $BIN
+    sudo chmod -R 777 $BASE
 
     cd $DOWNLOAD
 
