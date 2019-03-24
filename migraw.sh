@@ -713,6 +713,8 @@ function execute_with_progress_spinner {
     else
         echo -ne "${COLOR_BROWN}Working "
         (while :; do for c in / - \\ \|; do printf '[%s]\b\b\b' "$c"; sleep 0.1; done; done) &
+        sudo touch $BASE/migraw.log
+        sudo chmod 777 $BASE/migraw.log
         SPINNER=$!
         {
             $1 > $BASE/migraw.log 2>&1
