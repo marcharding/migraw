@@ -724,7 +724,7 @@ function execute_with_progress_spinner {
 function self_update {
     FILE=$(readlink -f "$0")
 
-    if ! wget --quiet --output-document="$0.tmp" $UPDATE_URL ; then
+    if ! sudo wget --quiet --output-document="$0.tmp" $UPDATE_URL ; then
         echo -e "${COLOR_PURPLE}Error while trying to download the update.${COLOR_NC}\n"
         exit 1
     fi
@@ -739,12 +739,12 @@ function self_update {
 
     # Copy over modes from old version
     OCTAL_MODE=$(stat -c '%a' $0)
-    if ! chmod $OCTAL_MODE "$0.tmp" ; then
+    if ! sudo chmod $OCTAL_MODE "$0.tmp" ; then
         echo -e "${COLOR_PURPLE}Error while trying to set mode on update file.${COLOR_NC}\n"
         exit 1
     fi
 
-    if mv "$0.tmp" "$FILE"; then
+    if sudo mv "$0.tmp" "$FILE"; then
         echo -e "${COLOR_CYAN}Update complete.${COLOR_NC}\n"
     else
         echo -e "${COLOR_PURPLE}Update failed while moving update file.${COLOR_NC}\n"
@@ -840,6 +840,7 @@ case $ACTION in
         ;;
     selfupdate)
         echo -e "\n${COLOR_CYAN}Trying to update migraw.${COLOR_NC}\n"
+        sudo -v
         self_update
         ;;
     *)
