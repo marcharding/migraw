@@ -93,6 +93,10 @@ extension=xmlreader.so
 extension=xmlwriter.so
 extension=xsl.so
 extension=zip.so
+extension=igbinary.so
+extension=msgpack.so
+extension=memcached.so
+extension=apcu.so
 zend_extension=opcache.so
 zend_extension=xdebug.so
 EOL
@@ -340,7 +344,7 @@ function install {
     cd $DOWNLOAD
 
     # Deps
-    apt-get download unzip libapr1 libaprutil1 libaio1 \
+    apt-get download unzip libapr1 libaprutil1 libaio1 libmemcached11 memcached \
     libhttp-parser2.7.1 libuv1 libc-ares2 `#node` \
     libzip4 `#zip` \
     libgd3 libxpm4 libfontconfig1 libjpeg8 libjpeg-turbo8 libgif7 libpng16-16 libjpeg62 libtiff5 libwebp6 libjbig0 `#gd` \
@@ -355,7 +359,7 @@ function install {
     apt-get download apache2 apache2-bin
 
     # PHP 7.2
-    apt-get download php-xdebug php-imagick php-libsodium libsodium23
+    apt-get download php-xdebug php-imagick php-libsodium php-memcached php-igbinary php-msgpack php-apcu libsodium23
 
     AVAILABLE_PHP_VESIONS=("5.6" "7.0" "7.1" "7.2" "7.3")
 
@@ -424,6 +428,11 @@ function install {
       done
       cp -RT php-imagick/ php$AVAILABLE_PHP_VESION/
       cp -RT php-xdebug/ php$AVAILABLE_PHP_VESION
+      cp -RT php-memcached/ php$AVAILABLE_PHP_VESION
+      cp -RT php-igbinary/ php$AVAILABLE_PHP_VESION
+      cp -RT php-msgpack/ php$AVAILABLE_PHP_VESION
+      cp -RT php-apcu/ php$AVAILABLE_PHP_VESION
+
       # add php symlink
       ln -rsf $BIN/php$AVAILABLE_PHP_VESION/usr/bin/php$AVAILABLE_PHP_VESION $BIN/php$AVAILABLE_PHP_VESION/usr/bin/php
     done
@@ -495,6 +504,7 @@ function set_path {
     DYLD_LIBRARY_PATH=$BIN/libwebp6/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
     DYLD_LIBRARY_PATH=$BIN/libjbig0/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
     DYLD_LIBRARY_PATH=$BIN/libruby2.5/usr/lib/x86_64-linux-gnu:$DYLD_LIBRARY_PATH
+    DYLD_LIBRARY_PATH=$BIN/libmemcached11/usr/lib/x86_64-linux-gnu:$DYLD_LIBRARY_PATH
 
     DYLD_LIBRARY_PATH=$BIN/libpcre2-8-0/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
     DYLD_LIBRARY_PATH=$BIN/libpcre2-16-0/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
@@ -569,6 +579,7 @@ function start {
     mysql_start init
     apache_start
     mailhog_start
+    memcached_start
 }
 
 function unpause {
@@ -576,6 +587,7 @@ function unpause {
     mysql_start
     apache_start
     mailhog_start
+    memcached_start
 }
 
 function clean {
@@ -614,6 +626,11 @@ function stop {
         sudo kill -9 `sudo cat "$MIGRAW_CURRENT/mailhog/mailhog.pid"`
         sudo rm -rf $MIGRAW_CURRENT/mailhog/mailhog.pid
     fi
+
+    if [ -f $MIGRAW_CURRENT/memcached/memcached.pid ]; then
+        sudo kill -9 `sudo cat "$MIGRAW_CURRENT/memcached/memcached.pid"`
+        sudo rm -rf $MIGRAW_CURRENT/memcached/memcached.pid
+    fi
 }
 
 function spawn_bash {
@@ -632,9 +649,16 @@ function mailhog_start {
     if [ "$MIGRAW_YAML_config_mailhog" != "true" ]; then
         return
     fi
-
     mkdir -p $MIGRAW_CURRENT/mailhog/log
     $BIN/MailHog_linux_amd64 > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
+}
+
+function memcached_start {
+    if [ "$MIGRAW_YAML_config_memcached" != "true" ]; then
+        return
+    fi
+    mkdir -p $MIGRAW_CURRENT/memcached
+    $BIN/memcached/usr/bin/memcached -u$MIGRAW_USER 2>&1 & echo "$!" > $MIGRAW_CURRENT/memcached/memcached.pid
 }
 
 function mysql_start {
@@ -657,7 +681,7 @@ function mysql_start {
         sudo mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp
         sudo chmod -R 777 $MYSQL_BASE_PATH
         create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
-        sudo chmod 777 $MYSQL_BASE_PATH
+        sudo chmod -R 777 $MYSQL_BASE_PATH
         sudo chmod 655 $MYSQL_BASE_PATH/my.cnf
 
         sudo PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH -E $BIN_MYSQLD --user=root --initialize-insecure --innodb_use_native_aio=0 --lc-messages-dir="$BIN/mysql-server-core-5.7/usr/share/mysql" --datadir=$MYSQL_BASE_PATH/data > $MIGRAW_CURRENT/mysql/log/init.log 2>&1
@@ -718,7 +742,10 @@ function execute_with_progress_spinner {
         {
             $1 > $BASE/migraw.log 2>&1
         }
-        { echo -e "${COLOR_NC}\r${COLOR_PURPLE}Finished.   "; kill $SPINNER && wait $SPINNER; } 2>/dev/null
+        {
+            echo -e "${COLOR_NC}\r${COLOR_PURPLE}Finished.         ";
+            kill $SPINNER && wait $SPINNER;
+        } 2>/dev/null
     fi
 }
 
@@ -750,6 +777,13 @@ function self_update {
         echo -e "${COLOR_CYAN}Update complete.${COLOR_NC}\n"
     else
         echo -e "${COLOR_PURPLE}Update failed while moving update file.${COLOR_NC}\n"
+    fi
+}
+
+function check_for_sudo {
+    if ! sudo -n true 2>/dev/null; then
+        sudo -v
+        echo ""
     fi
 }
 
@@ -797,7 +831,8 @@ case $ACTION in
         ;&
     start)
         echo -e "\n${COLOR_CYAN}Starting migraw${COLOR_NC}\n"
-        sudo -v
+        # https://askubuntu.com/a/357222
+        check_for_sudo
         execute_with_progress_spinner "start"
         for i in "${MIGRAW_YAML_exec[@]}"
           do :
@@ -809,7 +844,7 @@ case $ACTION in
         ;&
     stop)
         echo -e "\n${COLOR_CYAN}Stoping migraw.${COLOR_NC}\n"
-        sudo -v
+        check_for_sudo
         execute_with_progress_spinner "stop"
         clean
         ;;
@@ -817,14 +852,14 @@ case $ACTION in
         ;&
     pause)
         echo -e "\n${COLOR_CYAN}Pause migraw.${COLOR_NC}\n"
-        sudo -v
+        check_for_sudo
         execute_with_progress_spinner "stop"
         ;;
     resume)
         ;&
     unpause)
         echo -e "\n${COLOR_CYAN}Unpause migraw.${COLOR_NC}\n"
-        sudo -v
+        check_for_sudo
         execute_with_progress_spinner "unpause"
         ;;
     bash)
@@ -834,7 +869,7 @@ case $ACTION in
         ;&
     install)
         echo -e "\n${COLOR_CYAN}Installing needed binaries and libaries.${COLOR_NC}\n"
-        sudo -v
+        check_for_sudo
         execute_with_progress_spinner "install"
         ;;
     status)
@@ -842,7 +877,7 @@ case $ACTION in
         ;;
     selfupdate)
         echo -e "\n${COLOR_CYAN}Trying to update migraw.${COLOR_NC}\n"
-        sudo -v
+        check_for_sudo
         self_update
         ;;
     *)
