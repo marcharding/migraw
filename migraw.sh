@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
+VERSION="0.0.0.1-"$(cat "$0" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
 UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/master/migraw.sh";
 
@@ -875,6 +875,8 @@ case $ACTION in
     status)
         echo -e "\n${COLOR_CYAN}Current status [TODO].${COLOR_NC}\n"
         ;;
+    self-update)
+        ;&
     selfupdate)
         echo -e "\n${COLOR_CYAN}Trying to update migraw.${COLOR_NC}\n"
         check_for_sudo
