@@ -275,8 +275,8 @@ EOL
 function find_migraw_yaml {
     x=`pwd`;
     while [ "$x" != "/" ]; do
-        if [ -f $x/migraw.yaml ]; then
-            echo $x/migraw.yaml
+        if [ -f $x/migraw.yml ]; then
+            echo $x/migraw.yml
             break;
         fi;
         x=`dirname "$x"`;

@@ -50,11 +50,11 @@ $dirs | ForEach { Add-MpPreference -ExclusionProcess ($_) }
 
 Just call `migraw` to see the possible options.
 
-## Sample migraw.yaml configuration
+## Sample migraw.yml configuration
 
 Each project needs a yaml configuration file which looks like this (should be self explanatory)
 
-```yaml
+```yml
 name: local-develop
 network:
 	ip: 127.0.0.1
