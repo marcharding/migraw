@@ -226,6 +226,16 @@ LoadModule headers_module $BIN/apache2-bin/usr/lib/apache2/modules/mod_headers.s
 # ****************************************************************************************************************
 # OTHERS CONFIG
 
+# mpm prefork config
+<IfModule mpm_prefork_module>
+    StartServers 2
+    MinSpareServers 4
+    MaxSpareServers 8
+    MaxClients 16
+    ServerLimit 16
+    MaxRequestsPerChild 32
+</IfModule>
+
 <IfModule dir_module>
     DirectoryIndex index.html index.php index.php5 index.php6
 </IfModule>
