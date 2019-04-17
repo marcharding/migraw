@@ -354,7 +354,7 @@ function install {
     cd $DOWNLOAD
 
     # Deps
-    apt-get download unzip libapr1 libaprutil1 libaio1 libmemcached11 memcached \
+    apt-get download unzip libapr1 libaprutil1 libaio1 libicu64 libmemcached11 memcached \
     libhttp-parser2.7.1 libuv1 libc-ares2 `#node` \
     libzip4 `#zip` \
     libgd3 libxpm4 libfontconfig1 libjpeg8 libjpeg-turbo8 libgif7 libpng16-16 libjpeg62 libtiff5 libwebp6 libjbig0 `#gd` \
@@ -452,7 +452,7 @@ function install {
     wget -q -O $BIN/apache2/etc/apache2/conf/mime.types http://svn.apache.org/viewvc/httpd/httpd/branches/2.4.x/docs/conf/mime.types?revision=1810122&view=co
 
     # cacert
-    wget -q -O $BIN/cacert.pem https://curl.haxx.se/ca/cacert.pem;
+    wget -q -O $BIN/cacert.pem https://curl.haxx.se/ca/cacert.pem
 
     # fix ruby
     ln -rsf $BIN/ruby2.5/usr/bin/erb2.5 $BIN/ruby2.5/usr/bin/erb
@@ -519,6 +519,7 @@ function set_path {
     DYLD_LIBRARY_PATH=$BIN/libpcre2-8-0/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
     DYLD_LIBRARY_PATH=$BIN/libpcre2-16-0/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
     DYLD_LIBRARY_PATH=$BIN/libpcre2-32-0/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
+    DYLD_LIBRARY_PATH=$BIN/libicu64/usr/lib/x86_64-linux-gnu/:$DYLD_LIBRARY_PATH
 
     # Ruby
     GEM_HOME=$MIGRAW_CURRENT/gem
