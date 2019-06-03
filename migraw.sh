@@ -882,3 +882,6 @@ case $ACTION in
         echo "[TODO]"
         ;;
 esac
+
+echo -n -e '\e[32;46m'
+tput init
