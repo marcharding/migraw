@@ -696,7 +696,7 @@ function apache_start {
 
         set PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR
 
-        set PATH=$BIN_WIN\\php-$PHP_VERSION;$BIN_WIN\\apache-2.4;%PATH%
+        set PATH=$BIN_WIN\\php-$PHP_VERSION;$BIN_WIN\\apache-2.4;"%PATH%"
 
         $(
             if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
