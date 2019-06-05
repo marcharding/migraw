@@ -640,8 +640,6 @@ function mysql_start {
         return
     fi
 
-    WSLENV=$WSLENV:PATH/l:PHP_INI_SCAN_DIR/p
-
     BIN_MYSQLD="$BIN/mysql-5.7/bin/mysqld.exe"
     BIN_MYSQL="$BIN/mysql-5.7/bin/mysql.exe"
     chmod +x $BIN_MYSQLD
@@ -718,7 +716,6 @@ function apache_start {
         -c "Listen $MIGRAW_YAML_network_ip:80" \
         -c "Include $MIGRAW_CURRENT_WINDOWS/httpd/sites/*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS/httpd/log/error.log" \
-        -c "LoadModule php${PHP_VERSION:0:1}_module $BIN_WIN\\php-$PHP_VERSION\\php${PHP_VERSION:0:1}apache2_4.dll" \
         $(
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
@@ -731,6 +728,7 @@ function apache_start {
                 printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             done
         ) \
+        -c "LoadModule php${PHP_VERSION:0:1}_module $BIN_WIN\\php-$PHP_VERSION\\php${PHP_VERSION:0:1}apache2_4.dll" \
         -c "PHPIniDir $MIGRAW_CURRENT_WINDOWS/php/"
 EOL
 
