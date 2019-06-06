@@ -132,7 +132,7 @@ skip-log-bin
 skip-external-locking
 
 [client]
-default-character-set=utf8
+default-character-set          = utf8
 EOL
 }
 
