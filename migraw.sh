@@ -385,14 +385,9 @@ function install {
     # apache
     FILENAME=chocolatey-apache-2.4.nupkg
     curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://chocolatey.org/api/v2/package/apache-httpd -o $DOWNLOAD/$FILENAME
-    # somehow it does not work with - d
-    # mkdir -p $DOWNLOAD/$(basename ${FILENAME%.*})
-    # cp $DOWNLOAD/chocolatey-apache-2.4.nupkg $DOWNLOAD/$(basename ${FILENAME%.*})
-    # cd $DOWNLOAD/$(basename ${FILENAME%.*}) && unzip chocolatey-apache-2.4.nupkg
     unzip -uo $DOWNLOAD/$FILENAME -d $DOWNLOAD/$(basename ${FILENAME%.*})
     unzip -uo $(find $DOWNLOAD/chocolatey-apache-2.4 -name "*x64*.zip") -d $DOWNLOAD/$(basename ${FILENAME%.*})
     mv -f $DOWNLOAD/chocolatey-apache-2.4/Apache24 $BIN/apache-2.4
-    # rm -rf $DOWNLOAD/$(basename ${FILENAME%.*}) $DOWNLOAD/apache-2.4-tmp
 
     # cacert
     wget -q -O $BIN/cacert.pem https://curl.haxx.se/ca/cacert.pem
