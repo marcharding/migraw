@@ -441,7 +441,7 @@ function install {
 }
 
 function set_path {
-    PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/c/Windows/system32"
+    PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/c/Windows/system32:/c/Windows"
 
     PATH=$BIN/apache-2.4/bin:$PATH
     PATH=$BIN/php-$PHP_VERSION:$PATH
