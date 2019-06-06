@@ -737,7 +737,7 @@ function execute_with_progress_spinner {
         $1
     else
         echo -ne "${COLOR_BROWN}Working "
-        (while :; do for c in / - \\ \|; do printf '[%s]\b\b\b' "$c"; sleep 0.1; done; done) &
+        (while :; do for c in / - \\ \|; do printf '[%s]' "$c"; sleep 0.1; printf '\b\b\b'; done; done) &
         touch $BASE/migraw.log
         SPINNER=$!
         {
