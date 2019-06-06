@@ -694,6 +694,9 @@ function apache_start {
         return
     fi
 
+    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
+    export WSLENV
+
     BIN_HTTPD="$BIN/apache-2.4/bin/httpd.exe"
     chmod +x $BIN_HTTPD
 
@@ -702,34 +705,16 @@ function apache_start {
     create_file_httpd_conf $MIGRAW_CURRENT/httpd/httpd.conf
     create_file_virtual_host_conf $MIGRAW_CURRENT/httpd/sites/default.conf
 
-    # somehow the wslenv part does not work here, so we do the bat trick
     read -r -d "" BIN_HTTPD_CMD <<EOL
-        @echo off
-
-        set PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR
-
-        set PATH=$BIN_WIN\\php-$PHP_VERSION;$BIN_WIN\\apache-2.4;"%PATH%"
-
-        $(
-            if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
-                IMAGEMAGICK=`wslpath -w $BIN/imagick-6.9.3/bin`
-                echo "set PATH=%PATH%;$IMAGEMAGICK;$BIN_WIN\\php-$PHP_VERSION"
-            fi
-            if [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.3" ]]; then
-                IMAGEMAGICK=`wslpath -w $BIN/imagick-7.0.7/bin`
-                echo "set PATH=%PATH%;$IMAGEMAGICK;$BIN_WIN\\php-$PHP_VERSION"
-            fi
-        )
-
-        $(wslpath -w $BIN_HTTPD) \
-        -f "$MIGRAW_CURRENT_WINDOWS/httpd/httpd.conf" \
-        -c "PidFile $MIGRAW_CURRENT_WINDOWS/httpd/httpd.pid" \
-        -c "ServerRoot $BIN_WIN/apache-2.4" \
+        $BIN_HTTPD \
+        -f "$MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.conf" \
+        -c "PidFile $MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.pid" \
+        -c "ServerRoot $BIN_WIN\\apache-2.4" \
         -c "ServerName $MIGRAW_YAML_name" \
         -c "ServerAdmin admin@$MIGRAW_YAML_name" \
         -c "Listen $MIGRAW_YAML_network_ip:80" \
-        -c "Include $MIGRAW_CURRENT_WINDOWS/httpd/sites/*.conf" \
-        -c "ErrorLog $MIGRAW_CURRENT_WINDOWS/httpd/log/error.log" \
+        -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
+        -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
@@ -743,11 +728,12 @@ function apache_start {
             done
         ) \
         -c "LoadModule php${PHP_VERSION:0:1}_module $BIN_WIN\\php-$PHP_VERSION\\php${PHP_VERSION:0:1}apache2_4.dll" \
-        -c "PHPIniDir $MIGRAW_CURRENT_WINDOWS/php/"
+        -c "PHPIniDir $MIGRAW_CURRENT_WINDOWS\\php" &
 EOL
 
-    echo "$BIN_HTTPD_CMD" > $MIGRAW_CURRENT/httpd/exec.bat
-    cmd.exe /c `wslpath -w $MIGRAW_CURRENT/httpd/exec.bat` &
+echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.sh
+source $MIGRAW_CURRENT/httpd/exec.sh
+
 }
 
 # see https://stackoverflow.com/a/38275644
