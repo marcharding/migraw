@@ -511,6 +511,17 @@ function stop {
     if [ -f $MIGRAW_CURRENT/mysql/mysql.pid ]; then
         PID=`cat "$MIGRAW_CURRENT/mysql/mysql.pid"`
         cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
+
+        counter=1
+        while $BIN_MYSQL -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
+            sleep 1
+            counter=`expr $counter + 1`
+            if [ $counter -gt 30 ]; then
+                echo "We have been waiting for MySQL too long already; failing."
+                exit 1
+            fi;
+        done
+
         rm -rf $MIGRAW_CURRENT/mysql/mysql.pid
     fi
 
