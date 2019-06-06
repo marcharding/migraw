@@ -646,27 +646,35 @@ function mysql_start {
         return
     fi
 
+    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
+    export WSLENV
+
     BIN_MYSQLD="$BIN/mysql-5.7/bin/mysqld.exe"
     BIN_MYSQL="$BIN/mysql-5.7/bin/mysql.exe"
     chmod +x $BIN_MYSQLD
 
     MYSQL_BASE_PATH=$MIGRAW_CURRENT/mysql
-    MYSQL_BASE_PATH_WINDOWS=$MIGRAW_CURRENT_WINDOWS/mysql
+    MYSQL_BASE_PATH_WINDOWS=$MIGRAW_CURRENT_WINDOWS\\mysql
 
     if [ "$1" == "init" ]; then
         rm -rf $MYSQL_BASE_PATH
         mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp $MYSQL_BASE_PATH/log
         create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
-        $BIN_MYSQLD --initialize-insecure --datadir=$MYSQL_BASE_PATH_WINDOWS/data
+        $BIN_MYSQLD --initialize-insecure --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
     fi
 
+    read -r -d "" BIN_MYSQL_CMD <<EOL
     $BIN_MYSQLD \
-        --defaults-file="$MYSQL_BASE_PATH_WINDOWS/my.cnf" \
-        --log_error="$MYSQL_BASE_PATH_WINDOWS/log/log.err" \
-        --pid_file="$MYSQL_BASE_PATH_WINDOWS/mysql.pid" \
+        --defaults-file="$MYSQL_BASE_PATH_WINDOWS\\my.cnf" \
+        --log_error="$MYSQL_BASE_PATH_WINDOWS\\log\\log.err" \
+        --pid_file="$MYSQL_BASE_PATH_WINDOWS\\mysql.pid" \
         --basedir="$MYSQL_BASE_PATH_WINDOWS" \
-        --tmpdir="$MYSQL_BASE_PATH_WINDOWS/tmp" \
-        --datadir="$MYSQL_BASE_PATH_WINDOWS/data" &
+        --tmpdir="$MYSQL_BASE_PATH_WINDOWS\\tmp" \
+        --datadir="$MYSQL_BASE_PATH_WINDOWS\\data" &
+EOL
+
+echo "$BIN_MYSQL_CMD" | tr -s ' ' > $MIGRAW_CURRENT/mysql/exec.sh
+source $MIGRAW_CURRENT/mysql/exec.sh
 
     counter=1
     while ! $BIN_MYSQL -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
