@@ -168,7 +168,7 @@ MaxKeepAliveRequests 256
 
 # KeepAliveTimeout: Number of seconds to wait for the next request from the
 # same client on the same connection.
-KeepAliveTimeout 2
+KeepAliveTimeout 4
 
 # UseCanonicalName: Determines how Apache constructs self-referencing
 # URLs and the SERVER_NAME and SERVER_PORT variables.
