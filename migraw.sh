@@ -662,6 +662,7 @@ function mysql_start {
     BIN_MYSQLD="$BIN/mysql-5.7/bin/mysqld.exe"
     BIN_MYSQL="$BIN/mysql-5.7/bin/mysql.exe"
     chmod +x $BIN_MYSQLD
+    chmod +x $BIN_MYSQL
 
     MYSQL_BASE_PATH=$MIGRAW_CURRENT/mysql
     MYSQL_BASE_PATH_WINDOWS=$MIGRAW_CURRENT_WINDOWS\\mysql
@@ -670,7 +671,7 @@ function mysql_start {
         rm -rf $MYSQL_BASE_PATH
         mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp $MYSQL_BASE_PATH/log
         create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
-        $BIN_MYSQLD --initialize-insecure --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
+        $BIN_MYSQLD --initialize-insecure --basedir="$MYSQL_BASE_PATH_WINDOWS" --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
     fi
 
     read -r -d "" BIN_MYSQL_CMD <<EOL
@@ -716,7 +717,13 @@ function apache_start {
     create_file_virtual_host_conf $MIGRAW_CURRENT/httpd/sites/default.conf
 
     read -r -d "" BIN_HTTPD_CMD <<EOL
-        $BIN_HTTPD \
+        @echo off
+
+        set PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR
+        set PATH=$BIN_WIN\\php-$PHP_VERSION;$BIN_WIN\\apache-2.4;%PATH%
+
+        start /B \
+        $(wslpath -w $BIN_HTTPD) \
         -f "$MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.conf" \
         -c "PidFile $MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.pid" \
         -c "ServerRoot $BIN_WIN\\apache-2.4" \
@@ -726,6 +733,10 @@ function apache_start {
         -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
+            DLL_WINDOWS_PATH="$(wslpath -w $BIN/php-7.1/libeay32.dll)"
+            printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
+            DLL_WINDOWS_PATH="$(wslpath -w $BIN/php-7.1/ssleay32.dll)"
+            printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
                 DLL_FILENAME="$(basename $DLL_PATH)"
@@ -741,8 +752,10 @@ function apache_start {
         -c "PHPIniDir $MIGRAW_CURRENT_WINDOWS\\php" &
 EOL
 
-echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.sh
-source $MIGRAW_CURRENT/httpd/exec.sh
+# somehow executing it as a bat script with cmd.exe is the only way to ensure everything works most of the time
+# executing directly via interop results in ddls not loaded sometimes (more often as when using this approach)
+echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.bat
+cmd.exe /c $(wslpath -w $MIGRAW_CURRENT/httpd/exec.bat) &
 
 }
 
