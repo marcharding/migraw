@@ -326,7 +326,17 @@ function parse_yaml() {
     ) < "$yaml_file"
 }
 
+function check_for_sudo {
+    if ! sudo -n true 2>/dev/null; then
+        sudo -v
+        echo ""
+    fi
+}
+
 function install {
+
+    check_for_sudo
+
     echo "Installing/Downloading."
 
     sudo apt-get update
