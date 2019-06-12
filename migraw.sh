@@ -470,6 +470,7 @@ function set_path {
 
     PATH=$MIGRAW_CURRENT/gem/bin:$PATH
     PATH=$MIGRAW_CURRENT/bin:$PATH
+    PATH=$MIGRAW_CURRENT_BASE/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/vendor/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/node_modules/.bin:$PATH
 
