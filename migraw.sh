@@ -735,6 +735,8 @@ function apache_start {
         start /B \
         $(wslpath -w $BIN_HTTPD) \
         -f "$MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.conf" \
+        -DDEVELOPMENT \
+        -DMIGRAW \
         -c "PidFile $MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.pid" \
         -c "ServerRoot $BIN_WIN\\apache-2.4" \
         -c "ServerName $MIGRAW_YAML_name" \
