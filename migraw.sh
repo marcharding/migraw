@@ -131,6 +131,7 @@ innodb_flush_log_at_trx_commit = 2
 innodb_read_io_threads         = 8
 innodb_write_io_threads        = 8
 innodb_thread_concurrency      = 0
+character-set-server           = utf8
 skip-log-bin
 skip-external-locking
 # Due to option file escaping sequences, see https://dev.mysql.com/doc/refman/8.0/en/option-files.html we need three baskslashes
