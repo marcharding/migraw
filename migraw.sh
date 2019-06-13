@@ -488,6 +488,8 @@ function set_path {
     PHP_INI_SCAN_DIR=$MIGRAW_CURRENT
     MYSQL_HOME=$MIGRAW_CURRENT/mysql
 
+    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
+
     export PATH
     export PHPRC
     export PHP_INI_SCAN_DIR
