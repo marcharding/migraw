@@ -133,6 +133,9 @@ innodb_write_io_threads        = 8
 innodb_thread_concurrency      = 0
 skip-log-bin
 skip-external-locking
+# Due to option file escaping sequences, see https://dev.mysql.com/doc/refman/8.0/en/option-files.html we need three baskslashes
+lc-messages-dir                = ${BIN_WIN//\\/\\\\}\\\mysql-5.7\\\share
+lc_messages                    = en_US
 
 [client]
 default-character-set          = utf8
