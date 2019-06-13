@@ -120,7 +120,10 @@ max_connections                = 256
 query_cache_limit              = 8M
 query_cache_size               = 64M
 sync_binlog                    = 0
-sql_mode                       = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+# sql_mode see follwing links
+# https://stackoverflow.com/a/40303542
+# https://www.devside.net/wamp-server/mysql-error-incorrect-integer-value-for-column-name-at-row-1
+sql_mode                       = "ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 tmp_table_size                 = 64M
 innodb_buffer_pool_size        = 512M
 innodb_log_file_size           = 256M
