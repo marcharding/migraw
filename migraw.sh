@@ -431,14 +431,25 @@ function install {
     mv $BIN/mysql-5.7/mysql-5.7.26-winx64/* $BIN/mysql-5.7
     rm -rf $BIN/mysql-5.7/mysql-5.7.26-winx64
 
+    # mysql
+    ln -rsf $BIN/mysql-5.7/bin/mysql.exe $BIN/mysql-5.7/bin/mysql
+    chmod +x $BIN/mysql-5.7/bin/mysql
+
+    # check if mysql alias is working, if not, use the bat/shell script wrapper method
+    if ($BIN/mysql-5.7/bin/mysql -v  2>&1 | grep -q "Invalid argument")
+    then
+        rm -rf $BIN/mysql-5.7/bin/mysql
+        echo $(wslpath -w $BIN/mysql-5.7/bin/mysql.exe)' "%*" ' > $BIN/mysql-5.7/bin/mysql.bat
+        echo "cmd.exe /c"' "'$(wslpath -w $BIN/mysql-5.7/bin/mysql.bat)' "''"$@"' > $BIN/mysql-5.7/bin/mysql
+        chmod +x $BIN/mysql-5.7/bin/mysql.bat
+        chmod +x $BIN/mysql-5.7/bin/mysql
+    fi
+
     # node cleanup
     mv $BIN/node-10/node-v10.15.3-win-x64/* $BIN/node-10
     rm -rf $BIN/node-10/node-v10.15.3-win-x64
     ln -rsf $BIN/node-10/node.exe $BIN/node-10/node
     chmod +x $BIN/node-10/node
-
-    # mysql
-    ln -rsf $BIN/mysql-5.7/bin/mysql.exe $BIN/mysql-5.7/bin/mysql
 
     # extract ruby
     for FILENAME in $DOWNLOAD/*.7z
