@@ -342,8 +342,6 @@ function check_for_sudo {
 
 function install {
 
-    check_for_sudo
-
     echo "Installing/Downloading."
 
     sudo apt-get update
@@ -901,6 +899,7 @@ case $ACTION in
         ;&
     install)
         echo -e "\n${COLOR_CYAN}Installing needed binaries and libaries.${COLOR_NC}\n"
+        check_for_sudo
         execute_with_progress_spinner "install"
         ;;
     status)
