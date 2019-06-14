@@ -474,7 +474,7 @@ function install {
 }
 
 function set_path {
-    PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/c/Windows/system32:/c/Windows"
+    PATH="/c/Windows/system32:/c/Windows"
 
     PATH=$BIN/apache-2.4/bin:$PATH
     PATH=$BIN/php-$PHP_VERSION:$PATH
@@ -497,16 +497,19 @@ function set_path {
     PATH=$MIGRAW_CURRENT_BASE/vendor/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/node_modules/.bin:$PATH
 
+    PHP_INI_SCAN_DIR=$MIGRAW_CURRENT
+    PHPRC=$MIGRAW_CURRENT/php
+    MYSQL_HOME=$MIGRAW_CURRENT/mysql
+
+    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p:PHPRC/p:MYSQL_HOME/p
+
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+
     mkdir -p $MIGRAW_CURRENT/php/session
     create_file_php_ini $MIGRAW_CURRENT/php/php.ini
 
-    PHPRC=$MIGRAW_CURRENT/php
-    PHP_INI_SCAN_DIR=$MIGRAW_CURRENT
-    MYSQL_HOME=$MIGRAW_CURRENT/mysql
-
-    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
-
     export PATH
+    export WSLENV
     export PHPRC
     export PHP_INI_SCAN_DIR
     export MYSQL_HOME
