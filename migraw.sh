@@ -685,9 +685,6 @@ function mysql_start {
         return
     fi
 
-    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
-    export WSLENV
-
     BIN_MYSQLD="$BIN/mysql-5.7/bin/mysqld.exe"
     BIN_MYSQL="$BIN/mysql-5.7/bin/mysql.exe"
     chmod +x $BIN_MYSQLD
@@ -733,9 +730,6 @@ function apache_start {
     if [ "$MIGRAW_YAML_config_apache" != "true" ]; then
         return
     fi
-
-    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
-    export WSLENV
 
     BIN_HTTPD="$BIN/apache-2.4/bin/httpd.exe"
     chmod +x $BIN_HTTPD
