@@ -612,7 +612,7 @@ function spawn_bash {
         WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
 
         cmd.exe /c \$CMD_FILE_WINDOWS
-     #   /bin/rm -rf \$CMD_FILE
+        /bin/rm -rf \$CMD_FILE
 EOL
 
     read -r -d '' PHP_BAT <<EOL
