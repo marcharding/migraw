@@ -335,18 +335,24 @@ function parse_yaml() {
 }
 
 function check_for_sudo {
-    if ! sudo -n true 2>/dev/null; then
-        sudo -v
-        echo ""
-    fi
+    if [[ `uname -s` != CYGWIN* ]]; then
+        if ! sudo -n true 2>/dev/null; then
+            sudo -v
+            echo ""
+        fi;
+    fi;
 }
 
 function install {
 
     echo "Installing/Downloading."
 
-    sudo apt-get update
-    sudo apt-get install unzip p7zip
+    if [[ `uname -s` == CYGWIN* ]]; then
+        apt-cyg install unzipp7zip
+    else
+        sudo apt-get update
+        sudo apt-get install unzip p7zip
+    fi;
 
     rm -rf $DOWNLOAD
     rm -rf $BIN
