@@ -5,9 +5,9 @@ VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/bash-win64/migraw.sh";
 
 if [[ `uname -s` == CYGWIN* ]]; then
-    PATH_CONVERT_BIN="cygpath"
+    PATH_CONVERT_BIN="/usr/bin/cygpath"
 else
-    PATH_CONVERT_BIN="wslpath"
+    PATH_CONVERT_BIN="/bin/wslpath"
 fi;
 
 # colors
