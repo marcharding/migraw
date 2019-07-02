@@ -439,8 +439,8 @@ function install {
     if ($BIN/mysql-5.7/bin/mysql -v  2>&1 | grep -q "Invalid argument")
     then
         rm -rf $BIN/mysql-5.7/bin/mysql
-        echo $(wslpath -w $BIN/mysql-5.7/bin/mysql.exe)' "%*" ' > $BIN/mysql-5.7/bin/mysql.bat
-        echo "cmd.exe /c"' "'$(wslpath -w $BIN/mysql-5.7/bin/mysql.bat)' "''"$@"' > $BIN/mysql-5.7/bin/mysql
+        echo $($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.exe)' "%*" ' > $BIN/mysql-5.7/bin/mysql.bat
+        echo "cmd.exe /c"' "'$($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.bat)' "''"$@"' > $BIN/mysql-5.7/bin/mysql
         chmod +x $BIN/mysql-5.7/bin/mysql.bat
         chmod +x $BIN/mysql-5.7/bin/mysql
     fi
@@ -548,7 +548,7 @@ function copy_file_if_target_not_exists {
 
 function stop {
     if [ -f $MIGRAW_CURRENT/mysql/mysql.pid ]; then
-        PID=`cat "$MIGRAW_CURRENT/mysql/mysql.pid"`
+        PID=`cat "$MIGRAW_CURRENT/mysql/mysql.pid" | tr -dc '0-9'`
         cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
 
         counter=1
@@ -565,13 +565,13 @@ function stop {
     fi
 
     if [ -f $MIGRAW_CURRENT/httpd/httpd.pid ]; then
-        PID=`cat $MIGRAW_CURRENT/httpd/httpd.pid`
+        PID=`cat $MIGRAW_CURRENT/httpd/httpd.pid | tr -dc '0-9'`
         cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
         rm -rf $MIGRAW_CURRENT/httpd/httpd.pid
     fi
 
     if [ -f $MIGRAW_CURRENT/mailhog/mailhog.pid ]; then
-        PID=`cat $MIGRAW_CURRENT/mailhog/mailhog.pid`
+        PID=`cat $MIGRAW_CURRENT/mailhog/mailhog.pid | tr -dc '0-9'`
         cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
         rm -rf $MIGRAW_CURRENT/mailhog/mailhog.pid
     fi
@@ -741,12 +741,7 @@ function apache_start {
 
     read -r -d "" BIN_HTTPD_CMD <<EOL
         @echo off
-
-        set PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR
-        set PATH=$BIN_WIN\\php-$PHP_VERSION;$BIN_WIN\\apache-2.4;%PATH%
-
-        start /B \
-        $(wslpath -w $BIN_HTTPD) \
+        start /B $($PATH_CONVERT_BIN -w $BIN_HTTPD) \
         -f "$MIGRAW_CURRENT_WINDOWS\\httpd\\httpd.conf" \
         -DDEVELOPMENT \
         -DMIGRAW \
@@ -758,9 +753,9 @@ function apache_start {
         -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
-            DLL_WINDOWS_PATH="$(wslpath -w $BIN/php-7.1/libeay32.dll)"
+            DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/libeay32.dll)"
             printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
-            DLL_WINDOWS_PATH="$(wslpath -w $BIN/php-7.1/ssleay32.dll)"
+            DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/ssleay32.dll)"
             printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
@@ -769,7 +764,7 @@ function apache_start {
                 then
                     continue;
                 fi
-                DLL_WINDOWS_PATH="$(wslpath -w $DLL_PATH)"
+                DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $DLL_PATH)"
                 printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             done
         ) \
@@ -780,7 +775,7 @@ EOL
 # somehow executing it as a bat script with cmd.exe is the only way to ensure everything works most of the time
 # executing directly via interop results in ddls not loaded sometimes (more often as when using this approach)
 echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.bat
-cmd.exe /c $(wslpath -w $MIGRAW_CURRENT/httpd/exec.bat) &
+cmd.exe /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/httpd/exec.bat)
 
 }
 
