@@ -43,6 +43,7 @@ function create_file_php_ini {
     mkdir -p $MIGRAW_CURRENT/php/tmp
 
     echo "upload_tmp_dir = $MIGRAW_CURRENT_WINDOWS\\php\\tmp" >> $1
+    echo "sys_temp_dir = $MIGRAW_CURRENT_WINDOWS\\php\\tmp" >> $1
     echo "session.save_path = $MIGRAW_CURRENT_WINDOWS\\php\\session" >> $1
     echo "curl.cainfo = $BIN_WIN\\cacert.pem" >> $1
 
