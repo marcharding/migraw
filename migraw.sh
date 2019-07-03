@@ -667,8 +667,6 @@ EOL
     echo "$BUNDLER_BAT" > $MIGRAW_CURRENT/bin/bundler && chmod +x $MIGRAW_CURRENT/bin/bundler
     echo "$CAP_BAT" > $MIGRAW_CURRENT/bin/cap && chmod +x $MIGRAW_CURRENT/bin/cap
 
-    set_path
-
     PROMPT="\n${COLOR_PURPLE}\t ${MIGRAW_USER}@${MIGRAW_YAML_name}${COLOR_NC} [${COLOR_RED}\w${COLOR_NC}]${COLOR_NC}\n€${COLOR_NC} "
 
     if [ "$1" != "" ]; then
@@ -910,6 +908,7 @@ case $ACTION in
         execute_with_progress_spinner "unpause"
         ;;
     bash)
+        set_path
         spawn_bash "$2"
         ;;
     update)
