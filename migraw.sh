@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
+# $processes = @("mysqld.exe", "mysql.exe", "php.exe", "httpd.exe", "ruby.exe", "node.exe", "git.exe")
+# $processes | ForEach { Add-MpPreference -ExclusionProcess ($_) }
+
 VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
 UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/bash-win64/migraw.sh";
 
 if [[ `uname -s` == CYGWIN* ]]; then
     PATH_CONVERT_BIN="/usr/bin/cygpath"
+    PATH_CMD="cmd.exe"
 else
     PATH_CONVERT_BIN="/bin/wslpath"
+    PATH_CMD="cmd.exe"
 fi;
 
 # colors
@@ -640,7 +645,7 @@ function spawn_bash {
 
         WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
 
-        cmd.exe /c \$CMD_FILE_WINDOWS
+        $PATH_CMD /c \$CMD_FILE_WINDOWS
         /bin/rm -rf \$CMD_FILE
 EOL
 
