@@ -637,7 +637,7 @@ EOL
 
     read -r -d '' PHP_BAT <<EOL
         @echo off
-        $BIN_WIN\php-$PHP_VERSION\php.exe -c "$PHPRC\\php.ini" -d "memory_limit=-1" "%*"
+        $BIN_WIN\php-$PHP_VERSION\php.exe -c "$PHPRC\\php.ini" -d "memory_limit=-1" %*
         EXIT 0
 EOL
 
