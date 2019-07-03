@@ -508,8 +508,9 @@ function set_path {
     PHP_INI_SCAN_DIR=$MIGRAW_CURRENT
     PHPRC=$MIGRAW_CURRENT/php
     MYSQL_HOME=$MIGRAW_CURRENT/mysql
+    OPENSSL_CONF=$BIN/apache-2.4/conf/openssl.cnf
 
-    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p:PHPRC/p:MYSQL_HOME/p
+    WSLENV=PATH/l:PHP_INI_SCAN_DIR/p:PHPRC/p:MYSQL_HOME/p:OPENSSL_CONF/p
 
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 
@@ -524,6 +525,7 @@ function set_path {
         PHP_INI_SCAN_DIR=$($PATH_CONVERT_BIN -w $PHP_INI_SCAN_DIR)
         MYSQL_HOME=$($PATH_CONVERT_BIN -w $MYSQL_HOME)
         COMPOSER_HOME=$($PATH_CONVERT_BIN -w $COMPOSER_HOME)
+        OPENSSL_CONF=$($PATH_CONVERT_BIN -w $OPENSSL_CONF)
     fi
 
     export PATH
@@ -532,6 +534,7 @@ function set_path {
     export PHPRC
     export PHP_INI_SCAN_DIR
     export MYSQL_HOME
+    export OPENSSL_CONF
 }
 
 function start {
