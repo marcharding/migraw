@@ -254,6 +254,10 @@ LoadModule headers_module $BIN_WIN/apache-2.4/modules/mod_headers.so
 	AddType application/x-httpd-php-source .phps
 </IfModule>
 
+<IfModule mpm_winnt_module>
+    ThreadStackSize 8388608
+</IfModule>
+
 <FilesMatch ".+\.ph(ar|p|tml)$">
     SetHandler application/x-httpd-php
 </FilesMatch>
