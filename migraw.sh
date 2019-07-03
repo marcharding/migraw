@@ -857,6 +857,29 @@ function self_update {
     fi
 }
 
+function usage {
+
+cat <<EOF
+
+$(echo -e "${COLOR_CYAN}migraw wsl|cygwin/win64 $VERSION${COLOR_NC}")
+
+Usage:
+  $(echo -e "${COLOR_CYAN}migraw${COLOR_NC}") [$(echo -e "${COLOR_GREEN}command${COLOR_NC}")] [$(echo -e "${COLOR_PURPLE}options${COLOR_NC}")] 
+
+Options:
+  $(echo -e "${COLOR_PURPLE}--debug ${COLOR_NC}")            Show debug information
+
+Commands:
+  $(echo -e "${COLOR_GREEN}up|start${COLOR_NC}")            Start migraw instance.
+  $(echo -e "${COLOR_GREEN}suspend|pause${COLOR_NC}")       Suspend migraw instance (data stays).
+  $(echo -e "${COLOR_GREEN}resume|unpause${COLOR_NC}")      Resume migraw instance.
+  $(echo -e "${COLOR_GREEN}bash${COLOR_NC}")                Spwans a bash within the current migraw enviroment.
+  $(echo -e "${COLOR_GREEN}bash [cmd]${COLOR_NC}")          Runs [cmd] within the current migraw enviroment.
+  $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
+EOF
+
+}
+
 ACTION=$1
 
 OPTION="${2//-}"
@@ -950,8 +973,7 @@ case $ACTION in
         self_update
         ;;
     *)
-        echo -e "\n${COLOR_CYAN}migraw wsl|cygwin/win64 $VERSION${COLOR_NC}\n"
-        echo "[TODO]"
+        usage
         ;;
 esac
 
