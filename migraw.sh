@@ -481,8 +481,7 @@ function install {
 }
 
 function set_path {
-    PATH="/c/Windows/system32:/c/Windows"
-
+    PATH="/c/Windows/System32:/c/Windows"
     PATH=$BIN/apache-2.4/bin:$PATH
     PATH=$BIN/php-$PHP_VERSION:$PATH
     PATH=$BIN/composer:$PATH
@@ -512,10 +511,21 @@ function set_path {
 
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 
+    mkdir -p $HOME/.composer
+    COMPOSER_HOME=$HOME/.composer
+
     mkdir -p $MIGRAW_CURRENT/php/session
     create_file_php_ini $MIGRAW_CURRENT/php/php.ini
 
+    if [[ `uname -s` == CYGWIN* ]]; then
+        PHPRC=$($PATH_CONVERT_BIN -w $PHPRC)
+        PHP_INI_SCAN_DIR=$($PATH_CONVERT_BIN -w $PHP_INI_SCAN_DIR)
+        MYSQL_HOME=$($PATH_CONVERT_BIN -w $MYSQL_HOME)
+        COMPOSER_HOME=$($PATH_CONVERT_BIN -w $COMPOSER_HOME)
+    fi
+
     export PATH
+    export COMPOSER_HOME
     export WSLENV
     export PHPRC
     export PHP_INI_SCAN_DIR
@@ -670,9 +680,9 @@ EOL
     PROMPT="\n${COLOR_PURPLE}\t ${MIGRAW_USER}@${MIGRAW_YAML_name}${COLOR_NC} [${COLOR_RED}\w${COLOR_NC}]${COLOR_NC}\n€${COLOR_NC} "
 
     if [ "$1" != "" ]; then
-        env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH HOME=$HOME bash -c "$1"
+        env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME HOME=$HOME bash -c "$1"
     else
-        env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH HOME=$HOME bash --rcfile <(echo ' PS1="'$(echo $PROMPT)' "')
+        env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME HOME=$HOME bash --rcfile <(echo ' PS1="'$(echo $PROMPT)' "')
     fi;
 }
 
