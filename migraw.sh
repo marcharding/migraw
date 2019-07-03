@@ -46,6 +46,8 @@ function create_file_php_ini {
     echo "sys_temp_dir = $MIGRAW_CURRENT_WINDOWS\\php\\tmp" >> $1
     echo "session.save_path = $MIGRAW_CURRENT_WINDOWS\\php\\session" >> $1
     echo "curl.cainfo = $BIN_WIN\\cacert.pem" >> $1
+    echo "openssl.cafile = $BIN_WIN\\cacert.pem" >> $1
+    echo "max_input_vars = 4096" >> $1
 
     PHP_EXTENSION_DIR=$BIN_WIN\\php-$PHP_VERSION\\ext
 
