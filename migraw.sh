@@ -359,10 +359,10 @@ function install {
     echo "Installing/Downloading."
 
     if [[ `uname -s` == CYGWIN* ]]; then
-        apt-cyg install unzipp7zip
+        apt-cyg install wget unzip p7zip curl
     else
         sudo apt-get update
-        sudo apt-get install unzip p7zip
+        sudo apt-get install wget unzip p7zip curl
     fi;
 
     rm -rf $DOWNLOAD
