@@ -516,7 +516,7 @@ function set_path {
 
     WSLENV=PATH/l:PHP_INI_SCAN_DIR/p:PHPRC/p:MYSQL_HOME/p:OPENSSL_CONF/p
 
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+    PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     mkdir -p $HOME/.composer
     COMPOSER_HOME=$HOME/.composer
