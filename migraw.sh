@@ -486,6 +486,10 @@ function install {
     done
 
     unset PHP_VERSION
+
+    # set owner for binaries, cygwin/wsl somehow messes this up sometimes
+    takeown /R /F $BIN_WIN > /dev/null
+    icacls $BIN_WIN /T /Q /C /RESET > /dev/null
 }
 
 function set_path {
