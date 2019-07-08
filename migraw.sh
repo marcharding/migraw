@@ -893,12 +893,15 @@ else
     MIGRAW_USER=$USER
 fi
 
+# script origin base dir
+SCRIPT_BASE="$(dirname "$(readlink -f "$0")")"
+
 # download dir
-DOWNLOAD=/d/migraw/download
+DOWNLOAD=$SCRIPT_BASE/download
 DOWNLOAD_WIN=$($PATH_CONVERT_BIN -w $DOWNLOAD)
 
 # bin base
-BIN=/d/migraw/bin
+BIN=$SCRIPT_BASE/bin
 BIN_WIN=$($PATH_CONVERT_BIN -w $BIN)
 
 MIGRAW_YAML=$(find_migraw_yaml)
