@@ -15,6 +15,10 @@ else
     PATH_CMD="cmd.exe"
 fi;
 
+WINDOWS_BASE_PATH_WIN=$(cmd.exe /c "echo %windir%")
+WINDOWS_BASE_PATH_WIN=$(tr -dc '[[:print:]]' <<< "$WINDOWS_BASE_PATH_WIN")
+WINDOWS_BASE_PATH=$($PATH_CONVERT_BIN -u $WINDOWS_BASE_PATH_WIN)
+
 # colors
 COLOR_NC='\e[0m'
 COLOR_WHITE='\e[1;37m'
@@ -485,7 +489,7 @@ function install {
 }
 
 function set_path {
-    PATH="/c/Windows/System32:/c/Windows"
+    PATH=$WINDOWS_BASE_PATH:"$WINDOWS_BASE_PATH/system32"
     PATH=$BIN/apache-2.4/bin:$PATH
     PATH=$BIN/php-$PHP_VERSION:$PATH
     PATH=$BIN/composer:$PATH
@@ -629,7 +633,7 @@ function spawn_bash {
         echo "EXIT 0" >> \$CMD_FILE
         # create path enviroment
 
-        PATH=$MIGRAW_CURRENT/bin:$BIN/apache-2.4/bin:$BIN/php-$PHP_VERSION:$BIN/mysql-5.7/bin:/c/Windows:/c/Windows/System32
+        PATH=$MIGRAW_CURRENT/bin:$BIN/apache-2.4/bin:$BIN/php-$PHP_VERSION:$BIN/mysql-5.7/bin:$WINDOWS_BASE_PATH:$WINDOWS_BASE_PATH/system32
 
         if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
             PATH=\$PATH:$BIN/imagick-6.9.3/bin
