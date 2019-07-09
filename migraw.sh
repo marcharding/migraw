@@ -896,7 +896,7 @@ else
 fi
 
 # script origin base dir
-SCRIPT_BASE="$(dirname "$(readlink -f "$0")")"
+SCRIPT_BASE="$(dirname "$(readlink -f "$0")")"/data
 
 # download dir
 DOWNLOAD=$SCRIPT_BASE/download
