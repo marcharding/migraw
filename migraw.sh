@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# $processes = @("mysqld.exe", "mysql.exe", "php.exe", "httpd.exe", "ruby.exe", "node.exe", "git.exe")
-# $processes | ForEach { Add-MpPreference -ExclusionProcess ($_) }
-
 VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
 UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/bash-win64/migraw.sh";
@@ -874,6 +871,10 @@ Commands:
   $(echo -e "${COLOR_GREEN}bash${COLOR_NC}")                Spwans a bash within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}bash [cmd]${COLOR_NC}")          Runs [cmd] within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
+
+Recommended firewall exclusions (ps command):
+  \$processes = @("mysqld.exe", "mysql.exe", "php.exe", "httpd.exe", "ruby.exe", "node.exe", "git.exe")
+  \$processes | ForEach { Add-MpPreference -ExclusionProcess (\$_) }
 EOF
 
 }
