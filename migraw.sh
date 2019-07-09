@@ -912,8 +912,13 @@ if [ "$MIGRAW_YAML" != "" ]; then
     MIGRAW_CURRENT=$(dirname "$MIGRAW_YAML")/.migraw
     MIGRAW_CURRENT_BASE=$(dirname "$MIGRAW_YAML")
 else
+    MIGRAW_YAML_NOT_FOUND=1
     MIGRAW_CURRENT=$PWD/.migraw
     MIGRAW_CURRENT_BASE=$PWD
+fi
+
+if [ $MIGRAW_YAML_NOT_FOUND ]; then
+    echo -e "\n${COLOR_RED}!!! migraw.yml|yaml not found !!!${COLOR_NC}"
 fi
 
 MIGRAW_CURRENT_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT)
