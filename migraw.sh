@@ -362,13 +362,6 @@ function install {
 
     echo "Installing/Downloading."
 
-    if [[ `uname -s` == CYGWIN* ]]; then
-        apt-cyg install wget unzip p7zip curl
-    else
-        sudo apt-get update
-        sudo apt-get install wget unzip p7zip curl
-    fi;
-
     rm -rf $DOWNLOAD
     rm -rf $BIN
 
@@ -968,6 +961,15 @@ case $ACTION in
     update)
         ;&
     install)
+        REQUIREMENTS=("wget" "unzipee" "p7zip" "curl" )
+        for REQUIREMENT in ${REQUIREMENTS[*]}
+        do
+            if ! [ -x "$(command -v $REQUIREMENT)" ]; then
+                echo -e "\n${COLOR_RED}!!! Not all required packages are installed !!!${COLOR_NC}"
+                echo -e "\n${COLOR_RED}!!! Make sure '${REQUIREMENTS[*]}' are installed !!!${COLOR_NC}"
+                exit 1
+            fi
+        done
         echo -e "\n${COLOR_CYAN}Installing needed binaries and libaries.${COLOR_NC}\n"
         check_for_sudo
         execute_with_progress_spinner "install"
