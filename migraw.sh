@@ -486,7 +486,7 @@ function install {
 }
 
 function set_path {
-    PATH=$WINDOWS_BASE_PATH:"$WINDOWS_BASE_PATH/system32"
+    PATH=$WINDOWS_BASE_PATH
     PATH=$BIN/apache-2.4/bin:$PATH
     PATH=$BIN/php-$PHP_VERSION:$PATH
     PATH=$BIN/composer:$PATH
@@ -517,7 +517,8 @@ function set_path {
 
     WSLENV=PATH/l:PHP_INI_SCAN_DIR/p:PHPRC/p:MYSQL_HOME/p:OPENSSL_CONF/p
 
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+    # prepend system32 last, sometime it caused problems being at the start of $PATH, append linux prefixes because the prefer our own binaries
+    PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$WINDOWS_BASE_PATH"/system32"
 
     mkdir -p $HOME/.composer
     COMPOSER_HOME=$HOME/.composer
