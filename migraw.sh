@@ -968,7 +968,7 @@ case $ACTION in
     update)
         ;&
     install)
-        REQUIREMENTS=("wget" "unzipee" "p7zip" "curl" )
+        REQUIREMENTS=("wget" "unzip" "p7zip" "curl" )
         for REQUIREMENT in ${REQUIREMENTS[*]}
         do
             if ! [ -x "$(command -v $REQUIREMENT)" ]; then
