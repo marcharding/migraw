@@ -448,7 +448,7 @@ function install {
     then
         rm -rf $BIN/mysql-5.7/bin/mysql
         echo $($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.exe)' "%*" ' > $BIN/mysql-5.7/bin/mysql.bat
-        echo "cmd.exe /c"' "'$($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.bat)' "''"$@"' > $BIN/mysql-5.7/bin/mysql
+        echo "$PATH_CMD /c"' "'$($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.bat)' "''"$@"' > $BIN/mysql-5.7/bin/mysql
         chmod +x $BIN/mysql-5.7/bin/mysql.bat
         chmod +x $BIN/mysql-5.7/bin/mysql
     fi
@@ -578,7 +578,7 @@ function copy_file_if_target_not_exists {
 function stop {
     if [ -f $MIGRAW_CURRENT/mysql/mysql.pid ]; then
         PID=`cat "$MIGRAW_CURRENT/mysql/mysql.pid" | tr -dc '0-9'`
-        cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
+        $PATH_CMD /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
 
         counter=1
         while $BIN_MYSQL -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
@@ -595,13 +595,13 @@ function stop {
 
     if [ -f $MIGRAW_CURRENT/httpd/httpd.pid ]; then
         PID=`cat $MIGRAW_CURRENT/httpd/httpd.pid | tr -dc '0-9'`
-        cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
+        $PATH_CMD /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
         rm -rf $MIGRAW_CURRENT/httpd/httpd.pid
     fi
 
     if [ -f $MIGRAW_CURRENT/mailhog/mailhog.pid ]; then
         PID=`cat $MIGRAW_CURRENT/mailhog/mailhog.pid | tr -dc '0-9'`
-        cmd.exe /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
+        $PATH_CMD /c "taskkill.exe /F /PID $PID > nul" > /dev/null 2>&1
         rm -rf $MIGRAW_CURRENT/mailhog/mailhog.pid
     fi
 }
@@ -658,23 +658,23 @@ EOL
 EOL
 
     read -r -d '' NPM_BAT <<EOL
-        cmd.exe /c "$BIN_WIN\node-10\npm.cmd" "\$@"
+        $PATH_CMD /c "$BIN_WIN\node-10\npm.cmd" "\$@"
 EOL
 
     read -r -d '' GRUNT_BAT <<EOL
-        cmd.exe /c "$BIN_WIN\node-10\grunt.cmd" "\$@"
+        $PATH_CMD /c "$BIN_WIN\node-10\grunt.cmd" "\$@"
 EOL
 
     read -r -d '' GEM_BAT <<EOL
-        cmd.exe /c "$BIN_WIN\ruby-2.5\bin\gem.cmd" "\$@"
+        $PATH_CMD /c "$BIN_WIN\ruby-2.5\bin\gem.cmd" "\$@"
 EOL
 
     read -r -d '' BUNDLER_BAT <<EOL
-        cmd.exe /c "$BIN_WIN\ruby-2.5\bin\bundler.bat" "\$@"
+        $PATH_CMD /c "$BIN_WIN\ruby-2.5\bin\bundler.bat" "\$@"
 EOL
 
     read -r -d '' CAP_BAT <<EOL
-        cmd.exe /c "$BIN_WIN\ruby-2.5\bin\cap.bat" "\$@"
+        $PATH_CMD /c "$BIN_WIN\ruby-2.5\bin\cap.bat" "\$@"
 EOL
 
     mkdir -p $MIGRAW_CURRENT/bin
@@ -802,7 +802,7 @@ EOL
 # somehow executing it as a bat script with cmd.exe is the only way to ensure everything works most of the time
 # executing directly via interop results in ddls not loaded sometimes (more often as when using this approach)
 echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.bat
-cmd.exe /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/httpd/exec.bat)
+$PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/httpd/exec.bat)
 
 }
 
