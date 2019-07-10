@@ -871,6 +871,23 @@ Commands:
   $(echo -e "${COLOR_GREEN}bash${COLOR_NC}")                Spwans a bash within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}bash [cmd]${COLOR_NC}")          Runs [cmd] within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
+  $(echo -e "${COLOR_GREEN}info${COLOR_NC}")                Display info and help
+EOF
+
+}
+
+function info {
+
+cat <<EOF
+
+$(echo -e "${COLOR_CYAN}Help and info for running migraw.${COLOR_NC}")
+
+The following settings are recommended:
+
+Native symlinks in cygwin:
+  Add the follwing line to your .bashrc:
+  export CYGWIN="winsymlinks:native"
+  See http://cygwin.com/cygwin-ug-net/using.html#pathnames-symlinks for further infos
 
 Recommended firewall exclusions (ps command):
   \$processes = @("mysqld.exe", "mysql.exe", "php.exe", "httpd.exe", "ruby.exe", "node.exe", "git.exe")
@@ -987,6 +1004,9 @@ case $ACTION in
     selfupdate)
         echo -e "\n${COLOR_CYAN}Trying to update migraw.${COLOR_NC}\n"
         self_update
+        ;;
+    info)
+        info
         ;;
     *)
         usage
