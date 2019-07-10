@@ -10,7 +10,7 @@ if [[ `uname -s` == CYGWIN* ]]; then
 else
     PATH_CONVERT_BIN="/bin/wslpath"
     PATH_CMD="cmd.exe"
-fi;
+fi
 
 WINDOWS_BASE_PATH_WIN=$(cmd.exe /c "echo %windir%")
 WINDOWS_BASE_PATH_WIN=$(tr -dc '[[:print:]]' <<< "$WINDOWS_BASE_PATH_WIN")
@@ -293,11 +293,11 @@ function find_migraw_yaml {
         if [ -f $x/migraw.yaml ]; then
             echo $x/migraw.yaml
             break;
-        fi;
+        fi
         if [ -f $x/migraw.yml ]; then
             echo $x/migraw.yml
             break;
-        fi;
+        fi
         x=`dirname "$x"`;
     done
 }
@@ -351,8 +351,8 @@ function check_for_sudo {
         if ! sudo -n true 2>/dev/null; then
             sudo -v
             echo ""
-        fi;
-    fi;
+        fi
+    fi
 }
 
 function install {
@@ -584,7 +584,7 @@ function stop {
             if [ $counter -gt 30 ]; then
                 echo "We have been waiting for MySQL too long already; failing."
                 exit 1
-            fi;
+            fi
         done
 
         rm -rf $MIGRAW_CURRENT/mysql/mysql.pid
@@ -692,7 +692,7 @@ EOL
         env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME SystemDrive=$SystemDrive CYGWIN=$CYGWIN HOME=$HOME bash -c "$1"
     else
         env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME SystemDrive=$SystemDrive CYGWIN=$CYGWIN HOME=$HOME bash --rcfile <(echo ' PS1="'$(echo $PROMPT)' "')
-    fi;
+    fi
 }
 
 function mailhog_start {
@@ -744,7 +744,7 @@ source $MIGRAW_CURRENT/mysql/exec.sh
         if [ $counter -gt 30 ]; then
             echo "We have been waiting for MySQL too long already; failing."
             exit 1
-        fi;
+        fi
     done
 
 }
