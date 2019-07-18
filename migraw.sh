@@ -446,7 +446,7 @@ function install {
     chmod +x $BIN/mysql-5.7/bin/mysql
 
     # check if mysql alias is working, if not, use the bat/shell script wrapper method
-    if ($BIN/mysql-5.7/bin/mysql -v  2>&1 | grep -q "Invalid argument")
+    if ($BIN/mysql-5.7/bin/mysql -v 2>&1 | grep -q "Invalid argument")
     then
         rm -rf $BIN/mysql-5.7/bin/mysql
         echo $($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.exe)' "%*" ' > $BIN/mysql-5.7/bin/mysql.bat
