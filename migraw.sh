@@ -659,6 +659,12 @@ EOL
         php $BIN/composer/composer.phar "\$@"
 EOL
 
+    read -r -d '' COMPOSER_BAT <<EOL
+        @echo off
+        php $BIN_WIN/composer/composer.phar  %*
+        EXIT 0
+EOL
+
     read -r -d '' NPM_BAT <<EOL
         $PATH_CMD /c "$BIN_WIN\node-10\npm.cmd" "\$@"
 EOL
@@ -685,6 +691,7 @@ EOL
     echo "$PHP" > $MIGRAW_CURRENT/bin/php && chmod +x $MIGRAW_CURRENT/bin/php
     echo "$PHP_BAT" > $MIGRAW_CURRENT/bin/php.bat && chmod +x $MIGRAW_CURRENT/bin/php.bat
     echo "$COMPOSER" > $MIGRAW_CURRENT/bin/composer && chmod +x $MIGRAW_CURRENT/bin/composer
+    echo "$COMPOSER_BAT" > $MIGRAW_CURRENT/bin/composer.bat && chmod +x $MIGRAW_CURRENT/bin/composer.bat
     echo "$NPM_BAT" > $MIGRAW_CURRENT/bin/npm && chmod +x $MIGRAW_CURRENT/bin/npm
     echo "$GRUNT_BAT" > $MIGRAW_CURRENT/bin/grunt && chmod +x $MIGRAW_CURRENT/bin/grunt
     echo "$GEM_BAT" > $MIGRAW_CURRENT/bin/gem && chmod +x $MIGRAW_CURRENT/bin/gem
