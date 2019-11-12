@@ -122,7 +122,7 @@ function create_file_my_cnf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
 [mysqld]
-flush_time                     = 180
+flush_time                     = 0
 log_error_verbosity            = 1
 port                           = 3306
 bind-address                   = $MIGRAW_YAML_network_ip
@@ -151,6 +151,8 @@ skip-external-locking
 # Due to option file escaping sequences, see https://dev.mysql.com/doc/refman/8.0/en/option-files.html we need three baskslashes
 lc-messages-dir                = ${BIN_WIN//\\/\\\\}\\\mysql-5.7\\\share
 lc_messages                    = en_US
+sort_buffer_size               = 16777216
+wait_timeout                   = 3600
 
 [client]
 default-character-set          = utf8
