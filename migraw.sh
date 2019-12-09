@@ -396,9 +396,10 @@ function install {
     wget -q -O $DOWNLOAD/imagick-7.0.7.zip http://windows.php.net/downloads/pecl/deps/ImageMagick-7.0.7-11-vc15-x64.zip
     wget -q -O $DOWNLOAD/php-imagick-5.6.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.3/php_imagick-3.4.3-5.6-ts-vc11-x64.zip
     wget -q -O $DOWNLOAD/php-imagick-7.0.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.3/php_imagick-3.4.3-7.0-ts-vc14-x64.zip
-    wget -q -O $DOWNLOAD/php-imagick-7.1.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.3/php_imagick-3.4.3-7.1-ts-vc14-x64.zip
-    wget -q -O $DOWNLOAD/php-imagick-7.2.zip http://windows.php.net/downloads/pecl/snaps/imagick/3.4.3/php_imagick-3.4.3-7.2-ts-vc15-x64.zip
-    wget -q -O $DOWNLOAD/php-imagick-7.3.zip http://windows.php.net/downloads/pecl/snaps/imagick/3.4.3/php_imagick-3.4.3-7.3-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-imagick-7.1.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.1-ts-vc14-x64.zip
+    wget -q -O $DOWNLOAD/php-imagick-7.2.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.2-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-imagick-7.3.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.3-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-imagick-7.4.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.4-ts-vc15-x64.zip
 
     # mailhog
     wget -q -O $BIN/MailHog_windows_amd64.exe https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_windows_amd64.exe
@@ -412,9 +413,10 @@ function install {
     # apc
     wget  -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
     wget  -q -O $DOWNLOAD/php-apcu-7.0.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.15/php_apcu-5.1.15-7.0-ts-vc14-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.1.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.1-ts-vc14-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.2.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.2-ts-vc15-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-ts-vc15-x64.zip
+    wget  -q -O $DOWNLOAD/php-apcu-7.1.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.1-ts-vc14-x64.zip
+    wget  -q -O $DOWNLOAD/php-apcu-7.2.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.2-ts-vc15-x64.zip
+    wget  -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.3-ts-vc15-x64.zip
+    wget  -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
 
     # ruby
     wget  -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-2.5.3-1/rubyinstaller-2.5.3-1-x64.7z
@@ -505,7 +507,7 @@ function set_path {
         PATH=$BIN/imagick-6.9.3/bin:$PATH
     fi
 
-    if [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.3" ]]; then
+    if [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "7.4" ]]; then
         PATH=$BIN/imagick-7.0.7/bin:$PATH
     fi
 
@@ -644,7 +646,7 @@ function spawn_bash {
             PATH=\$PATH:$BIN/imagick-6.9.3/bin
         fi
 
-        if [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.3" ]]; then
+        if [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "7.4" ]]; then
             PATH=\$PATH:$BIN/imagick-7.0.7/bin
         fi
 
@@ -959,7 +961,7 @@ fi
 MIGRAW_CURRENT_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT)
 MIGRAW_CURRENT_BASE_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT_BASE)
 
-AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3")
+AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 PHP_VERSION=$MIGRAW_YAML_config_php
 
