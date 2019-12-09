@@ -433,7 +433,7 @@ function install {
 
     # composer
     mkdir -p $BIN/composer/
-    wget -q -O $BIN/composer/composer.phar https://getcomposer.org/download/1.8.5/composer.phar
+    wget -q -O $BIN/composer/composer.phar https://getcomposer.org/download/1.9.1/composer.phar
 
     # extract files
     echo "Extracting:"
