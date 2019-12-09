@@ -44,7 +44,7 @@ function create_file_php_ini {
     sed -i "s|display_errors = Off|display_errors = On|g" $1
     sed -i "s|display_startup_errors = Off|display_startup_errors = On|g" $1
     sed -i "s|log_errors = On|log_errors = Off|g" $1
-    sed -i "s|;realpath_cache_size = 4096k|realpath_cache_size = 4096k|g" $1
+    sed -i "s|;realpath_cache_size = 4096k|realpath_cache_size = 2M|g" $1
     sed -i "s|post_max_size = 8M|post_max_size = 512M|g" $1
     sed -i "s|;opcache.max_accelerated_files=10000|opcache.max_accelerated_files=32768|g" $1
 
