@@ -387,7 +387,7 @@ function install {
             wget -q -O $DOWNLOAD/php-7.0.zip https://windows.php.net/downloads/releases/archives/php-7.0.33-Win32-VC14-x64.zip
             continue
         fi
-        wget -q -O $DOWNLOAD/php-$PHP_VERSION.zip https://windows.php.net$(curl --silent https://windows.php.net/downloads/releases/latest/ |  grep -zoP '<a href="\K.*?php-'"$PHP_VERSION"'-Win32-VC[0-9][0-9]-x64[^"]+' | tr -d '\0')
+        wget -q -O $DOWNLOAD/php-$PHP_VERSION.zip https://windows.php.net$(curl --silent https://windows.php.net/downloads/releases/latest/ |  grep -izoP '<a href="\K.*?php-'"$PHP_VERSION"'-Win32-VC[0-9][0-9]-x64[^"]+' | tr -d '\0')
     done
 
     # imagick
