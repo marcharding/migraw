@@ -405,7 +405,7 @@ function install {
     wget -q -O $BIN/MailHog_windows_amd64.exe https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_windows_amd64.exe
 
     # mysql
-    wget  -q -O $DOWNLOAD/mysql-5.7.zip https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.26-winx64.zip
+    wget -q -O $DOWNLOAD/mysql-5.7.zip https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.28-winx64.zip
 
     # node
     wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.15.3/node-v10.15.3-win-x64.zip
@@ -445,8 +445,8 @@ function install {
     done
 
     # mysql cleanup
-    mv $BIN/mysql-5.7/mysql-5.7.26-winx64/* $BIN/mysql-5.7
-    rm -rf $BIN/mysql-5.7/mysql-5.7.26-winx64
+    mv $BIN/mysql-5.7/mysql-5.7.28-winx64/* $BIN/mysql-5.7
+    rm -rf $BIN/mysql-5.7/mysql-5.7.28-winx64
 
     # mysql
     ln -rsf $BIN/mysql-5.7/bin/mysql.exe $BIN/mysql-5.7/bin/mysql
