@@ -419,7 +419,7 @@ function install {
     wget  -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
 
     # ruby
-    wget  -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-2.5.3-1/rubyinstaller-2.5.3-1-x64.7z
+    wget  -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
 
     # apache
     FILENAME=chocolatey-apache-2.4.nupkg
@@ -473,7 +473,7 @@ function install {
     do
         echo "Extracting" $FILENAME
         7zr x $FILENAME -o$DOWNLOAD
-        mv $DOWNLOAD/rubyinstaller-2.5.3-1-x64 $BIN/ruby-2.5
+        mv $DOWNLOAD/rubyinstaller-2.5.7-1-x64 $BIN/ruby-2.5
     done
 
     # fix ruby symlink
