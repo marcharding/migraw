@@ -408,15 +408,15 @@ function install {
     wget  -q -O $DOWNLOAD/mysql-5.7.zip https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.26-winx64.zip
 
     # node
-    wget  -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.15.3/node-v10.15.3-win-x64.zip
+    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.15.3/node-v10.15.3-win-x64.zip
 
     # apc
-    wget  -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.0.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.15/php_apcu-5.1.15-7.0-ts-vc14-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.1.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.1-ts-vc14-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.2.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.2-ts-vc15-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.3-ts-vc15-x64.zip
-    wget  -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.0.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.15/php_apcu-5.1.15-7.0-ts-vc14-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.1.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.1-ts-vc14-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.2.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.2-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.3-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
 
     # ruby
     wget  -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
