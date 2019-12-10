@@ -441,6 +441,17 @@ function install {
     wget -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.3-ts-vc15-x64.zip
     wget -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
 
+    # blackfire
+    wget -q -O $DOWNLOAD/blackfire.zip https://packages.blackfire.io/binaries/blackfire-agent/1.30.2/blackfire-agent-windows_amd64.zip
+
+    # blackfire modules
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-5.6.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-56.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.0.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-70.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.1.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-71.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.2.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-72.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.3.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-73.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-74.dll
+
     # ruby
     wget  -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
 
@@ -510,11 +521,12 @@ function install {
     create_delegates_for_im $BIN/imagick-6.9.3/bin/delegates.xml
     create_delegates_for_im $BIN/imagick-7.0.7/bin/delegates.xml
 
-    # copy imagemagik and apc dlls
+    # copy imagemagik, apc and blackfire dlls
     for PHP_VERSION in ${AVAILABLE_PHP_VERSIONS[*]}
     do
         cp -rf $(find $BIN/php-imagick-$PHP_VERSION -name "php_*.dll") $BIN/php-$PHP_VERSION/ext
         cp -rf $(find $BIN/php-apcu-$PHP_VERSION -name "php_*.dll") $BIN/php-$PHP_VERSION/ext
+        cp -rf $DOWNLOAD/blackfire-php-windows_x64-php-$PHP_VERSION.dll $BIN/php-$PHP_VERSION/ext/php_blackfire.dll
     done
 
     unset PHP_VERSION
@@ -534,6 +546,7 @@ function set_path {
     PATH=$BIN/mysql-5.7/bin:$PATH
     PATH=$BIN/gs950/bin:$PATH
     PATH=$BIN/gs950/lib:$PATH
+    PATH=$BIN/blackfire:$PATH
 
     if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
         PATH=$BIN/imagick-6.9.3/bin:$PATH
