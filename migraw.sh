@@ -32,6 +32,26 @@ COLOR_PURPLE='\e[0;35m'
 COLOR_BROWN='\e[0;33m'
 COLOR_YELLOW='\e[1;33m'
 
+# you can get the default delegates on an *nix system with `convert -list delegate`
+function create_delegates_for_im {
+read -r -d "" DELEGATES <<EOL
+<?xml version="1.0" encoding="UTF-8"?>
+<delegatemap>
+  <delegate decode="eps" encode="pdf" mode="bi" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="eps" encode="ps" mode="bi" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 -sPDFPassword=&quot;%a&quot; &quot;-sDEVICE=eps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; -sPDFPassword=&quot;%a&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="ps:alpha" stealth="True" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pngalpha&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps:cmyk" stealth="True" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pamcmyk32&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps:color" stealth="True" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps" encode="eps" mode="bi" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=eps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="ps" encode="pdf" mode="bi" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="ps:mono" stealth="True" command="&quot;gswin64c.exe&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+</delegatemap>
+EOL
+echo "$DELEGATES" >> $1
+}
+
 function create_file_php_ini {
     mkdir -p `dirname "$1"`
 
@@ -401,6 +421,9 @@ function install {
     wget -q -O $DOWNLOAD/php-imagick-7.3.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.3-ts-vc15-x64.zip
     wget -q -O $DOWNLOAD/php-imagick-7.4.zip http://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.4-ts-vc15-x64.zip
 
+    # ghostscript
+    wget -q -O $DOWNLOAD/gs950.exe https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs950/gs950w64.exe
+
     # mailhog
     wget -q -O $BIN/MailHog_windows_amd64.exe https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_windows_amd64.exe
 
@@ -473,12 +496,19 @@ function install {
     do
         echo "Extracting" $FILENAME
         7zr x $FILENAME -o$DOWNLOAD
-        mv $DOWNLOAD/rubyinstaller-2.5.7-1-x64 $BIN/ruby-2.5
     done
+    mv $DOWNLOAD/rubyinstaller-2.5.7-1-x64 $BIN/ruby-2.5
 
     # fix ruby symlink
     ln -rsf $BIN/ruby-2.5//bin/ruby.exe $BIN/ruby-2.5//bin/ruby
     chmod +x $BIN/ruby-2.5//bin/ruby
+
+    # extract ghostscript
+    7z -aoa x $DOWNLOAD/gs950.exe -o$BIN/gs950
+
+    # add custom delegate to make pdf conversion work, see https://stackoverflow.com/a/32163666
+    create_delegates_for_im $BIN/imagick-6.9.3/bin/delegates.xml
+    create_delegates_for_im $BIN/imagick-7.0.7/bin/delegates.xml
 
     # copy imagemagik and apc dlls
     for PHP_VERSION in ${AVAILABLE_PHP_VERSIONS[*]}
@@ -502,6 +532,8 @@ function set_path {
     PATH=$BIN/node-10:$PATH
     PATH=$BIN/ruby-2.5/bin:$PATH
     PATH=$BIN/mysql-5.7/bin:$PATH
+    PATH=$BIN/gs950/bin:$PATH
+    PATH=$BIN/gs950/lib:$PATH
 
     if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
         PATH=$BIN/imagick-6.9.3/bin:$PATH
