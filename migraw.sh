@@ -98,11 +98,7 @@ $(
 extension=php_gd2.dll
 extension=php_gettext.dll
 extension=php_gmp.dll
-$(
-    if [ "$PHP_VERSION" != "5.6" ]; then
-        echo "extension=php_imagick.dll"
-    fi
-)
+extension=php_imagick.dll
 extension=php_imap.dll
 extension=php_intl.dll
 extension=php_ldap.dll
