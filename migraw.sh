@@ -124,6 +124,11 @@ $(
     fi
 )
 zend_extension=php_opcache.dll
+$(
+    if [ -f "$PHP_EXTENSION_DIR/php_blackfire.dll" ]; then
+         echo "extension=php_blackfire.dll"
+    fi
+)
 EOL
 
     LINE=$(grep -n 'extension_dir = "ext"' $1 | cut -d: -f 1)
