@@ -173,7 +173,6 @@ lc-messages-dir                = ${BIN_WIN//\\/\\\\}\\\mysql-5.7\\\share
 lc_messages                    = en_US
 sort_buffer_size               = 16777216
 wait_timeout                   = 3600
-skip-name-resolve
 
 [client]
 default-character-set          = utf8
