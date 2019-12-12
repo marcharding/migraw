@@ -436,9 +436,9 @@ function install {
     # apc
     wget -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
     wget -q -O $DOWNLOAD/php-apcu-7.0.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.15/php_apcu-5.1.15-7.0-ts-vc14-x64.zip
-    wget -q -O $DOWNLOAD/php-apcu-7.1.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.1-ts-vc14-x64.zip
-    wget -q -O $DOWNLOAD/php-apcu-7.2.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.2-ts-vc15-x64.zip
-    wget -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.17-7.3-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.1.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.1-ts-vc14-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.2.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.2-ts-vc15-x64.zip
+    wget -q -O $DOWNLOAD/php-apcu-7.3.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.3-ts-vc15-x64.zip
     wget -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
 
     # blackfire
