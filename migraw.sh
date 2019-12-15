@@ -52,6 +52,26 @@ EOL
 echo "$DELEGATES" >> $1
 }
 
+function blackfire_config {
+    mkdir -p $CONF/blackfire
+read -r -d "" BLACKFIRE_SERVER <<EOL
+[blackfire]
+server-id=YOURSERVERID
+server-token=YOURSERVERTOKEN
+EOL
+read -r -d "" BLACKFIRE_CLIENT <<EOL
+[blackfire]
+client-id=YOURCLIENTID
+client-token=YOURCLIENTTOKEN
+EOL
+if [ ! -f "$CONF/blackfire/blackfire_agent.ini" ]; then
+    echo "$BLACKFIRE_SERVER" > $CONF/blackfire/blackfire_agent.ini
+fi
+if [ ! -f "$CONF/blackfire/blackfire.ini" ]; then
+    echo "$BLACKFIRE_CLIENT" > $CONF/blackfire/blackfire.ini
+fi
+}
+
 function create_file_php_ini {
     mkdir -p `dirname "$1"`
 
@@ -531,6 +551,24 @@ function install {
 
     unset PHP_VERSION
 
+    # install often used libaries
+    echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} npm install -g yarn\n"
+    spawn_bash "npm install -g yarn"
+    echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} gem install capistrano\n"
+    spawn_bash "gem install capistrano"
+
+    # init blackfire config files
+    mkdir -p $BIN/blackfire/links
+    echo "@echo off" > $BIN/blackfire/links/blackfire.bat
+    echo $($PATH_CONVERT_BIN -w $BIN/blackfire/blackfire.exe)' --config='$($PATH_CONVERT_BIN -w $CONF/blackfire/blackfire.ini)' %* ' >> $BIN/blackfire/links/blackfire.bat
+    echo "@echo off" > $BIN/blackfire/links/blackfire-agent.bat
+    echo $($PATH_CONVERT_BIN -w $BIN/blackfire/blackfire-agent.exe)' --config='$($PATH_CONVERT_BIN -w $CONF/blackfire/blackfire_agent.ini)' %* ' >> $BIN/blackfire/links/blackfire-agent.bat
+    chmod +x $BIN/blackfire/links/blackfire-agent.bat
+    chmod +x $BIN/blackfire/links/blackfire.bat
+    ln -rsf $BIN/blackfire/links/blackfire-agent.bat $BIN/blackfire/links/blackfire-agent
+    ln -rsf $BIN/blackfire/links/blackfire.bat $BIN/blackfire/links/blackfire
+    blackfire_config
+
     # set owner for binaries, cygwin/wsl somehow messes this up sometimes
     takeown /R /F $BIN_WIN > /dev/null
     icacls $BIN_WIN /T /Q /C /RESET > /dev/null
@@ -546,7 +584,7 @@ function set_path {
     PATH=$BIN/mysql-5.7/bin:$PATH
     PATH=$BIN/gs950/bin:$PATH
     PATH=$BIN/gs950/lib:$PATH
-    PATH=$BIN/blackfire:$PATH
+    PATH=$BIN/blackfire/links:$PATH
 
     if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
         PATH=$BIN/imagick-6.9.3/bin:$PATH
@@ -987,6 +1025,10 @@ DOWNLOAD_WIN=$($PATH_CONVERT_BIN -w $DOWNLOAD)
 # bin base
 BIN=$SCRIPT_BASE/bin
 BIN_WIN=$($PATH_CONVERT_BIN -w $BIN)
+
+# additional config base
+CONF=$SCRIPT_BASE/conf
+CONF_WIN=$($PATH_CONVERT_BIN -w $CONF)
 
 MIGRAW_YAML=$(find_migraw_yaml)
 if [ "$MIGRAW_YAML" != "" ]; then
