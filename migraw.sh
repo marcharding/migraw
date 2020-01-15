@@ -455,7 +455,8 @@ function install {
     wget -q -O $DOWNLOAD/mysql-5.7.zip https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.28-winx64.zip
 
     # node
-    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.15.3/node-v10.15.3-win-x64.zip
+    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.18.1/node-v10.18.1-win-x64.zip
+    wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.14.1/node-v12.14.1-win-x64.zip
 
     # apc
     wget -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
@@ -520,11 +521,17 @@ function install {
         chmod +x $BIN/mysql-5.7/bin/mysql
     fi
 
-    # node cleanup
-    mv $BIN/node-10/node-v10.15.3-win-x64/* $BIN/node-10
-    rm -rf $BIN/node-10/node-v10.15.3-win-x64
+    # node 10 cleanup
+    mv $BIN/node-10/node-v10.18.1-win-x64/* $BIN/node-10
+    rm -rf $BIN/node-10/node-v10.18.1-win-x64
     ln -rsf $BIN/node-10/node.exe $BIN/node-10/node
     chmod +x $BIN/node-10/node
+
+    # node 12 cleanup
+    mv $BIN/node-12/node-v12.14.1-win-x64/* $BIN/node-12
+    rm -rf $BIN/node-12/node-v12.14.1-win-x64
+    ln -rsf $BIN/node-12/node.exe $BIN/node-12/node
+    chmod +x $BIN/node-12/node
 
     # extract ruby
     for FILENAME in $DOWNLOAD/*.7z
@@ -583,7 +590,7 @@ function set_path {
     PATH=$BIN/apache-2.4/bin:$PATH
     PATH=$BIN/php-$PHP_VERSION:$PATH
     PATH=$BIN/composer:$PATH
-    PATH=$BIN/node-10:$PATH
+    PATH=$BIN/node-$NODE_VERSION:$PATH
     PATH=$BIN/ruby-2.5/bin:$PATH
     PATH=$BIN/mysql-5.7/bin:$PATH
     PATH=$BIN/gs950/bin:$PATH
@@ -760,11 +767,11 @@ EOL
 EOL
 
     read -r -d '' NPM_BAT <<EOL
-        $PATH_CMD /c "$BIN_WIN\node-10\npm.cmd" "\$@"
+        $PATH_CMD /c "$BIN_WIN\node-$NODE_VERSION\npm.cmd" "\$@"
 EOL
 
     read -r -d '' GRUNT_BAT <<EOL
-        $PATH_CMD /c "$BIN_WIN\node-10\grunt.cmd" "\$@"
+        $PATH_CMD /c "$BIN_WIN\node-$NODE_VERSION\grunt.cmd" "\$@"
 EOL
 
     read -r -d '' GEM_BAT <<EOL
@@ -1051,6 +1058,12 @@ fi
 
 MIGRAW_CURRENT_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT)
 MIGRAW_CURRENT_BASE_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT_BASE)
+
+AVAILABLE_NODE_VERSIONS=("10" "12")
+NODE_VERSION=${AVAILABLE_NODE_VERSIONS[-1]}
+if [ -n "$MIGRAW_YAML_config_node" ]; then
+NODE_VERSION=$MIGRAW_YAML_config_node
+fi
 
 AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
