@@ -203,11 +203,25 @@ EOL
 function create_file_virtual_host_conf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
-<VirtualHost *:*>
+<VirtualHost *:80>
 	AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
     DocumentRoot "$MIGRAW_CURRENT_BASE_WINDOWS/$MIGRAW_YAML_document_root"
+    <Directory "$MIGRAW_CURRENT_BASE_WINDOWS/$MIGRAW_YAML_document_root">
+        AllowOverride All
+        Options FollowSymLinks Indexes
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+	AcceptPathInfo On
+    UseCanonicalName Off
+    ServerAlias *
+    DocumentRoot "$MIGRAW_CURRENT_BASE_WINDOWS/$MIGRAW_YAML_document_root"
+    SSLEngine on
+    SSLCertificateFile "$BIN_WIN\\apache-2.4\\conf\\ssl\\server.crt"
+    SSLCertificateKeyFile "$BIN_WIN\\apache-2.4\\conf\\ssl\\server.key"
     <Directory "$MIGRAW_CURRENT_BASE_WINDOWS/$MIGRAW_YAML_document_root">
         AllowOverride All
         Options FollowSymLinks Indexes
@@ -288,6 +302,7 @@ LoadModule rewrite_module $BIN_WIN/apache-2.4/modules/mod_rewrite.so
 LoadModule setenvif_module $BIN_WIN/apache-2.4/modules/mod_setenvif.so
 LoadModule vhost_alias_module $BIN_WIN/apache-2.4/modules/mod_vhost_alias.so
 LoadModule headers_module $BIN_WIN/apache-2.4/modules/mod_headers.so
+LoadModule ssl_module $BIN_WIN/apache-2.4/modules/mod_ssl.so
 
 # ****************************************************************************************************************
 # OTHERS CONFIG
@@ -455,6 +470,7 @@ function install {
     wget -q -O $DOWNLOAD/mysql-5.7.zip https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.28-winx64.zip
 
     # node
+    wget -q -O $DOWNLOAD/node-8.zip https://nodejs.org/dist/v8.9.4/node-v8.9.4-win-x64.zip
     wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.18.1/node-v10.18.1-win-x64.zip
     wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.14.1/node-v12.14.1-win-x64.zip
 
@@ -887,12 +903,11 @@ function apache_start {
         -c "ServerName $MIGRAW_YAML_name" \
         -c "ServerAdmin admin@$MIGRAW_YAML_name" \
         -c "Listen $MIGRAW_YAML_network_ip:80" \
+        -c "Listen $MIGRAW_YAML_network_ip:443" \
         -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
             DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/libeay32.dll)"
-            printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
-            DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/ssleay32.dll)"
             printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
