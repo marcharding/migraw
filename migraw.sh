@@ -893,6 +893,14 @@ function apache_start {
     create_file_httpd_conf $MIGRAW_CURRENT/httpd/httpd.conf
     create_file_virtual_host_conf $MIGRAW_CURRENT/httpd/sites/default.conf
 
+    # ensure the current matching php libaries are used
+    if [ "$PHP_VERSION" == "5.6" ]; then
+        cp -rf {$BIN/php-5.6/libeay32.dll,$BIN/php-5.6/ssleay32.dll} $BIN/apache-2.4/bin
+    fi
+    if [ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "7.4" ]; then
+        cp -rf {$BIN/php-7.1/libeay32.dll,$BIN/php-7.1/ssleay32.dll} $BIN/apache-2.4/bin
+    fi
+
     read -r -d "" BIN_HTTPD_CMD <<EOL
         @echo off
         start /B $($PATH_CONVERT_BIN -w $BIN_HTTPD) \
@@ -908,8 +916,6 @@ function apache_start {
         -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
-            DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/libeay32.dll)"
-            printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
                 DLL_FILENAME="$(basename $DLL_PATH)"
