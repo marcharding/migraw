@@ -597,7 +597,8 @@ function install {
     blackfire_config
 
     # set owner for binaries, cygwin/wsl somehow messes this up sometimes
-    takeown /R /F $BIN_WIN > /dev/null
+    # https://superuser.com/a/813881
+    takeown /F $BIN_WIN /R /D Y > /dev/null
     icacls $BIN_WIN /T /Q /C /RESET > /dev/null
 }
 
