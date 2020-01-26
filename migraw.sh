@@ -1044,7 +1044,7 @@ cat <<EOF
 $(echo -e "${COLOR_CYAN}migraw wsl|cygwin/win64 $VERSION${COLOR_NC}")
 
 Usage:
-  $(echo -e "${COLOR_CYAN}migraw${COLOR_NC}") [$(echo -e "${COLOR_GREEN}command${COLOR_NC}")] [$(echo -e "${COLOR_PURPLE}options${COLOR_NC}")] 
+  $(echo -e "${COLOR_CYAN}migraw${COLOR_NC}") [$(echo -e "${COLOR_GREEN}command${COLOR_NC}")] [$(echo -e "${COLOR_PURPLE}options${COLOR_NC}")]
 
 Options:
   $(echo -e "${COLOR_PURPLE}--debug ${COLOR_NC}")            Show debug information
