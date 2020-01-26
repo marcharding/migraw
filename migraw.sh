@@ -203,6 +203,17 @@ EOL
 function create_file_virtual_host_conf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
+<VirtualHost *:8050>
+    AcceptPathInfo On
+    UseCanonicalName Off
+    ServerAlias *
+    DocumentRoot "$BIN_WIN/adminer"
+    <Directory "$BIN_WIN/adminer">
+        AllowOverride All
+        Options FollowSymLinks Indexes
+    </Directory>
+</VirtualHost>
+
 <VirtualHost *:80>
 	AcceptPathInfo On
     UseCanonicalName Off
@@ -494,7 +505,45 @@ function install {
     wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-74.dll
 
     # ruby
-    wget  -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
+    wget -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
+
+    # adminer
+    mkdir -p $BIN/adminer
+    wget -q -O $BIN/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.7.5/adminer-4.7.5-mysql.php
+    wget -q -O $BIN/adminer/plugin.php https://raw.githubusercontent.com/vrana/adminer/v4.7.5/plugins/plugin.php
+    wget -q -O $BIN/adminer/adminer.css https://raw.githubusercontent.com/decksterr/adminer-theme-dark/master/adminer.css
+read -r -d "" DELEGATES <<EOL
+<?php
+
+error_reporting(0);
+ini_set('display_errors', 0);
+
+\$_GET["server"]  = \$_GET["server"] ?: "127.0.0.1";
+\$_GET["username"] = \$_GET["username"]  ?: "root";
+\$_GET["db"] = \$_GET["db"]  ?: "application";
+
+class AdminerLoginPasswordLess {
+	function login(\$login, \$password) {
+		return true;
+	}
+	function loginForm() {
+		if(!\$_GET["noautologin"]){
+			echo "<script ".nonce().">setTimeout(function(){ document.querySelectorAll('[value^=Login]').item(0).click() }, 250);</script>";
+		}
+	}
+}
+
+function adminer_object() {
+    include __DIR__ . '/plugin.php';
+	return new AdminerPlugin([
+		new AdminerLoginPasswordLess(),
+    ]);
+}
+
+include 'adminer.php';
+
+EOL
+echo "$DELEGATES" >> $BIN/adminer/index.php
 
     # apache
     FILENAME=chocolatey-apache-2.4.nupkg
@@ -913,6 +962,7 @@ function apache_start {
         -c "ServerAdmin admin@$MIGRAW_YAML_name" \
         -c "Listen $MIGRAW_YAML_network_ip:80" \
         -c "Listen $MIGRAW_YAML_network_ip:443" \
+        -c "Listen $MIGRAW_YAML_network_ip:8050" \
         -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
