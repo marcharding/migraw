@@ -1192,7 +1192,8 @@ case $ACTION in
         echo -e "\n${COLOR_CYAN}Starting migraw${COLOR_NC}\n"
         # https://askubuntu.com/a/357222
         execute_with_progress_spinner "start"
-        for i in "${MIGRAW_YAML_exec[@]}"
+        INIT_SCRIPTS=("${MIGRAW_YAML_start[@]}" "${MIGRAW_YAML_init[@]}" "${MIGRAW_YAML_exec[@]}")
+        for i in "${INIT_SCRIPTS[@]}"
           do :
           echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} $i\n"
           spawn_bash "$i"
@@ -1201,7 +1202,13 @@ case $ACTION in
     destroy)
         ;&
     stop)
+        set_path
         echo -e "\n${COLOR_CYAN}Stoping migraw.${COLOR_NC}\n"
+        for i in "${MIGRAW_YAML_shutdown[@]}"
+          do :
+          echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} $i\n"
+          spawn_bash "$i"
+        done
         execute_with_progress_spinner "stop"
         clean
         ;;
