@@ -507,6 +507,9 @@ function install {
     # ruby
     wget -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
 
+    # ngrok
+    wget -q -O $DOWNLOAD/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip
+
     # adminer
     mkdir -p $BIN/adminer
     wget -q -O $BIN/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.7.5/adminer-4.7.5-mysql.php
