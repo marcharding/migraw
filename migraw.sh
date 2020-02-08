@@ -775,7 +775,8 @@ function stop {
     fi
 }
 
-function spawn_bash {
+function prepare_shell {
+
     read -r -d "" PHP <<EOL
         ARGS=""
         CMD_UUID=\$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
@@ -864,6 +865,12 @@ EOL
     echo "$GEM_BAT" > $MIGRAW_CURRENT/bin/gem && chmod +x $MIGRAW_CURRENT/bin/gem
     echo "$BUNDLER_BAT" > $MIGRAW_CURRENT/bin/bundler && chmod +x $MIGRAW_CURRENT/bin/bundler
     echo "$CAP_BAT" > $MIGRAW_CURRENT/bin/cap && chmod +x $MIGRAW_CURRENT/bin/cap
+
+}
+
+function spawn_bash {
+
+    prepare_shell
 
     PROMPT="\n${COLOR_PURPLE}\t ${MIGRAW_USER}@${MIGRAW_YAML_name}${COLOR_NC} [${COLOR_RED}\w${COLOR_NC}]${COLOR_NC}\n€${COLOR_NC} "
 
