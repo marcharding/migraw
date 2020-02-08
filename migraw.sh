@@ -868,8 +868,23 @@ EOL
 
 }
 
-function spawn_bash {
+function spawn_shell {
+    set_path
 
+    prepare_shell
+
+    if [ -n "$ZSH_NAME" ]; then
+        spawn_zsh $1
+    elif [ -n "$BASH_VERSION" ]; then
+        spawn_bash $1
+    else
+        # Error
+        echo "No suitable shell found."
+    fi
+
+}
+
+function spawn_bash {
     prepare_shell
 
     PROMPT="\n${COLOR_PURPLE}\t ${MIGRAW_USER}@${MIGRAW_YAML_name}${COLOR_NC} [${COLOR_RED}\w${COLOR_NC}]${COLOR_NC}\n€${COLOR_NC} "
@@ -878,6 +893,28 @@ function spawn_bash {
         env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME SystemDrive=$SystemDrive CYGWIN=$CYGWIN HOME=$HOME bash -c "$1"
     else
         env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME SystemDrive=$SystemDrive CYGWIN=$CYGWIN HOME=$HOME bash --rcfile <(echo ' PS1="'$(echo $PROMPT)' "')
+    fi
+}
+
+function spawn_zsh {
+    prepare_shell
+
+    if [ "$1" != "" ]; then
+        env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME SystemDrive=$SystemDrive CYGWIN=$CYGWIN HOME=$HOME zsh -c "$1"
+    else
+        mkdir -p $MIGRAW_CURRENT/shell
+        cp -f ~/.zshrc $MIGRAW_CURRENT/shell/.zshrc
+        read -r -d "" ZSHRC <<EOL
+    function prompt_migraw_env() {
+        p10k segment -f 208 -i '' -t '${MIGRAW_YAML_name}'
+    };
+POWERLEVEL9K_DIR_FOREGROUND=208
+POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=208
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=("\${POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS[@]}" "migraw_env")
+EOL
+        echo "" >> $MIGRAW_CURRENT/shell/.zshrc
+        echo "$ZSHRC" >> $MIGRAW_CURRENT/shell/.zshrc
+        env -i ZDOTDIR=$MIGRAW_CURRENT/shell WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME SystemDrive=$SystemDrive CYGWIN=$CYGWIN HOME=$HOME zsh
     fi
 }
 
@@ -1180,9 +1217,17 @@ case $ACTION in
         echo -e "\n${COLOR_CYAN}Unpause migraw.${COLOR_NC}\n"
         execute_with_progress_spinner "unpause"
         ;;
+    shell)
+        set_path
+        spawn_shell "$2"
+        ;;
     bash)
         set_path
         spawn_bash "$2"
+        ;;
+    zsh)
+        set_path
+        spawn_zsh "$2"
         ;;
     update)
         ;&
@@ -1215,5 +1260,8 @@ case $ACTION in
         ;;
 esac
 
-echo -n -e '\e[32;46m'
-tput init
+# make problems with zash?
+if [ ! -n "$ZSH_NAME" ]; then
+    echo -n -e '\e[32;46m'
+    tput init
+fi
