@@ -1043,15 +1043,15 @@ function execute_with_progress_spinner {
     if [ "$OPTION" == "debug" ]; then
         $1
     else
-        echo -ne "${COLOR_BROWN}Working "
-        (while :; do for c in / - \\ \|; do printf '[%s]' "$c"; sleep 0.1; printf '\b\b\b'; done; done) &
+        echo -ne "${COLOR_BROWN}Working ${COLOR_NC}"
+        (while :; do for c in / - \\ \|; do printf "${COLOR_BROWN}[%s]${COLOR_NC}" "$c"; sleep 0.1; printf '\b\b\b'; done; done) &
         touch $BASE/migraw.log
         SPINNER=$!
         {
             $1 > $BASE/migraw.log 2>&1
         }
         {
-            echo -e "${COLOR_NC}\r${COLOR_PURPLE}Finished.         ";
+            echo -e "${COLOR_NC}\r${COLOR_PURPLE}Finished.         ${COLOR_NC}";
             kill $SPINNER && wait $SPINNER;
         } 2>/dev/null
     fi
