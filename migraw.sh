@@ -1261,9 +1261,3 @@ case $ACTION in
         usage
         ;;
 esac
-
-# make problems with zash?
-if [ ! -n "$ZSH_NAME" ]; then
-    echo -n -e '\e[32;46m'
-    tput init
-fi
