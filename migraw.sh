@@ -1005,21 +1005,10 @@ function apache_start {
         -c "Include $MIGRAW_CURRENT_WINDOWS\\httpd\\sites\\*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT_WINDOWS\\httpd\\log\\error.log" \
         $(
-            if [ "$PHP_VERSION" == "5.6" ]; then
-                DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-5.6/libeay32.dll)"
-                printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
-                DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-5.6/ssleay32.dll)"
-                printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
-            else
-                DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/libeay32.dll)"
-                printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
-                DLL_WINDOWS_PATH="$($PATH_CONVERT_BIN -w $BIN/php-7.1/ssleay32.dll)"
-                printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
-            fi
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
                 DLL_FILENAME="$(basename $DLL_PATH)"
-                if  [[ $DLL_FILENAME == php* ]];
+                if  [[ $DLL_FILENAME == php* || $DLL_FILENAME == 'libeay32.dll' || $DLL_FILENAME == 'ssleay32.dll' ]];
                 then
                     continue;
                 fi
