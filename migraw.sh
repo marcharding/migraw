@@ -1028,7 +1028,7 @@ function apache_start {
 EOL
 
 # somehow executing it as a bat script with cmd.exe is the only way to ensure everything works most of the time
-# executing directly via interop results in ddls not loaded sometimes (more often as when using this approach)
+# executing directly via interop (when using wsl 1) results in ddls not loaded sometimes (more often as when using this approach)
 echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.bat
 $PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/httpd/exec.bat)
 
