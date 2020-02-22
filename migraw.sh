@@ -951,7 +951,7 @@ function mysql_start {
     fi
 
     read -r -d "" BIN_MYSQL_CMD <<EOL
-    $BIN_MYSQLD \
+    start /B $($PATH_CONVERT_BIN -w $BIN_MYSQLD) \
         --defaults-file="$MYSQL_BASE_PATH_WINDOWS\\my.cnf" \
         --log_error="$MYSQL_BASE_PATH_WINDOWS\\log\\log.err" \
         --pid_file="$MYSQL_BASE_PATH_WINDOWS\\mysql.pid" \
@@ -960,8 +960,8 @@ function mysql_start {
         --datadir="$MYSQL_BASE_PATH_WINDOWS\\data" &
 EOL
 
-echo "$BIN_MYSQL_CMD" | tr -s ' ' > $MIGRAW_CURRENT/mysql/exec.sh
-source $MIGRAW_CURRENT/mysql/exec.sh
+    echo "$BIN_MYSQL_CMD" | tr -s ' ' > $MIGRAW_CURRENT/mysql/exec.bat
+    $PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/mysql/exec.bat)
 
     counter=1
     while ! $BIN_MYSQL -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
