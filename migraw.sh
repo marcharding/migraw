@@ -1102,6 +1102,7 @@ Commands:
   $(echo -e "${COLOR_GREEN}bash${COLOR_NC}")                Spwans a bash within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}bash [cmd]${COLOR_NC}")          Runs [cmd] within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
+  $(echo -e "${COLOR_GREEN}selfupdate${COLOR_NC}")          Update migraw
   $(echo -e "${COLOR_GREEN}info${COLOR_NC}")                Display info and help
 EOF
 
@@ -1257,6 +1258,8 @@ case $ACTION in
     status)
         echo -e "\n${COLOR_CYAN}Current status [TODO].${COLOR_NC}\n"
         ;;
+    self-update)
+        ;&
     selfupdate)
         echo -e "\n${COLOR_CYAN}Trying to update migraw.${COLOR_NC}\n"
         self_update
