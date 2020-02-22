@@ -504,6 +504,13 @@ function install {
     wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.3.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-73.dll
     wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-74.dll
 
+    # xdebug
+    wget -q -O $DOWNLOAD/php_xdebug-2.5.5-5.6-vc11-x86_64.dll https://xdebug.org/files/php_xdebug-2.5.5-5.6-vc11-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-2.6.1-7.0-vc14-x86_64.dll https://xdebug.org/files/php_xdebug-2.6.1-7.0-vc14-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-2.9.2-7.1-vc14-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.2-7.1-vc14-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-2.9.2-7.3-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.2-7.3-vc15-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-2.9.2-7.4-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.2-7.4-vc15-x86_64.dll
+
     # ruby
     wget -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
 
@@ -625,7 +632,7 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
     do
         cp -rf $(find $BIN/php-imagick-$PHP_VERSION -name "php_*.dll") $BIN/php-$PHP_VERSION/ext
         cp -rf $(find $BIN/php-apcu-$PHP_VERSION -name "php_*.dll") $BIN/php-$PHP_VERSION/ext
-        cp -rf $DOWNLOAD/blackfire-php-windows_x64-php-$PHP_VERSION.dll $BIN/php-$PHP_VERSION/ext/php_blackfire.dll
+        cp -rf $DOWNLOAD/php_xdebug-*-$PHP_VERSION-vc*-x86_64.dll $BIN/php-$PHP_VERSION/ext/php_xdebug.dll
     done
 
     unset PHP_VERSION
