@@ -363,6 +363,49 @@ Setenv DEVELOPMENT 1
 EOL
 }
 
+function migraw_init {
+    if [ ! -f  $MIGRAW_CURRENT_BASE/migraw.yml ]; then
+    cat > $MIGRAW_CURRENT_BASE/migraw.yml << EOL
+name: migraw.default
+network:
+	ip: 127.0.0.1
+	host: migraw.default
+document_root: web
+config:
+	php: ${AVAILABLE_PHP_VERSIONS[-1]}
+	apache: true
+	mysql: true
+	mailhog: true
+exec:
+	- ./init.sh
+shutdown:
+	- ./shutdown.sh
+EOL
+    fi
+
+    # see https://stackoverflow.com/questions/5750450/how-can-i-print-each-command-before-executing
+    if [ ! -f  $MIGRAW_CURRENT_BASE/init.sh ]; then
+    cat > $MIGRAW_CURRENT_BASE/init.sh << EOL
+# set -o xtrace
+trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: $BASH_COMMAND" && echo -e "\e[0m"' DEBUG
+composer install
+npm install
+mysql -h127.0.0.1 -uroot -e "CREATE DATABASE application"
+mysql -h127.0.0.1 -uroot application < application.sql
+trap - DEBUG
+EOL
+    fi
+
+    if [ ! -f  $MIGRAW_CURRENT_BASE/destroy.sh ]; then
+    cat > $MIGRAW_CURRENT_BASE/destroy.sh << EOL
+# set -o xtrace
+trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: $BASH_COMMAND" && echo -e "\e[0m"' DEBUG
+mysqldump -h127.0.0.1  --opt -uroot application -r application_$(date '+%Y%m%d_%H%M%S').sql
+trap - DEBUG
+EOL
+    fi
+}
+
 function find_migraw_yaml {
     x=`pwd`;
     while [ "$x" != "/" ]; do
@@ -1103,6 +1146,7 @@ Commands:
   $(echo -e "${COLOR_GREEN}bash [cmd]${COLOR_NC}")          Runs [cmd] within the current migraw enviroment.
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
   $(echo -e "${COLOR_GREEN}selfupdate${COLOR_NC}")          Update migraw
+  $(echo -e "${COLOR_GREEN}init${COLOR_NC}")                Update create demo migraw.yml, init.sh and destroy.sh
   $(echo -e "${COLOR_GREEN}info${COLOR_NC}")                Display info and help
 EOF
 
@@ -1263,6 +1307,9 @@ case $ACTION in
     selfupdate)
         echo -e "\n${COLOR_CYAN}Trying to update migraw.${COLOR_NC}\n"
         self_update
+        ;;
+    init)
+        migraw_init
         ;;
     info)
         info
