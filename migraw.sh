@@ -75,6 +75,12 @@ fi
 function create_file_php_ini {
     mkdir -p `dirname "$1"`
 
+    # if the php.ini option was set, use that
+    if [[ "$MIGRAW_YAML_config_php_ini" != "" && "$MIGRAW_YAML_config_php_ini" != "false"  ]]; then
+        ln -fP $MIGRAW_YAML_config_php_ini $1
+        return 0;
+    fi
+
     cp -rf $BIN/php-$PHP_VERSION/php.ini-production $1
 
     sed -i "s|max_execution_time = 30|max_execution_time = 720|g" $1
@@ -373,6 +379,7 @@ network:
 document_root: web
 config:
 	php: ${AVAILABLE_PHP_VERSIONS[-1]}
+	php_ini: false
 	apache: true
 	mysql: true
 	mailhog: true
