@@ -379,7 +379,7 @@ config:
 exec:
 	- ./init.sh
 shutdown:
-	- ./shutdown.sh
+	- ./destroy.sh
 EOL
     fi
 
