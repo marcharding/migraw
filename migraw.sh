@@ -551,6 +551,9 @@ function install {
     # ngrok
     wget -q -O $DOWNLOAD/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip
 
+    # winpty
+    wget -q -O $DOWNLOAD/winpty.tar.gz https://github.com/rprichard/winpty/releases/download/0.4.3/winpty-0.4.3-cygwin-2.8.0-x64.tar.gz
+
     # adminer
     mkdir -p $BIN/adminer
     wget -q -O $BIN/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.7.5/adminer-4.7.5-mysql.php
@@ -656,6 +659,11 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
 
     # extract ghostscript
     7z -aoa x $DOWNLOAD/gs950.exe -o$BIN/gs950
+
+    # extract winpty
+    mkdir -o $BIN/winpty
+    tar -zxf $DOWNLOAD/winpty.tar.gz --directory $BIN/winpty
+    cp -rf $BIN/winpty/winpty-0.4.3-cygwin-2.8.0-x64/bin/* $BIN/winpty
 
     # add custom delegate to make pdf conversion work, see https://stackoverflow.com/a/32163666
     create_delegates_for_im $BIN/imagick-6.9.3/bin/delegates.xml
