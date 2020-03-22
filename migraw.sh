@@ -849,7 +849,7 @@ function prepare_shell {
         CMD_FILE="$MIGRAW_CURRENT""/php/"\$CMD_UUID.bat
         CMD_FILE_WINDOWS=\$($PATH_CONVERT_BIN -w "\$CMD_FILE")
         echo "@echo off" > \$CMD_FILE
-        echo "$BIN_WIN\winpty\winpty.exe $BIN_WIN\php-$PHP_VERSION\php.exe"' -c "$MIGRAW_CURRENT_WINDOWS\\php\\php.ini" -d "memory_limit=-1" ' \$ARGS >> \$CMD_FILE
+        echo "$BIN_WIN\php-$PHP_VERSION\php.exe"' -c "$MIGRAW_CURRENT_WINDOWS\\php\\php.ini" -d "memory_limit=-1" ' \$ARGS >> \$CMD_FILE
         echo "EXIT 0" >> \$CMD_FILE
         # create path enviroment
 
@@ -865,13 +865,13 @@ function prepare_shell {
 
         WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
 
-        $PATH_CMD /c \$CMD_FILE_WINDOWS
+        $BIN/winpty/winpty.exe $PATH_CMD /c \$CMD_FILE_WINDOWS
         /bin/rm -rf \$CMD_FILE
 EOL
 
     read -r -d '' PHP_BAT <<EOL
         @echo off
-        $BIN_WIN\php-$PHP_VERSION\php.exe -c "$PHPRC\\php.ini" -d "memory_limit=-1" %*
+        $BIN_WIN\winpty\winpty.exe $BIN_WIN\php-$PHP_VERSION\php.exe -c "$PHPRC\\php.ini" -d "memory_limit=-1" %*
         EXIT 0
 EOL
 
@@ -1201,10 +1201,10 @@ BIN=$SCRIPT_BASE/bin
 # determine cmd.exe path and path convert binary
 if [[ `uname -s` == CYGWIN* ]]; then
     PATH_CONVERT_BIN="/usr/bin/cygpath"
-    PATH_CMD="$BIN/winpty/winpty.exe cmd.exe"
+    PATH_CMD="cmd.exe"
 else
     PATH_CONVERT_BIN="/bin/wslpath"
-    PATH_CMD="$BIN_WIN\winpty\winpty.exe cmd.exe"
+    PATH_CMD="cmd.exe"
 fi
 
 WINDOWS_BASE_PATH_WIN=$(cmd.exe /c "echo %windir%")
