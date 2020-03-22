@@ -4,22 +4,6 @@ VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
 UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/bash-win64/migraw.sh";
 
-if [[ `uname -s` == CYGWIN* ]]; then
-    PATH_CONVERT_BIN="/usr/bin/cygpath"
-    PATH_CMD="cmd.exe"
-    if (which "ansicon.exe" 2>/dev/null 1>/dev/null)
-    then
-        PATH_CMD="ansicon.exe cmd.exe"
-    fi
-else
-    PATH_CONVERT_BIN="/bin/wslpath"
-    PATH_CMD="cmd.exe"
-fi
-
-WINDOWS_BASE_PATH_WIN=$(cmd.exe /c "echo %windir%")
-WINDOWS_BASE_PATH_WIN=$(tr -dc '[[:print:]]' <<< "$WINDOWS_BASE_PATH_WIN")
-WINDOWS_BASE_PATH=$($PATH_CONVERT_BIN -u $WINDOWS_BASE_PATH_WIN)
-
 # colors
 COLOR_NC='\e[0m'
 COLOR_WHITE='\e[1;37m'
@@ -1202,10 +1186,31 @@ SCRIPT_BASE="$(dirname "$(readlink -f "$0")")"/data
 
 # download dir
 DOWNLOAD=$SCRIPT_BASE/download
-DOWNLOAD_WIN=$($PATH_CONVERT_BIN -w $DOWNLOAD)
 
 # bin base
 BIN=$SCRIPT_BASE/bin
+
+# determine cmd.exe path and path convert binary
+if [[ `uname -s` == CYGWIN* ]]; then
+    PATH_CONVERT_BIN="/usr/bin/cygpath"
+    PATH_CMD="cmd.exe"
+    if (which "ansicon.exe" 2>/dev/null 1>/dev/null)
+    then
+        PATH_CMD="ansicon.exe cmd.exe"
+    fi
+else
+    PATH_CONVERT_BIN="/bin/wslpath"
+    PATH_CMD="cmd.exe"
+fi
+
+WINDOWS_BASE_PATH_WIN=$(cmd.exe /c "echo %windir%")
+WINDOWS_BASE_PATH_WIN=$(tr -dc '[[:print:]]' <<< "$WINDOWS_BASE_PATH_WIN")
+WINDOWS_BASE_PATH=$($PATH_CONVERT_BIN -u $WINDOWS_BASE_PATH_WIN)
+
+# download dir windows
+DOWNLOAD_WIN=$($PATH_CONVERT_BIN -w $DOWNLOAD)
+
+# bin base windows
 BIN_WIN=$($PATH_CONVERT_BIN -w $BIN)
 
 # additional config base
