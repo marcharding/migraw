@@ -849,7 +849,7 @@ function prepare_shell {
         CMD_FILE="$MIGRAW_CURRENT""/php/"\$CMD_UUID.bat
         CMD_FILE_WINDOWS=\$($PATH_CONVERT_BIN -w "\$CMD_FILE")
         echo "@echo off" > \$CMD_FILE
-        echo "$BIN_WIN\php-$PHP_VERSION\php.exe"' -c "$MIGRAW_CURRENT_WINDOWS\\php\\php.ini" -d "memory_limit=-1" ' \$ARGS >> \$CMD_FILE
+        echo "$BIN_WIN\winpty\winpty.exe $BIN_WIN\php-$PHP_VERSION\php.exe"' -c "$MIGRAW_CURRENT_WINDOWS\\php\\php.ini" -d "memory_limit=-1" ' \$ARGS >> \$CMD_FILE
         echo "EXIT 0" >> \$CMD_FILE
         # create path enviroment
 
@@ -1201,10 +1201,10 @@ BIN=$SCRIPT_BASE/bin
 # determine cmd.exe path and path convert binary
 if [[ `uname -s` == CYGWIN* ]]; then
     PATH_CONVERT_BIN="/usr/bin/cygpath"
-    PATH_CMD="cmd.exe"
+    PATH_CMD="$BIN/winpty/winpty.exe cmd.exe"
 else
     PATH_CONVERT_BIN="/bin/wslpath"
-    PATH_CMD="cmd.exe"
+    PATH_CMD="$BIN_WIN\winpty\winpty.exe cmd.exe"
 fi
 
 WINDOWS_BASE_PATH_WIN=$(cmd.exe /c "echo %windir%")
