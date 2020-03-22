@@ -1008,7 +1008,8 @@ function mysql_start {
     fi
 
     read -r -d "" BIN_MYSQL_CMD <<EOL
-    start /B $($PATH_CONVERT_BIN -w $BIN_MYSQLD) \
+        @echo off
+        start /B $($PATH_CONVERT_BIN -w $BIN_MYSQLD) \
         --defaults-file="$MYSQL_BASE_PATH_WINDOWS\\my.cnf" \
         --log_error="$MYSQL_BASE_PATH_WINDOWS\\log\\log.err" \
         --pid_file="$MYSQL_BASE_PATH_WINDOWS\\mysql.pid" \
