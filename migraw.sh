@@ -1202,10 +1202,6 @@ BIN=$SCRIPT_BASE/bin
 if [[ `uname -s` == CYGWIN* ]]; then
     PATH_CONVERT_BIN="/usr/bin/cygpath"
     PATH_CMD="cmd.exe"
-    if (which "ansicon.exe" 2>/dev/null 1>/dev/null)
-    then
-        PATH_CMD="ansicon.exe cmd.exe"
-    fi
 else
     PATH_CONVERT_BIN="/bin/wslpath"
     PATH_CMD="cmd.exe"
