@@ -723,11 +723,12 @@ function set_path {
         PATH=$BIN/imagick-7.0.7/bin:$PATH
     fi
 
-    PATH=$MIGRAW_CURRENT/gem/bin:$PATH
-    PATH=$MIGRAW_CURRENT/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/vendor/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/node_modules/.bin:$PATH
+
+    PATH=$MIGRAW_CURRENT/gem/bin:$PATH
+    PATH=$MIGRAW_CURRENT/bin:$PATH
 
     SystemDrive=C:
 
@@ -865,13 +866,13 @@ function prepare_shell {
 
         WSLENV=PATH/l:PHP_INI_SCAN_DIR/p
 
-        $BIN/winpty/winpty.exe $PATH_CMD /c \$CMD_FILE_WINDOWS
+        $PATH_CMD /c \$CMD_FILE_WINDOWS
         /bin/rm -rf \$CMD_FILE
 EOL
 
     read -r -d '' PHP_BAT <<EOL
         @echo off
-        $BIN_WIN\winpty\winpty.exe $BIN_WIN\php-$PHP_VERSION\php.exe -c "$PHPRC\\php.ini" -d "memory_limit=-1" %*
+        $BIN_WIN\php-$PHP_VERSION\php.exe -c "$PHPRC\\php.ini" -d "memory_limit=-1" %*
         EXIT 0
 EOL
 
