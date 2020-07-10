@@ -675,6 +675,7 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
         cp -rf $(find $BIN/php-imagick-$PHP_VERSION -name "php_*.dll") $BIN/php-$PHP_VERSION/ext
         cp -rf $(find $BIN/php-apcu-$PHP_VERSION -name "php_*.dll") $BIN/php-$PHP_VERSION/ext
         cp -rf $DOWNLOAD/php_xdebug-*-$PHP_VERSION-vc*-x86_64.dll $BIN/php-$PHP_VERSION/ext/php_xdebug.dll
+        cp -rf $DOWNLOAD/blackfire-php-windows_x64-php-$PHP_VERSION.dll $BIN/php-$PHP_VERSION/ext/php_blackfire.dll
     done
 
     unset PHP_VERSION
