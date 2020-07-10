@@ -977,7 +977,7 @@ function mailhog_start {
     fi
     mkdir -p $MIGRAW_CURRENT/mailhog/log
     chmod +x $BIN/MailHog_windows_amd64.exe
-    $BIN/MailHog_windows_amd64.exe > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
+    cygstart --hide $BIN/MailHog_windows_amd64.exe > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
 }
 
 function mysql_start {
@@ -1012,7 +1012,7 @@ function mysql_start {
 EOL
 
     echo "$BIN_MYSQL_CMD" | tr -s ' ' > $MIGRAW_CURRENT/mysql/exec.bat
-    $PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/mysql/exec.bat)
+    cygstart --hide $PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/mysql/exec.bat)
 
     counter=1
     while ! $BIN_MYSQL -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
@@ -1074,7 +1074,7 @@ EOL
 # somehow executing it as a bat script with cmd.exe is the only way to ensure everything works most of the time
 # executing directly via interop (when using wsl 1) results in ddls not loaded sometimes (more often as when using this approach)
 echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/exec.bat
-$PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/httpd/exec.bat)
+cygstart --hide $PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/httpd/exec.bat)
 
 }
 
