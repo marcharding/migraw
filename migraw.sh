@@ -491,7 +491,7 @@ function install {
             wget -q -O $DOWNLOAD/php-7.1.zip https://windows.php.net/downloads/releases/archives/php-7.1.33-Win32-VC14-x64.zip
             continue
         fi
-        wget -q -O $DOWNLOAD/php-$PHP_VERSION.zip https://windows.php.net$(curl --silent https://windows.php.net/downloads/releases/latest/ |  grep -izoP '<a href="\K.*?php-'"$PHP_VERSION"'-Win32-VC[0-9][0-9]-x64[^"]+' | tr -d '\0')
+        wget -q -O $DOWNLOAD/php-$PHP_VERSION.zip https://windows.php.net$(curl --silent https://windows.php.net/downloads/releases/latest/ |  grep -izoP '<a href="\K.*?php-'"$PHP_VERSION"'-Win32-V[CS][0-9][0-9]-x64[^"]+' | tr -d '\0')
     done
 
     # imagick
@@ -528,15 +528,17 @@ function install {
     wget -q -O $DOWNLOAD/php-apcu-7.4.zip https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip
 
     # blackfire
-    wget -q -O $DOWNLOAD/blackfire.zip https://packages.blackfire.io/binaries/blackfire-agent/1.30.2/blackfire-agent-windows_amd64.zip
+    wget -q -O $DOWNLOAD/blackfire.zip https://packages.blackfire.io/binaries/blackfire-agent/1.48.1/blackfire-agent-windows_amd64.zip
 
     # blackfire modules
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-5.6.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-56.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.0.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-70.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.1.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-71.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.2.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-72.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.3.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-73.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.29.4/blackfire-php-windows_x64-php-74.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-5.6.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-56.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.0.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-70.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.1.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-71.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.2.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-72.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.3.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-73.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-74.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-74.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-80.dll
 
     # xdebug
     wget -q -O $DOWNLOAD/php_xdebug-2.5.5-5.6-vc11-x86_64.dll https://xdebug.org/files/php_xdebug-2.5.5-5.6-vc11-x86_64.dll
@@ -1247,7 +1249,7 @@ if [ -n "$MIGRAW_YAML_config_node" ]; then
 NODE_VERSION=$MIGRAW_YAML_config_node
 fi
 
-AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4")
+AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 PHP_VERSION=$MIGRAW_YAML_config_php
 
