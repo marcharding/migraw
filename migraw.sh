@@ -1221,6 +1221,14 @@ EOF
 
 }
 
+function is_admin
+{
+    net session > /dev/null 2>&1
+    if [ $? -ne 0 ]; then     echo -e "\n${COLOR_RED}!!! Migraw is not run with elevated privileges, symlinks may not work !!!${COLOR_NC}"; fi;
+}
+
+is_admin
+
 ACTION=$1
 
 OPTION="${2//-}"
