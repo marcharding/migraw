@@ -511,7 +511,10 @@ function install {
     wget -q -O $BIN/MailHog_windows_amd64.exe https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_windows_amd64.exe
 
     # mysql
-    wget -q -O $DOWNLOAD/mysql-5.7.zip https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.28-winx64.zip
+    wget -q -O $DOWNLOAD/mysql-5.7.zip https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.31-winx64.zip
+
+    # mariadb
+    wget -q -O $DOWNLOAD/mariadb-10.3.zip https://archive.mariadb.org/mariadb-10.3.27/winx64-packages/mariadb-10.3.27-winx64.zip
 
     # node
     wget -q -O $DOWNLOAD/node-8.zip https://nodejs.org/dist/v8.9.4/node-v8.9.4-win-x64.zip
@@ -614,12 +617,20 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
     done
 
     # mysql cleanup
-    mv $BIN/mysql-5.7/mysql-5.7.28-winx64/* $BIN/mysql-5.7
-    rm -rf $BIN/mysql-5.7/mysql-5.7.28-winx64
+    mv $BIN/mysql-5.7/mysql-5.7.31-winx64/* $BIN/mysql-5.7
+    rm -rf $BIN/mysql-5.7/mysql-5.7.31-winx64
+
+    # mariadb cleanup
+    mv $BIN/mariadb-10.3/mariadb-10.3.27-winx64/* $BIN/mariadb-10.3
+    rm -rf $BIN/mariadb-10.3/mariadb-10.3.27-winx64
 
     # mysql
     ln -rsf $BIN/mysql-5.7/bin/mysql.exe $BIN/mysql-5.7/bin/mysql
     chmod +x $BIN/mysql-5.7/bin/mysql
+
+    # mariadb
+    ln -rsf $BIN/mariadb-10.3/bin/mysql.exe $BIN/mariadb-10.3/bin/mysql
+    chmod +x $BIN/mariadb-10.3/bin/mysql
 
     # check if mysql alias is working, if not, use the bat/shell script wrapper method
     if ($BIN/mysql-5.7/bin/mysql -v 2>&1 | grep -q "Invalid argument")
@@ -629,6 +640,16 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
         echo "$PATH_CMD /c"' "'$($PATH_CONVERT_BIN -w $BIN/mysql-5.7/bin/mysql.bat)' "''"$@"' > $BIN/mysql-5.7/bin/mysql
         chmod +x $BIN/mysql-5.7/bin/mysql.bat
         chmod +x $BIN/mysql-5.7/bin/mysql
+    fi
+
+    # check if mysql alias is working, if not, use the bat/shell script wrapper method
+    if ($BIN/mariadb-10.3/bin/mysql -v 2>&1 | grep -q "Invalid argument")
+    then
+        rm -rf $BIN/mariadb-10.3/bin/mysql
+        echo $($PATH_CONVERT_BIN -w $BIN/mariadb-10.3/bin/mysql.exe)' "%*" ' > $BIN/mariadb-10.3/bin/mysql.bat
+        echo "$PATH_CMD /c"' "'$($PATH_CONVERT_BIN -w $BIN/mariadb-10.3/bin/mysql.bat)' "''"$@"' > $BIN/mariadb-10.3/bin/mysql
+        chmod +x $BIN/mariadb-10.3/bin/mysql.bat
+        chmod +x $BIN/mariadb-10.3/bin/mysql
     fi
 
     # node 10 cleanup
@@ -709,7 +730,15 @@ function set_path {
     PATH=$BIN/composer:$PATH
     PATH=$BIN/node-$NODE_VERSION:$PATH
     PATH=$BIN/ruby-2.5/bin:$PATH
-    PATH=$BIN/mysql-5.7/bin:$PATH
+
+    if [ "$MIGRAW_YAML_config_mysql" == "true" ]; then
+        PATH=$BIN/mysql-5.7/bin:$PATH
+    fi
+
+    if [ "$MIGRAW_YAML_config_mariadb" == "true" ]; then
+        PATH=$BIN/mariadb-10.3/bin:$PATH
+    fi
+
     PATH=$BIN/gs950/bin:$PATH
     PATH=$BIN/gs950/lib:$PATH
     PATH=$BIN/blackfire/links:$PATH
@@ -976,16 +1005,29 @@ function mailhog_start {
     fi
     mkdir -p $MIGRAW_CURRENT/mailhog/log
     chmod +x $BIN/MailHog_windows_amd64.exe
-    cygstart --hide $BIN/MailHog_windows_amd64.exe > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
+    $BIN/MailHog_windows_amd64.exe > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
 }
 
 function mysql_start {
-    if [ "$MIGRAW_YAML_config_mysql" != "true" ]; then
+
+    DATABASE=""
+
+    if [ "$MIGRAW_YAML_config_mysql" == "true" ]; then
+        DATABASE="mysql-5.7"
+    fi
+
+    if [ "$MIGRAW_YAML_config_mariadb" == "true" ]; then
+        DATABASE="mariadb-10.3"
+    fi
+
+    if [ -z "${DATABASE}" ]; then
         return
     fi
 
-    BIN_MYSQLD="$BIN/mysql-5.7/bin/mysqld.exe"
-    BIN_MYSQL="$BIN/mysql-5.7/bin/mysql.exe"
+    BIN_MYSQLD="$BIN/$DATABASE/bin/mysqld.exe"
+    BIN_MYSQL_INSTALLDB="$BIN/$DATABASE/bin/mysql_install_db.exe"
+    BIN_MYSQL="$BIN/$DATABASE/bin/mysql.exe"
+
     chmod +x $BIN_MYSQLD
     chmod +x $BIN_MYSQL
 
@@ -996,7 +1038,14 @@ function mysql_start {
         rm -rf $MYSQL_BASE_PATH
         mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp $MYSQL_BASE_PATH/log
         create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
-        $BIN_MYSQLD --initialize-insecure --basedir="$MYSQL_BASE_PATH_WINDOWS" --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
+
+        if [ "$MIGRAW_YAML_config_mysql" == "true" ]; then
+            $BIN_MYSQLD --initialize-insecure --basedir="$MYSQL_BASE_PATH_WINDOWS" --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
+        fi
+
+        if [ "$MIGRAW_YAML_config_mariadb" == "true" ]; then
+            $BIN_MYSQL_INSTALLDB --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
+        fi
     fi
 
     read -r -d "" BIN_MYSQL_CMD <<EOL
