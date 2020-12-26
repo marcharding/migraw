@@ -67,7 +67,7 @@ function create_file_php_ini {
 
     cp -rf $BIN/php-$PHP_VERSION/php.ini-production $1
 
-    sed -i "s|max_execution_time = 30|max_execution_time = 720|g" $1
+    sed -i "s|max_execution_time = 30|max_execution_time = 900|g" $1
     sed -i "s|expose_php = Off|expose_php = On|g" $1
     sed -i "s|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT|error_reporting = E_ALL \& ~E_NOTICE \& ~E_STRICT \& ~E_DEPRECATED \& ~E_WARNING|g" $1
     sed -i "s|memory_limit = 128M|memory_limit = 1024M|g" $1
@@ -154,12 +154,11 @@ function create_file_my_cnf {
     cat > $1 << EOL
 [mysqld]
 flush_time                     = 0
-log_error_verbosity            = 1
 port                           = 3306
 bind-address                   = $MIGRAW_YAML_network_ip
 key_buffer_size                = 128M
 max_allowed_packet             = 128M
-thread_stack                   = 256K
+thread_stack                   = 512K
 thread_cache_size              = 16
 max_connections                = 256
 query_cache_limit              = 8M
