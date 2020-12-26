@@ -549,9 +549,6 @@ function install {
     # ruby
     wget -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
 
-    # ngrok
-    wget -q -O $DOWNLOAD/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip
-
     # winpty
     wget -q -O $DOWNLOAD/winpty.tar.gz https://github.com/rprichard/winpty/releases/download/0.4.3/winpty-0.4.3-cygwin-2.8.0-x64.tar.gz
 
@@ -605,7 +602,7 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
 
     # composer
     mkdir -p $BIN/composer/
-    wget -q -O $BIN/composer/composer.phar https://getcomposer.org/download/1.9.1/composer.phar
+    wget -q -O $BIN/composer/composer.phar https://getcomposer.org/composer-stable.phar
 
     # extract files
     echo "Extracting:"
