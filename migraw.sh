@@ -1107,7 +1107,7 @@ function apache_start {
             for DLL_PATH in $BIN/php-$PHP_VERSION/*.dll
             do
                 DLL_FILENAME="$(basename $DLL_PATH)"
-                if  [[ $DLL_FILENAME == php* || $DLL_FILENAME == 'libeay32.dll' || $DLL_FILENAME == 'ssleay32.dll' ]];
+                if  [[ $DLL_FILENAME == php* || $DLL_FILENAME == 'libeay32.dll' || $DLL_FILENAME == 'ssleay32.dll' || $DLL_FILENAME == 'libssl-1_1-x64.dll' ]];
                 then
                     continue;
                 fi
