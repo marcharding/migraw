@@ -1235,7 +1235,22 @@ EOF
 function is_admin
 {
     net session > /dev/null 2>&1
-    if [ $? -ne 0 ]; then     echo -e "\n${COLOR_RED}!!! Migraw is not run with elevated privileges, symlinks may not work !!!${COLOR_NC}"; fi;
+    if [ $? -ne 0 ]; then
+        echo -e "\n${COLOR_RED}!!! Migraw is not run with elevated privileges, symlinks may not work !!!${COLOR_NC}";
+    fi
+}
+
+function update_hosts
+{
+    net session > /dev/null 2>&1
+    if [ $? == 0 ]; then
+        if [ "$MIGRAW_YAML_network_host" != "" ]; then
+            HOSTS=$WINDIR/System32/drivers/etc/hosts
+            if ! grep -q "$MIGRAW_YAML_network_host" $HOSTS; then
+                echo "127.0.0.1 $MIGRAW_YAML_network_host" >> $HOSTS
+            fi
+        fi
+    fi
 }
 
 is_admin
@@ -1322,6 +1337,7 @@ case $ACTION in
         ;&
     start)
         echo -e "\n${COLOR_CYAN}Starting migraw${COLOR_NC}\n"
+        update_hosts
         # https://askubuntu.com/a/357222
         execute_with_progress_spinner "start"
         INIT_SCRIPTS=("${MIGRAW_YAML_start[@]}" "${MIGRAW_YAML_init[@]}" "${MIGRAW_YAML_exec[@]}")
