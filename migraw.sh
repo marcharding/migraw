@@ -105,10 +105,18 @@ $(
         echo "extension=php_ftp.dll"
     fi
 )
-extension=php_gd2.dll
+$(
+    if [ "$PHP_VERSION" != "8.0" ]; then
+        echo "extension=php_gd2.dll"
+    fi
+)
 extension=php_gettext.dll
 extension=php_gmp.dll
-extension=php_imagick.dll
+$(
+    if [ "$PHP_VERSION" != "8.0" ]; then
+        echo "extension=php_imagick.dll"
+    fi
+)
 extension=php_imap.dll
 extension=php_intl.dll
 extension=php_ldap.dll
@@ -126,10 +134,14 @@ extension=php_sockets.dll
 ;extension=php_sodium.dll
 extension=php_sqlite3.dll
 extension=php_tidy.dll
-extension=php_xmlrpc.dll
+$(
+    if [ "$PHP_VERSION" != "8.0" ]; then
+        echo "extension=php_xmlrpc.dll"
+    fi
+)
 extension=php_xsl.dll
 $(
-    if [ "$PHP_VERSION" != "5.6" ]; then
+    if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "8.0" ]; then
         echo "extension=php_apcu.dll"
     fi
 )
@@ -539,8 +551,7 @@ function install {
     wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.2.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-72.dll
     wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.3.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-73.dll
     wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-74.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-74.dll
-    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-7.4.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-80.dll
+    wget -q -O $DOWNLOAD/blackfire-php-windows_x64-php-8.0.dll https://packages.blackfire.io/binaries/blackfire-php/1.48.1/blackfire-php-windows_x64-php-80.dll
 
     # xdebug
     wget -q -O $DOWNLOAD/php_xdebug-2.5.5-5.6-vc11-x86_64.dll https://xdebug.org/files/php_xdebug-2.5.5-5.6-vc11-x86_64.dll
