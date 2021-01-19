@@ -616,7 +616,9 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
 
     # composer
     mkdir -p $BIN/composer/
-    wget -q -O $BIN/composer/composer.phar https://getcomposer.org/composer-stable.phar
+    wget -q -O $BIN/composer/composer-1.phar https://getcomposer.org/composer-1.phar
+    wget -q -O $BIN/composer/composer-2.phar https://getcomposer.org/composer-2.phar
+    cp $BIN/composer/composer-1.phar $BIN/composer/composer.phar
 
     # extract files
     echo "Extracting:"
