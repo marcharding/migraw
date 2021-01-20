@@ -1128,7 +1128,14 @@ function apache_start {
                 printf %s " -c \"LoadFile $DLL_WINDOWS_PATH\""
             done
         ) \
-        -c "LoadModule php${PHP_VERSION:0:1}_module $BIN_WIN\\php-$PHP_VERSION\\php${PHP_VERSION:0:1}apache2_4.dll" \
+        $(
+            if  [[ ${PHP_VERSION:0:1} == 8 ]];
+            then
+                echo " -c \"LoadModule php_module $BIN_WIN\\php-$PHP_VERSION\\php${PHP_VERSION:0:1}apache2_4.dll\""
+            else
+                echo " -c \"LoadModule php${PHP_VERSION:0:1}_module $BIN_WIN\\php-$PHP_VERSION\\php${PHP_VERSION:0:1}apache2_4.dll\""
+            fi
+        ) \
         -c "PHPIniDir $MIGRAW_CURRENT_WINDOWS\\php" &
 EOL
 
