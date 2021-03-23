@@ -927,6 +927,16 @@ EOL
         EXIT 0
 EOL
 
+    read -r -d '' COMPOSER2 <<EOL
+        php $BIN/composer/composer-2.phar "\$@"
+EOL
+
+    read -r -d '' COMPOSER2_BAT <<EOL
+        @echo off
+        php $BIN_WIN/composer/composer-2.phar  %*
+        EXIT 0
+EOL
+
     read -r -d '' NPM_BAT <<EOL
         $PATH_CMD /c "$BIN_WIN\node-$NODE_VERSION\npm.cmd" "\$@"
 EOL
@@ -954,6 +964,8 @@ EOL
     echo "$PHP_BAT" > $MIGRAW_CURRENT/bin/php.bat && chmod +x $MIGRAW_CURRENT/bin/php.bat
     echo "$COMPOSER" > $MIGRAW_CURRENT/bin/composer && chmod +x $MIGRAW_CURRENT/bin/composer
     echo "$COMPOSER_BAT" > $MIGRAW_CURRENT/bin/composer.bat && chmod +x $MIGRAW_CURRENT/bin/composer.bat
+    echo "$COMPOSER2" > $MIGRAW_CURRENT/bin/composer2 && chmod +x $MIGRAW_CURRENT/bin/composer2
+    echo "$COMPOSER2_BAT" > $MIGRAW_CURRENT/bin/composer2.bat && chmod +x $MIGRAW_CURRENT/bin/composer2.bat
     echo "$NPM_BAT" > $MIGRAW_CURRENT/bin/npm && chmod +x $MIGRAW_CURRENT/bin/npm
     echo "$GRUNT_BAT" > $MIGRAW_CURRENT/bin/grunt && chmod +x $MIGRAW_CURRENT/bin/grunt
     echo "$GEM_BAT" > $MIGRAW_CURRENT/bin/gem && chmod +x $MIGRAW_CURRENT/bin/gem
