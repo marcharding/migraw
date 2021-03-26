@@ -532,6 +532,7 @@ function install {
     wget -q -O $DOWNLOAD/node-8.zip https://nodejs.org/dist/v8.9.4/node-v8.9.4-win-x64.zip
     wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.18.1/node-v10.18.1-win-x64.zip
     wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.14.1/node-v12.14.1-win-x64.zip
+    wget -q -O $DOWNLOAD/node-14.zip https://nodejs.org/dist/v14.16.0/node-v14.16.0-win-x64.zip
 
     # apc
     wget -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
@@ -676,6 +677,12 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
     rm -rf $BIN/node-12/node-v12.14.1-win-x64
     ln -rsf $BIN/node-12/node.exe $BIN/node-12/node
     chmod +x $BIN/node-12/node
+
+    # node 14 cleanup
+    mv $BIN/node-14/node-v14.16.0-win-x64/* $BIN/node-14
+    rm -rf $BIN/node-14/node-v14.16.0-win-x64
+    ln -rsf $BIN/node-14/node.exe $BIN/node-14/node
+    chmod +x $BIN/node-14/node
 
     # extract ruby
     for FILENAME in $DOWNLOAD/*.7z
@@ -1343,7 +1350,7 @@ fi
 MIGRAW_CURRENT_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT)
 MIGRAW_CURRENT_BASE_WINDOWS=$($PATH_CONVERT_BIN -w $MIGRAW_CURRENT_BASE)
 
-AVAILABLE_NODE_VERSIONS=("10" "12")
+AVAILABLE_NODE_VERSIONS=("10" "12" "14")
 NODE_VERSION=${AVAILABLE_NODE_VERSIONS[-1]}
 if [ -n "$MIGRAW_YAML_config_node" ]; then
 NODE_VERSION=$MIGRAW_YAML_config_node
