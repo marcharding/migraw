@@ -59,9 +59,9 @@ fi
 function create_file_php_ini {
     mkdir -p `dirname "$1"`
 
-    # if the php.ini option was set, use that
-    if [[ "$MIGRAW_YAML_config_php_ini" != "" && "$MIGRAW_YAML_config_php_ini" != "false"  ]]; then
-        ln -fP $MIGRAW_YAML_config_php_ini $1
+    # if the php_ini_file option was set, use that
+    if [[ "$MIGRAW_YAML_config_php_ini_file" != "" && "$MIGRAW_YAML_config_php_ini_file" != "false" ]]; then
+        ln -fP $MIGRAW_YAML_config_php_ini_file $1
         return 0;
     fi
 
@@ -89,6 +89,12 @@ function create_file_php_ini {
     echo "openssl.cafile = $BIN_WIN\\cacert.pem" >> $1
     echo "max_input_vars = 4096" >> $1
     echo 'date.timezone= "Europe/Berlin"' >> $1
+
+    # configurable php ini settings
+    for i in "${MIGRAW_YAML_config_php_ini[@]}"
+        do :
+        echo $i >> $1
+    done
 
     PHP_EXTENSION_DIR=$BIN_WIN\\php-$PHP_VERSION\\ext
 
@@ -368,20 +374,25 @@ function migraw_init {
     if [ ! -f  $MIGRAW_CURRENT_BASE/migraw.yml ]; then
     cat > $MIGRAW_CURRENT_BASE/migraw.yml << EOL
 name: migraw.default
-network:
-	ip: 127.0.0.1
-	host: migraw.default
 document_root: web
+network:
+		ip: 127.0.0.1
+		host: migraw.default.com
 config:
-	php: ${AVAILABLE_PHP_VERSIONS[-1]}
-	php_ini: false
-	apache: true
-	mysql: true
-	mailhog: true
+		php: ${AVAILABLE_PHP_VERSIONS[-1]}
+		php_ini_file: false
+		php_ini:
+			- zend_extension=php_xdebug.dll
+			- xdebug.mode=debug
+			- xdebug.discover_client_host = true
+		apache: true
+		mysql: true
+		mailhog: true
 exec:
 	- ./init.sh
 shutdown:
 	- ./destroy.sh
+
 EOL
     fi
 
