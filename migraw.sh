@@ -1288,6 +1288,15 @@ function update_hosts
     fi
 }
 
+function are_you_sure
+{
+    echo ""
+    read -p "y/n: " REPLY
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
+    fi
+}
+
 is_admin
 
 ACTION=$1
@@ -1390,13 +1399,7 @@ case $ACTION in
         ;&
     stop)
         echo -e "\n${COLOR_RED}Are you sure to destroy th current instance (db instance data will be lost). (Yes or No) ${COLOR_NC}"
-        echo ""
-        read -p "y/n: " -n 1 -r
-        echo ""
-        if [[ !$REPLY =~ ^[nN]$ ]]
-        then
-            exit 1
-        fi
+        are_you_sure
         set_path
         echo -e "\n${COLOR_CYAN}Stoping migraw.${COLOR_NC}\n"
         for i in "${MIGRAW_YAML_shutdown[@]}"
@@ -1434,6 +1437,8 @@ case $ACTION in
     update)
         ;&
     install)
+        echo -e "\n${COLOR_RED}Are you sure to (re)install migraw? (Yes or No) ${COLOR_NC}"
+        are_you_sure
         REQUIREMENTS=("wget" "unzip" "p7zip" "curl" )
         for REQUIREMENT in ${REQUIREMENTS[*]}
         do
