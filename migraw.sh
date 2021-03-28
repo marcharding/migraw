@@ -530,8 +530,8 @@ function install {
 
     # node
     wget -q -O $DOWNLOAD/node-8.zip https://nodejs.org/dist/v8.9.4/node-v8.9.4-win-x64.zip
-    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.18.1/node-v10.18.1-win-x64.zip
-    wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.14.1/node-v12.14.1-win-x64.zip
+    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.24.0/node-v10.24.0-win-x64.zip
+    wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.21.0/node-v12.21.0-win-x64.zip
     wget -q -O $DOWNLOAD/node-14.zip https://nodejs.org/dist/v14.16.0/node-v14.16.0-win-x64.zip
 
     # apc
