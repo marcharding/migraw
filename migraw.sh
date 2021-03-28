@@ -1366,6 +1366,10 @@ case $ACTION in
     up)
         ;&
     start)
+        if [ -d "$MIGRAW_CURRENT" ]; then
+          echo -e "\n${COLOR_RED}.migraw Folder exists, please delete it first (e.g. using migraw destroy).${COLOR_NC}"
+          exit 1;
+        fi
         echo -e "\n${COLOR_CYAN}Starting migraw${COLOR_NC}\n"
         update_hosts
         # https://askubuntu.com/a/357222
@@ -1380,6 +1384,14 @@ case $ACTION in
     destroy)
         ;&
     stop)
+        echo -e "\n${COLOR_RED}Are you sure to destroy th current instance (db instance data will be lost). (Yes or No) ${COLOR_NC}"
+        echo ""
+        read -p "y/n: " -n 1 -r
+        echo ""
+        if [[ !$REPLY =~ ^[nN]$ ]]
+        then
+            exit 1
+        fi
         set_path
         echo -e "\n${COLOR_CYAN}Stoping migraw.${COLOR_NC}\n"
         for i in "${MIGRAW_YAML_shutdown[@]}"
