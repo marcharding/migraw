@@ -557,9 +557,11 @@ function install {
     # xdebug
     wget -q -O $DOWNLOAD/php_xdebug-2.5.5-5.6-vc11-x86_64.dll https://xdebug.org/files/php_xdebug-2.5.5-5.6-vc11-x86_64.dll
     wget -q -O $DOWNLOAD/php_xdebug-2.6.1-7.0-vc14-x86_64.dll https://xdebug.org/files/php_xdebug-2.6.1-7.0-vc14-x86_64.dll
-    wget -q -O $DOWNLOAD/php_xdebug-2.9.2-7.1-vc14-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.2-7.1-vc14-x86_64.dll
-    wget -q -O $DOWNLOAD/php_xdebug-2.9.2-7.3-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.2-7.3-vc15-x86_64.dll
-    wget -q -O $DOWNLOAD/php_xdebug-2.9.2-7.4-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.2-7.4-vc15-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-2.9.8-7.1-vc14-x86_64.dll https://xdebug.org/files/php_xdebug-2.9.8-7.1-vc14-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-3.0.3-7.2-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-3.0.3-7.2-vc15-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-3.0.3-7.3-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-3.0.3-7.3-vc15-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-3.0.3-7.4-vc15-x86_64.dll https://xdebug.org/files/php_xdebug-3.0.3-7.4-vc15-x86_64.dll
+    wget -q -O $DOWNLOAD/php_xdebug-3.0.3-8.0-vs16-x86_64.dll https://xdebug.org/files/php_xdebug-3.0.3-8.0-vs16-x86_64.dll
 
     # ruby
     wget -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
