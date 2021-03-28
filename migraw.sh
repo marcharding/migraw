@@ -423,8 +423,8 @@ function find_migraw_yaml {
     done
 }
 
-function parse_yaml() {
-    # https://github.com/jasperes/bash-yaml
+# https://github.com/jasperes/bash-yaml
+parse_yaml() {
     local yaml_file=$1
     local prefix=$2
     local s
@@ -439,6 +439,7 @@ function parse_yaml() {
         sed -e '/- [^\“]'"[^\']"'.*: /s|\([ ]*\)- \([[:space:]]*\)|\1-\'$'\n''  \1\2|g' |
 
         sed -ne '/^--/s|--||g; s|\"|\\\"|g; s/[[:space:]]*$//g;' \
+            -e 's/\$/\\\$/g' \
             -e "/#.*[\"\']/!s| #.*||g; /^#/s|#.*||g;" \
             -e "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
             -e "s|^\($s\)\($w\)${s}[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" |
@@ -450,7 +451,7 @@ function parse_yaml() {
             for (i in vname) {if (i > indent) {delete vname[i]}}
                 if (length($3) > 0) {
                     vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-                    printf("%s%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, conj[indent-1],$3);
+                    printf("%s%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, conj[indent-1], $3);
                 }
             }' |
 
