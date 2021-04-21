@@ -114,6 +114,8 @@ $(
 $(
     if [ "$PHP_VERSION" != "8.0" ]; then
         echo "extension=php_gd2.dll"
+    else
+        echo "extension=php_gd.dll"
     fi
 )
 extension=php_gettext.dll
