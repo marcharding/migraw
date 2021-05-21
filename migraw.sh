@@ -691,14 +691,14 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
     fi
 
     # node 10 cleanup
-    mv $BIN/node-10/node-v10.18.1-win-x64/* $BIN/node-10
-    rm -rf $BIN/node-10/node-v10.18.1-win-x64
+    mv $BIN/node-10/node-v10.24.0-win-x64/* $BIN/node-10
+    rm -rf $BIN/node-10/node-v10.24.0-win-x64
     ln -rsf $BIN/node-10/node.exe $BIN/node-10/node
     chmod +x $BIN/node-10/node
 
     # node 12 cleanup
-    mv $BIN/node-12/node-v12.14.1-win-x64/* $BIN/node-12
-    rm -rf $BIN/node-12/node-v12.14.1-win-x64
+    mv $BIN/node-12/node-v12.21.0-win-x64/* $BIN/node-12
+    rm -rf $BIN/node-12/node-v12.21.0-win-x64
     ln -rsf $BIN/node-12/node.exe $BIN/node-12/node
     chmod +x $BIN/node-12/node
 
