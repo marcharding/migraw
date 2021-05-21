@@ -139,7 +139,11 @@ extension=php_shmop.dll
 ;extension=php_snmp.dll
 extension=php_soap.dll
 extension=php_sockets.dll
-;extension=php_sodium.dll
+$(
+    if [ "$PHP_VERSION" != "5.6" ]; then
+        extension=php_sodium.dll
+    fi
+)
 extension=php_sqlite3.dll
 extension=php_tidy.dll
 $(
