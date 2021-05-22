@@ -141,7 +141,7 @@ extension=php_soap.dll
 extension=php_sockets.dll
 $(
     if [ "$PHP_VERSION" != "5.6" ]; then
-        extension=php_sodium.dll
+        echo "extension=php_sodium.dll"
     fi
 )
 extension=php_sqlite3.dll
