@@ -593,8 +593,8 @@ function install {
 
     # adminer
     mkdir -p $BIN/adminer
-    wget -q -O $BIN/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.7.5/adminer-4.7.5-mysql.php
-    wget -q -O $BIN/adminer/plugin.php https://raw.githubusercontent.com/vrana/adminer/v4.7.5/plugins/plugin.php
+    wget -q -O $BIN/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-mysql.php
+    wget -q -O $BIN/adminer/plugin.php https://raw.githubusercontent.com/vrana/adminer/v4.8.1/plugins/plugin.php
     wget -q -O $BIN/adminer/adminer.css https://raw.githubusercontent.com/decksterr/adminer-theme-dark/master/adminer.css
 read -r -d "" DELEGATES <<EOL
 <?php
