@@ -2,10 +2,9 @@
 
 COLOR_CYAN='\e[0;36m'
 COLOR_NC='\e[0m'
-
-MIGRAW="/opt/migraw"
+MIGRAW=/Users/"$USER"/migraw
 sudo mkdir -p $MIGRAW
-sudo curl -s -H 'Cache-Control: no-cache' "https://raw.githubusercontent.com/marcharding/migraw/bash-win64/migraw.sh?$(date +%s)" --output "$MIGRAW/migraw.sh"
+sudo curl -s -H 'Cache-Control: no-cache' "https://raw.githubusercontent.com/marcharding/migraw/osx/migraw.sh?$(date +%s)" --output "$MIGRAW/migraw.sh"
 sudo chmod +x $MIGRAW/migraw.sh
 sudo ln -rsf $MIGRAW/migraw.sh $MIGRAW/migraw
 

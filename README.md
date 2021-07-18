@@ -2,38 +2,82 @@
 
 ## Introduction
 
-Portable (web)development enviroments on wsl/ubuntu 18.04 as an lightweight alternative to docker/vagrant/etc.
+Portable (web)development enviroments on osx as an lightweight alternative to docker/vagrant/etc.
+
+## Requirements
+
+- Homebrew installed
+- Apple silicon / m1 mac
 
 ## Installation
 
-Install with curl https://raw.githubusercontent.com/marcharding/migraw/master/install.sh | sudo bash
+Install with curl https://raw.githubusercontent.com/marcharding/migraw/osx/install.sh | sudo bash
 
-When using WSL, you may want to tweak it a bit.
+## Usage
 
-See https://docs.microsoft.com/en-us/windows/wsl/install-win10 for information regarding wsl.
+Just call `migraw` to see the possible options.
 
-Add this to `/etc/wsl.conf`
+## Redirect ports
 
-```conf
-# Enable extra metadata options by default
-[automount]
-enabled = true
-root = /
-options = "metadata"
-mountFsTab = false
+Since you can only bind ports < 1024 without using sudo, an alternative is to redirect port 80 and 443 to 8080 and 8443.
+
+The following commands utilize pf to redirect these ports.
+
+Create a new anchor for pf:
+
+```bash
+sudo cat > /etc/pf.anchors/migraw << EOL
+    rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port 8080
+    rdr pass inet proto tcp from any to any port 443 -> 127.0.0.1 port 8443
+EOL
 ```
 
-See https://docs.microsoft.com/en-us/windows/wsl/wsl-config#set-wsl-launch-settings.
+Create a config for our new anchor (so the default pf.conf ist not edited)
 
-Furthermore it is a good idea to exlude some processes from windows defender to work around i/o limitations within wsl.
+```bash
+sudo cat > /etc/pf-migraw.conf << EOL
+    rdr-anchor "migraw"
+    load anchor "migraw" from "/etc/pf.anchors/migraw"
+EOL
+```
 
-See the following issues for further information about that:
-- https://github.com/Microsoft/WSL/issues/1932
-- https://gist.github.com/dayne/313981bc3ee6dbf8ee57eb3d58aa1dc0#file-1-wsl-defender-fix-md
+Manually load/test
 
-I just excluded the whole wsl folder and the most common processes.
+```bash
+sudo pfctl -ef /etc/pf-migraw.conf
+```
 
-Since we are using the windows executable, just exclude them.
+Register a new launch daemon to automatically start the redirect pf script
+
+```bash
+sudo cat > /Library/LaunchDaemons/migraw.redirect.pfctl.plist << EOL
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- copied from /System/Library/LaunchDaemons/com.apple.pfctl.plist -->
+<plist version="1.0">
+	<dict>
+		<key>Disabled</key>
+		<false/>
+		<key>Label</key>
+		<string>migraw.redirect.pfctl.plist</string>
+		<key>WorkingDirectory</key>
+		<string>/var/run</string>
+		<key>Program</key>
+		<string>/sbin/pfctl</string>
+		<key>ProgramArguments</key>
+		<array>
+			<string>pfctl</string>
+			<string>-e</string>
+			<string>-f</string>
+			<string>/etc/pf-migraw.conf</string>
+		</array>
+		<key>RunAtLoad</key>
+		<true/>
+	</dict>
+</plist>
+````
+
+# sudo launchctl load -w /Library/LaunchDaemons/migraw.redirect.pfctl.plist
 
 ## Usage
 
@@ -55,3 +99,4 @@ config:
 	mysql: true
 	mailhog: true
 ```
+p
