@@ -641,9 +641,8 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
 
     # composer
     mkdir -p $BIN/composer/
-    wget -q -O $BIN/composer/composer-1.phar https://getcomposer.org/composer-1.phar
-    wget -q -O $BIN/composer/composer-2.phar https://getcomposer.org/composer-2.phar
-    cp $BIN/composer/composer-2.phar $BIN/composer/composer.phar
+    wget -q -O $BIN/composer/composer-1.phar https://getcomposer.org/download/latest-1.x/composer.phar
+    wget -q -O $BIN/composer/composer.phar https://getcomposer.org/download/latest-2.x/composer.phar
 
     # extract files
     echo "Extracting:"
@@ -958,13 +957,13 @@ EOL
         EXIT 0
 EOL
 
-    read -r -d '' COMPOSER2 <<EOL
-        php $BIN/composer/composer-2.phar "\$@"
+    read -r -d '' COMPOSER1 <<EOL
+        php $BIN/composer/composer-1.phar "\$@"
 EOL
 
-    read -r -d '' COMPOSER2_BAT <<EOL
+    read -r -d '' COMPOSER1_BAT <<EOL
         @echo off
-        php $BIN_WIN/composer/composer-2.phar  %*
+        php $BIN_WIN/composer/composer-1.phar  %*
         EXIT 0
 EOL
 
@@ -995,8 +994,8 @@ EOL
     echo "$PHP_BAT" > $MIGRAW_CURRENT/bin/php.bat && chmod +x $MIGRAW_CURRENT/bin/php.bat
     echo "$COMPOSER" > $MIGRAW_CURRENT/bin/composer && chmod +x $MIGRAW_CURRENT/bin/composer
     echo "$COMPOSER_BAT" > $MIGRAW_CURRENT/bin/composer.bat && chmod +x $MIGRAW_CURRENT/bin/composer.bat
-    echo "$COMPOSER2" > $MIGRAW_CURRENT/bin/composer2 && chmod +x $MIGRAW_CURRENT/bin/composer2
-    echo "$COMPOSER2_BAT" > $MIGRAW_CURRENT/bin/composer2.bat && chmod +x $MIGRAW_CURRENT/bin/composer2.bat
+    echo "$COMPOSER2" > $MIGRAW_CURRENT/bin/composer1 && chmod +x $MIGRAW_CURRENT/bin/composer1
+    echo "$COMPOSER2_BAT" > $MIGRAW_CURRENT/bin/composer1.bat && chmod +x $MIGRAW_CURRENT/bin/composer1.bat
     echo "$NPM_BAT" > $MIGRAW_CURRENT/bin/npm && chmod +x $MIGRAW_CURRENT/bin/npm
     echo "$GRUNT_BAT" > $MIGRAW_CURRENT/bin/grunt && chmod +x $MIGRAW_CURRENT/bin/grunt
     echo "$GEM_BAT" > $MIGRAW_CURRENT/bin/gem && chmod +x $MIGRAW_CURRENT/bin/gem
