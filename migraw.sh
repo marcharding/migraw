@@ -548,13 +548,13 @@ function install {
     wget -q -O $DOWNLOAD/mysql-5.7.zip https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.31-winx64.zip
 
     # mariadb
-    wget -q -O $DOWNLOAD/mariadb-10.3.zip https://archive.mariadb.org/mariadb-10.3.27/winx64-packages/mariadb-10.3.27-winx64.zip
+    wget -q -O $DOWNLOAD/mariadb-10.3.zip https://archive.mariadb.org//mariadb-10.3.31/winx64-packages/mariadb-10.3.31-winx64.zip
 
     # node
-    wget -q -O $DOWNLOAD/node-8.zip https://nodejs.org/dist/v8.9.4/node-v8.9.4-win-x64.zip
-    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.24.0/node-v10.24.0-win-x64.zip
-    wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.21.0/node-v12.21.0-win-x64.zip
-    wget -q -O $DOWNLOAD/node-14.zip https://nodejs.org/dist/v14.16.0/node-v14.16.0-win-x64.zip
+    wget -q -O $DOWNLOAD/node-10.zip https://nodejs.org/dist/v10.24.1/node-v10.24.1-win-x64.zip
+    wget -q -O $DOWNLOAD/node-12.zip https://nodejs.org/dist/v12.22.7/node-v12.22.7-win-x64.zip
+    wget -q -O $DOWNLOAD/node-14.zip https://nodejs.org/dist/v14.18.1/node-v14.18.1-win-x64.zip
+    wget -q -O $DOWNLOAD/node-16.zip https://nodejs.org/dist/v16.13.0/node-v16.13.0-win-x64.zip
 
     # apc
     wget -q -O $DOWNLOAD/php-apcu-5.6.zip https://windows.php.net/downloads/pecl/releases/apcu/4.0.11/php_apcu-4.0.11-5.6-ts-vc11-x64.zip
