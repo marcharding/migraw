@@ -597,9 +597,6 @@ function install {
     # ruby
     wget -q -O $DOWNLOAD/ruby-2.5.7z https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.5.7-1/rubyinstaller-2.5.7-1-x64.7z
 
-    # winpty
-    wget -q -O $DOWNLOAD/winpty.tar.gz https://github.com/rprichard/winpty/releases/download/0.4.3/winpty-0.4.3-cygwin-2.8.0-x64.tar.gz
-
     # adminer
     mkdir -p $BIN/adminer
     wget -q -O $BIN/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-mysql.php
@@ -731,11 +728,6 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
     # extract ghostscript
     7z -aoa x $DOWNLOAD/gs950.exe -o$BIN/gs950
 
-    # extract winpty
-    mkdir -o $BIN/winpty
-    tar -zxf $DOWNLOAD/winpty.tar.gz --directory $BIN/winpty
-    cp -rf $BIN/winpty/winpty-0.4.3-cygwin-2.8.0-x64/bin/* $BIN/winpty
-
     # add custom delegate to make pdf conversion work, see https://stackoverflow.com/a/32163666
     create_delegates_for_im $BIN/imagick-6.9.3/bin/delegates.xml
     create_delegates_for_im $BIN/imagick-7.0.7/bin/delegates.xml
@@ -791,8 +783,12 @@ function set_path {
         PATH=$BIN/mariadb-10.3/bin:$PATH
     fi
 
-    PATH=$BIN/gs950/bin:$PATH
-    PATH=$BIN/gs950/lib:$PATH
+    mkdir -p $HOME/.composer
+    COMPOSER_HOME=$HOME/.composer
+    PATH=$COMPOSER_HOME/vendor/bin
+
+    PATH=$BIN/gs9500/bin:$PATH
+    PATH=$BIN/gs9500/lib:$PATH
     PATH=$BIN/blackfire/links:$PATH
 
     if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.1" ]]; then
@@ -821,9 +817,6 @@ function set_path {
 
     # prepend system32 last, sometime it caused problems being at the start of $PATH, append linux prefixes because the prefer our own binaries
     PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$WINDOWS_BASE_PATH"/system32"
-
-    mkdir -p $HOME/.composer
-    COMPOSER_HOME=$HOME/.composer
 
     mkdir -p $MIGRAW_CURRENT/php/session
     create_file_php_ini $MIGRAW_CURRENT/php/php.ini
