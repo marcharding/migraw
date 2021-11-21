@@ -203,7 +203,16 @@ character-set-server           = utf8
 skip-log-bin
 skip-external-locking
 # Due to option file escaping sequences, see https://dev.mysql.com/doc/refman/8.0/en/option-files.html we need three baskslashes
-lc-messages-dir                = ${BIN_WIN//\\/\\\\}\\\mysql-5.7\\\share
+$(
+    if [ "$MIGRAW_YAML_config_mysql" == "true" ]; then
+        echo "lc-messages-dir                = ${BIN_WIN//\\/\\\\}\\\mysql-5.7\\\share"
+    fi
+)
+$(
+    if [ "$MIGRAW_YAML_config_mariadb" == "true" ]; then
+        echo "lc-messages-dir                = ${BIN_WIN//\\/\\\\}\\\mariadb-10.3\\\share"
+    fi
+)
 lc_messages                    = en_US
 sort_buffer_size               = 16777216
 wait_timeout                   = 3600
@@ -658,7 +667,7 @@ echo "$DELEGATES" >> $BIN/adminer/index.php
     rm -rf $BIN/mysql-5.7/mysql-5.7.31-winx64
 
     # mariadb cleanup
-    mv $BIN/mariadb-10.3/mariadb-10.3.27-winx64/* $BIN/mariadb-10.3
+    mv $BIN/mariadb-10.3/**/* $BIN/mariadb-10.3
     rm -rf $BIN/mariadb-10.3/mariadb-10.3.27-winx64
 
     # mysql
@@ -840,6 +849,7 @@ function set_path {
 function start {
     set_path
     mysql_start init
+    mariadb_start init
     apache_start
     mailhog_start
 }
@@ -847,6 +857,7 @@ function start {
 function unpause {
     set_path
     mysql_start
+    mariadb_start
     apache_start
     mailhog_start
 }
@@ -1065,23 +1076,69 @@ function mailhog_start {
 
 function mysql_start {
 
-    DATABASE=""
-
-    if [ "$MIGRAW_YAML_config_mysql" == "true" ]; then
-        DATABASE="mysql-5.7"
-    fi
-
-    if [ "$MIGRAW_YAML_config_mariadb" == "true" ]; then
-        DATABASE="mariadb-10.3"
-    fi
-
-    if [ -z "${DATABASE}" ]; then
+    if [ "$MIGRAW_YAML_config_mysql" != "true" ]; then
         return
     fi
 
-    BIN_MYSQLD="$BIN/$DATABASE/bin/mysqld.exe"
-    BIN_MYSQL_INSTALLDB="$BIN/$DATABASE/bin/mysql_install_db.exe"
-    BIN_MYSQL="$BIN/$DATABASE/bin/mysql.exe"
+    BIN_MYSQLD="$BIN/mysql-5.7/bin/mysqld.exe"
+    BIN_MYSQL_INSTALLDB="$BIN/mysql-5.7/bin/mysql_install_db.exe"
+    BIN_MYSQL="$BIN/mysql-5.7/bin/mysql.exe"
+
+    chmod +x $BIN_MYSQLD
+    chmod +x $BIN_MYSQL
+
+    MYSQL_BASE_PATH=$MIGRAW_CURRENT/mysql
+    MYSQL_BASE_PATH_WINDOWS=$MIGRAW_CURRENT_WINDOWS\\mysql
+
+    if [ "$1" == "init" ]; then
+        rm -rf $MYSQL_BASE_PATH
+        mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp $MYSQL_BASE_PATH/log
+        create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
+
+        if [ "$MIGRAW_YAML_config_mysql" == "true" ]; then
+            $BIN_MYSQLD --initialize-insecure --basedir="$MYSQL_BASE_PATH_WINDOWS" --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
+        fi
+
+        if [ "$MIGRAW_YAML_config_mariadb" == "true" ]; then
+            $BIN_MYSQL_INSTALLDB --datadir=$MYSQL_BASE_PATH_WINDOWS\\data
+        fi
+    fi
+
+    read -r -d "" BIN_MYSQL_CMD <<EOL
+        @echo off
+        start /B $($PATH_CONVERT_BIN -w $BIN_MYSQLD) \
+        --defaults-file="$MYSQL_BASE_PATH_WINDOWS\\my.cnf" \
+        --log_error="$MYSQL_BASE_PATH_WINDOWS\\log\\log.err" \
+        --pid_file="$MYSQL_BASE_PATH_WINDOWS\\mysql.pid" \
+        --basedir="$MYSQL_BASE_PATH_WINDOWS" \
+        --tmpdir="$MYSQL_BASE_PATH_WINDOWS\\tmp" \
+        --datadir="$MYSQL_BASE_PATH_WINDOWS\\data" &
+EOL
+
+    echo "$BIN_MYSQL_CMD" | tr -s ' ' > $MIGRAW_CURRENT/mysql/exec.bat
+    cygstart --hide $PATH_CMD /c $($PATH_CONVERT_BIN -w $MIGRAW_CURRENT/mysql/exec.bat)
+
+    counter=1
+    while ! $BIN_MYSQL -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
+        sleep 1
+        counter=`expr $counter + 1`
+        if [ $counter -gt 30 ]; then
+            echo "We have been waiting for MySQL too long already; failing."
+            exit 1
+        fi
+    done
+
+}
+
+function mariadb_start {
+
+    if [ "$MIGRAW_YAML_config_mariadb" != "true" ]; then
+        return
+    fi
+
+    BIN_MYSQLD="$BIN//mariadb-10.3/bin/mysqld.exe"
+    BIN_MYSQL_INSTALLDB="$BIN//mariadb-10.3/bin/mysql_install_db.exe"
+    BIN_MYSQL="$BIN//mariadb-10.3/bin/mysql.exe"
 
     chmod +x $BIN_MYSQLD
     chmod +x $BIN_MYSQL
