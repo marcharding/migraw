@@ -180,13 +180,13 @@ function create_file_my_cnf {
 flush_time                     = 0
 port                           = 3306
 bind-address                   = $MIGRAW_YAML_network_ip
-key_buffer_size                = 128M
-max_allowed_packet             = 128M
+key_buffer_size                = 512M
+max_allowed_packet             = 512M
 thread_stack                   = 512K
 thread_cache_size              = 16
 max_connections                = 256
-query_cache_limit              = 8M
-query_cache_size               = 64M
+query_cache_limit              = 32M
+query_cache_size               = 128M
 sync_binlog                    = 0
 # sql_mode see follwing links
 # https://stackoverflow.com/a/40303542
@@ -194,7 +194,7 @@ sync_binlog                    = 0
 sql_mode                       = "ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 tmp_table_size                 = 64M
 innodb_buffer_pool_size        = 512M
-innodb_log_file_size           = 256M
+innodb_log_file_size           = 1024M
 innodb_flush_log_at_trx_commit = 2
 innodb_read_io_threads         = 8
 innodb_write_io_threads        = 8
