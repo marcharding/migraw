@@ -783,9 +783,9 @@ function set_path {
         PATH=$BIN/mariadb-10.3/bin:$PATH
     fi
 
-    mkdir -p $HOME/.composer
+    /usr/bin/mkdir -p $HOME/.composer
     COMPOSER_HOME=$HOME/.composer
-    PATH=$COMPOSER_HOME/vendor/bin
+    PATH=$COMPOSER_HOME/vendor/bin:$PATH
 
     PATH=$BIN/gs9500/bin:$PATH
     PATH=$BIN/gs9500/lib:$PATH
