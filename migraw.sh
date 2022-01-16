@@ -935,10 +935,10 @@ else
 fi
 
 # download dir
-DOWNLOAD=$SCRIPT_BASE/download
+DOWNLOAD=$SCRIPT_BASE/migraw/download
 
 # bin base
-BIN=$SCRIPT_BASE/bin
+BIN=$SCRIPT_BASE/migraw/bin
 
 # .migraw base
 MIGRAW_BASE=$BASE/.migraw
