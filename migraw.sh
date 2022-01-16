@@ -436,6 +436,7 @@ function install {
 
     PKG=(
         "redir"
+        "jq"
         "apache2"
         "apache2-bin"
         "mariadb-common"
