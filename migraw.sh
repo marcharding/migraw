@@ -590,16 +590,15 @@ echo "$ADMINER" >> $BIN/opt/adminer/index.php
 
 function set_path {
 
+    # Symlink binaries
     mkdir -p $MIGRAW_CURRENT/bin
     ln -rsf $BIN/usr/bin/php$PHP_VERSION $MIGRAW_CURRENT/bin/php
-
     ln -rsf $BIN/opt/node-$NODE_VERSION/bin/node $MIGRAW_CURRENT/bin/node
     ln -rsf $BIN/opt/node-$NODE_VERSION/bin/npm $MIGRAW_CURRENT/bin/npm
 
+    # set local binaries first
     PATH=$MIGRAW_CURRENT/bin:$PATH
     PATH=$BIN/usr/bin:"$PATH"
-    PATH=$BIN/nodejs/usr/bin:"$PATH"
-    PATH=$BIN/nodejs/bin:"$PATH"
 
     PATH=$MIGRAW_CURRENT/gem/bin:"$PATH"
     PATH=$MIGRAW_CURRENT_BASE/vendor/bin:"$PATH"
@@ -610,21 +609,30 @@ function set_path {
 
     # MariaDB socket
     MYSQL_UNIX_PORT=$MIGRAW_CURRENT/mysql/mysql.sock
+    MYSQL_HOME=$MYSQL_HOME
 
     # PHP settings & folders
     PHPRC=$MIGRAW_CURRENT/php
+    PHP_INI_SCAN_DIR=$MIGRAW_CURRENT/php
     mkdir -p $MIGRAW_CURRENT/php/session
     create_file_php_ini $MIGRAW_CURRENT/php/php.ini
 
     # Node.js settings & Folder
+    # https://docs.npmjs.com/misc/config
+    # export NODE_EXTRA_CA_CERTS="$(mkcert -CAROOT)/rootCA.pem"
     NODE_PATH=$MIGRAW_CURRENT/node
     NPM_CONFIG_PREFIX=$MIGRAW_CURRENT/npm
     NPM_CONFIG_CACHE=$MIGRAW_CURRENT/npm/npm-cache
     NPM_CONFIG_USERCONFIG=$MIGRAW_CURRENT/npm
 
-    # https://docs.npmjs.com/misc/config
+    # Composer home
+    COMPOSER_HOME=$SCRIPT_BASE/migraw/var
+
+    # zsh shell home
+    ZDOTDIR=$MIGRAW_CURRENT/shell
 
     export PATH
+    export COMPOSER_HOME
     export LD_LIBRARY_PATH
     export MYSQL_UNIX_PORT
     export PHPRC
@@ -632,6 +640,8 @@ function set_path {
     export NPM_CONFIG_CACHE
     export NPM_CONFIG_USERCONFIG
     export NODE_PATH
+    export ZDOTDIR
+
 }
 
 function start {
