@@ -170,8 +170,8 @@ function create_file_virtual_host_conf {
     </Directory>
 </VirtualHost>
 
-<VirtualHost *:*>
-	  AcceptPathInfo On
+<VirtualHost *:8080>
+    AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
     DocumentRoot "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root"
@@ -180,7 +180,23 @@ function create_file_virtual_host_conf {
         Options FollowSymLinks Indexes
     </Directory>
 </VirtualHost>
+
+<VirtualHost *:8443>
+	AcceptPathInfo On
+    UseCanonicalName Off
+    ServerAlias *
+    DocumentRoot "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root"
+    SSLEngine on
+    SSLCertificateFile "$BIN/etc/apache2/conf/ssl/server.crt"
+    SSLCertificateKeyFile "$BIN/etc/apache2/conf/ssl/server.key"
+    <Directory "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root">
+        AllowOverride All
+        Options FollowSymLinks Indexes
+    </Directory>
+</VirtualHost>
+
 EOL
+
 }
 
 function create_file_httpd_conf {
@@ -254,6 +270,7 @@ LoadModule rewrite_module $BIN/usr/lib/apache2/modules/mod_rewrite.so
 LoadModule setenvif_module $BIN/usr/lib/apache2/modules/mod_setenvif.so
 LoadModule vhost_alias_module $BIN/usr/lib/apache2/modules/mod_vhost_alias.so
 LoadModule headers_module $BIN/usr/lib/apache2/modules/mod_headers.so
+LoadModule ssl_module $BIN/usr/lib/apache2/modules/mod_ssl.so
 
 # ****************************************************************************************************************
 # OTHERS CONFIG
@@ -496,6 +513,14 @@ function install {
 
     # CA certificates
     wget -q -O $BIN/cacert.pem https://curl.haxx.se/ca/cacert.pem
+
+    # Generate self signed ssl certificate
+    mkdir -p $BIN/etc/apache2/conf/ssl
+    HOST_KEY=$BIN/etc/apache2/conf/ssl/host.key
+    HOST_CERT=$BIN/etc/apache2/conf/ssl/host.key
+    openssl genrsa 4096 > $HOST_KEY
+    chmod 400 $HOST_KEY
+    openssl req -subj "/C=PE/ST=World/L=World/O=Migraw/OU=Migraw/CN=example.com" -new -x509 -nodes -sha256 -days 365 -key $HOST_KEY -out $HOST_CERT
 
     # MailHog
     wget -q -O $BIN/opt/MailHog_linux_amd64 https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64
@@ -786,7 +811,9 @@ function apache_start {
         -c "ServerRoot $BIN/etc/apache2" \
         -c "ServerName $MIGRAW_YAML_name" \
         -c "ServerAdmin admin@$MIGRAW_YAML_name" \
+        -c "Listen $MIGRAW_YAML_network_ip:8050" \
         -c "Listen $MIGRAW_YAML_network_ip:8080" \
+        -c "Listen $MIGRAW_YAML_network_ip:8443" \
         -c "Include $MIGRAW_CURRENT/httpd/sites/*.conf" \
         -c "CustomLog  $MIGRAW_CURRENT/httpd/log/access.log common" \
         -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" \
