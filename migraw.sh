@@ -159,17 +159,6 @@ EOL
 function create_file_virtual_host_conf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
-<VirtualHost *:8050>
-    AcceptPathInfo On
-    UseCanonicalName Off
-    ServerAlias *
-    DocumentRoot "$BIN/opt/adminer"
-    <Directory "$BIN/opt/adminer">
-        AllowOverride All
-        Options FollowSymLinks Indexes
-    </Directory>
-</VirtualHost>
-
 <VirtualHost *:8080>
     AcceptPathInfo On
     UseCanonicalName Off
@@ -181,20 +170,30 @@ function create_file_virtual_host_conf {
     </Directory>
 </VirtualHost>
 
+<VirtualHost *:8050>
+    AcceptPathInfo On
+    UseCanonicalName Off
+    ServerAlias *
+    DocumentRoot "$BIN/opt/adminer"
+    <Directory "$BIN/opt/adminer">
+        AllowOverride All
+        Options FollowSymLinks Indexes
+    </Directory>
+</VirtualHost>
+
 <VirtualHost *:8443>
 	AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
     DocumentRoot "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root"
     SSLEngine on
-    SSLCertificateFile "$BIN/etc/apache2/conf/ssl/server.crt"
-    SSLCertificateKeyFile "$BIN/etc/apache2/conf/ssl/server.key"
+    SSLCertificateFile "$MIGRAW_CURRENT/ssl/host.pem"
+    SSLCertificateKeyFile "$MIGRAW_CURRENT/ssl/host-key.pem"
     <Directory "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root">
         AllowOverride All
         Options FollowSymLinks Indexes
     </Directory>
 </VirtualHost>
-
 EOL
 
 }
@@ -527,10 +526,10 @@ function install {
     chmod +x $BIN/opt/MailHog_linux_amd64
 
     # mkcert
-    # TODO: Implement, https://www.haveiplayedbowie.today/blog/posts/secure-localhost-with-mkcert/
-    # CAROOT=/mnt/c/Users/<you>/AppData/Local/mkcert
     wget -q -O $BIN/opt/mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64
     chmod +x $BIN/opt/mkcert
+    wget -q -O $BIN/opt/mkcert.exe https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-windows-amd64.exe
+    chmod +x $BIN/opt/mkcert.exe
 
     # Node.js
     AVAILABLE_NODE_VERSIONS=("12" "14" "16")
@@ -804,6 +803,14 @@ function apache_start {
     create_file_httpd_conf $MIGRAW_CURRENT/httpd/httpd.conf
     create_file_virtual_host_conf $MIGRAW_CURRENT/httpd/sites/default.conf
 
+    WIN_USERNAME=$(cmd.exe /c "echo %USERNAME%") 2>&1
+    mkdir -p $MIGRAW_CURRENT/ssl
+    export CAROOT=/mnt/c/Users/$WIN_USERNAME/AppData/Local/mkcert
+    mkcert.exe -install 2>&1
+    mkcert.exe -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
+    mkcert -install
+    mkcert.exe -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
+
     read -r -d "" BIN_HTTPD_CMD <<EOL
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH $BIN_HTTPD \
         -f "$MIGRAW_CURRENT/httpd/httpd.conf" \
@@ -837,6 +844,7 @@ function setup_port_redirect {
     check_for_sudo
     set_path
     redir :80 :8080
+    redir :443 :8443
 }
 
 # see https://stackoverflow.com/a/38275644
