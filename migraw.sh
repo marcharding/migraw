@@ -145,14 +145,15 @@ query_cache_type               = 0
 sync_binlog                    = 0
 innodb_doublewrite             = 0
 sql_mode                       = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
-key_buffer_size                = 128M
+key_buffer_size                = 24M
 tmp_table_size                 = 64M
 innodb_buffer_pool_size        = 512M
-innodb_log_file_size           = 128M
+innodb_log_file_size           = 64M
 innodb_flush_log_at_trx_commit = 2
 skip-log-bin
 skip-external-locking
 skip-name-resolve
+performance_schema
 EOL
 }
 
