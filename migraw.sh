@@ -459,10 +459,6 @@ function install {
 
     echo "Installing/Downloading."
 
-    # TODO
-    # sudo add-apt-repository ppa:ondrej/php -y
-    # sudo apt-get update
-
     rm -rf $DOWNLOAD
     rm -rf $BIN
 
@@ -790,9 +786,6 @@ function mailhog_start {
 
 function authbind_socat_port_redirection {
     # authbind and socat must be ready and set up to forward 80 and 443
-    # sudo touch /etc/authbind/byport/{80,443}
-    # sudo chgrp $USERNAME /etc/authbind/byport/{80,443}
-    # sudo chmod 550 /etc/authbind/byport/{80,443}
     mkdir -p $MIGRAW_CURRENT/authbind
     authbind socat tcp-l:80,fork,reuseaddr tcp:127.0.0.1:8080 2>&1 & echo "$!" > $MIGRAW_CURRENT/authbind/authbind-80.pid
     authbind socat tcp-l:443,fork,reuseaddr tcp:127.0.0.1:8443 2>&1 & echo "$!" > $MIGRAW_CURRENT/authbind/authbind-443.pid
