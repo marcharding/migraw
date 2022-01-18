@@ -866,12 +866,7 @@ function apache_start {
     create_file_httpd_conf $MIGRAW_CURRENT/httpd/httpd.conf
     create_file_virtual_host_conf $MIGRAW_CURRENT/httpd/sites/default.conf
 
-    WIN_USERNAME=$(cmd.exe /c "echo %USERNAME%") 2>&1
     mkdir -p $MIGRAW_CURRENT/ssl
-    export CAROOT=/mnt/c/Users/$WIN_USERNAME/AppData/Local/mkcert
-    mkcert.exe -install 2>&1
-    mkcert.exe -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
-    mkcert -install
     mkcert.exe -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
 
     read -r -d "" BIN_HTTPD_CMD <<EOL
@@ -968,6 +963,7 @@ Commands:
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
   $(echo -e "${COLOR_GREEN}selfupdate${COLOR_NC}")          Update migraw
   $(echo -e "${COLOR_GREEN}init${COLOR_NC}")                Update create demo migraw.yml, init.sh and destroy.sh
+  $(echo -e "${COLOR_GREEN}mkcert${COLOR_NC}")              Install root ssl certificates (only needed once)
   $(echo -e "${COLOR_GREEN}info${COLOR_NC}")                Display info and help
 
 EOF
@@ -980,10 +976,21 @@ function update_hosts
         if [ "$MIGRAW_YAML_network_host" != "" ]; then
             HOSTS=/mnt/c/System32/drivers/etc/hosts
             if ! grep -q "$MIGRAW_YAML_network_host" $HOSTS; then
-                echo "127.0.0.1 $MIGRAW_YAML_network_host" >> $HOSTS
+                check_for_sudo
+                check_for_sudo echo "127.0.0.1 $MIGRAW_YAML_network_host" >> $HOSTS
             fi
         fi
     fi
+}
+
+function install_mkcert
+{
+    set_path
+    WIN_USERNAME="$(powershell.exe '[Environment]::UserName')"
+    WIN_USERNAME=${WIN_USERNAME//[^[:alnum:]._-]/}
+    mkcert.exe -install
+    export CAROOT=/mnt/c/Users/$WIN_USERNAME/AppData/Local/mkcert
+    mkcert -install
 }
 
 function check_for_sudo {
@@ -1125,6 +1132,9 @@ case $ACTION in
         ;;
     init)
         migraw_init
+        ;;
+    mkcert)
+        install_mkcert
         ;;
     info)
         info
