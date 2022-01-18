@@ -129,6 +129,26 @@ EOL
     mv $1".tmp" $1
 }
 
+function create_php_fpm_configs {
+    mkdir -p `dirname "$1"`
+    read -r -d "" FPM <<EOL
+[global]
+pid = $MIGRAW_CURRENT/php/fpm.pid
+error_log = $MIGRAW_CURRENT/php/fpm.log
+
+[www]
+listen = $MIGRAW_CURRENT/php/fpm.sock
+listen.owner = $USERNAME
+listen.group = $USERNAME
+pm = dynamic
+pm.start_servers = 24
+pm.min_spare_servers = 16
+pm.max_spare_servers = 32
+pm.max_children = 256
+EOL
+echo "$FPM" >> $1
+}
+
 function create_file_my_cnf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
@@ -169,6 +189,9 @@ function create_file_virtual_host_conf {
         AllowOverride All
         Options FollowSymLinks Indexes
     </Directory>
+  <FilesMatch .php$>
+      SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
+  </FilesMatch>
 </VirtualHost>
 
 <VirtualHost *:8050>
@@ -180,6 +203,9 @@ function create_file_virtual_host_conf {
         AllowOverride All
         Options FollowSymLinks Indexes
     </Directory>
+  <FilesMatch .php$>
+      SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
+  </FilesMatch>
 </VirtualHost>
 
 <VirtualHost *:8443>
@@ -194,6 +220,9 @@ function create_file_virtual_host_conf {
         AllowOverride All
         Options FollowSymLinks Indexes
     </Directory>
+  <FilesMatch .php$>
+      SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
+  </FilesMatch>
 </VirtualHost>
 EOL
 
@@ -263,7 +292,7 @@ LoadModule cgi_module $BIN/usr/lib/apache2/modules/mod_cgi.so
 LoadModule dir_module $BIN/usr/lib/apache2/modules/mod_dir.so
 LoadModule env_module $BIN/usr/lib/apache2/modules/mod_env.so
 LoadModule include_module $BIN/usr/lib/apache2/modules/mod_include.so
-LoadModule mpm_prefork_module $BIN/usr/lib/apache2/modules/mod_mpm_prefork.so
+LoadModule mpm_worker_module $BIN/usr/lib/apache2/modules/mod_mpm_worker.so
 LoadModule mime_module $BIN/usr/lib/apache2/modules/mod_mime.so
 LoadModule negotiation_module $BIN/usr/lib/apache2/modules/mod_negotiation.so
 LoadModule rewrite_module $BIN/usr/lib/apache2/modules/mod_rewrite.so
@@ -271,19 +300,11 @@ LoadModule setenvif_module $BIN/usr/lib/apache2/modules/mod_setenvif.so
 LoadModule vhost_alias_module $BIN/usr/lib/apache2/modules/mod_vhost_alias.so
 LoadModule headers_module $BIN/usr/lib/apache2/modules/mod_headers.so
 LoadModule ssl_module $BIN/usr/lib/apache2/modules/mod_ssl.so
+LoadModule proxy_module $BIN/usr/lib/apache2/modules/mod_proxy.so
+LoadModule proxy_fcgi_module $BIN/usr/lib/apache2/modules/mod_proxy_fcgi.so
 
 # ****************************************************************************************************************
 # OTHERS CONFIG
-
-# mpm prefork config
-<IfModule mpm_prefork_module>
-    StartServers 2
-    MinSpareServers 4
-    MaxSpareServers 8
-    MaxClients 16
-    ServerLimit 16
-    MaxRequestsPerChild 32
-</IfModule>
 
 <IfModule dir_module>
     DirectoryIndex index.html index.php index.php5 index.php6
@@ -495,6 +516,7 @@ function install {
             "php$PHP_VERSION-zip"
             "php$PHP_VERSION-imagick"
             "php$PHP_VERSION-xdebug"
+            "php$PHP_VERSION-fpm"
         )
 
         for i in "${PKG[@]}"
@@ -672,6 +694,11 @@ function copy_file_if_target_not_exists {
 }
 
 function stop {
+
+    if [ -f $MIGRAW_CURRENT/php/fpm.pid ]; then
+        start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/php/fpm.pid
+    fi
+
     if [ -f $MIGRAW_CURRENT/mysql/mysql.pid ]; then
         kill -9 `cat "$MIGRAW_CURRENT/mysql/mysql.pid"`
         rm -rf $MIGRAW_CURRENT/mysql/mysql.pid
@@ -809,6 +836,10 @@ function apache_start {
 
     set_path
 
+    # start php fpm
+    create_php_fpm_configs $MIGRAW_CURRENT/php/fpm.conf
+    php-fpm$PHP_VERSION --fpm-config $MIGRAW_CURRENT/php/fpm.conf
+
     BIN_HTTPD="$BIN/usr/sbin/apache2"
 
     mkdir -p $MIGRAW_CURRENT/httpd $MIGRAW_CURRENT/httpd/log $MIGRAW_CURRENT/httpd/sites
@@ -836,16 +867,7 @@ function apache_start {
         -c "Listen $MIGRAW_YAML_network_ip:8443" \
         -c "Include $MIGRAW_CURRENT/httpd/sites/*.conf" \
         -c "CustomLog  $MIGRAW_CURRENT/httpd/log/access.log common" \
-        -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" \
-        $(
-            if  [[ ${PHP_VERSION:0:1} == 8 ]];
-            then
-                echo " -c \"LoadModule php_module $BIN/usr/lib/apache2/modules/libphp$PHP_VERSION.so\""
-            else
-                echo " -c \"LoadModule php${PHP_VERSION:0:1}_module $BIN/usr/lib/apache2/modules/libphp$PHP_VERSION.so\""
-            fi
-        ) \
-        -c "PHPIniDir $MIGRAW_CURRENT/php/" &
+        -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" &
 EOL
 
 echo "$BIN_HTTPD_CMD" > $MIGRAW_CURRENT/httpd/cmd && chmod +x $MIGRAW_CURRENT/httpd/cmd
