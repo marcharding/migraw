@@ -599,6 +599,8 @@ function set_path {
     # set local binaries first
     PATH=$MIGRAW_CURRENT/bin:$PATH
     PATH=$BIN/usr/bin:"$PATH"
+    PATH=$BIN/usr/sbin:"$PATH"
+    PATH=$BIN/opt:"$PATH"
 
     PATH=$MIGRAW_CURRENT/gem/bin:"$PATH"
     PATH=$MIGRAW_CURRENT_BASE/vendor/bin:"$PATH"
