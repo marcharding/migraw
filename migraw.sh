@@ -473,7 +473,6 @@ function install {
     cd $DOWNLOAD
 
     PKG=(
-        "redir"
         "jq"
         "apache2"
         "apache2-bin"
@@ -674,6 +673,7 @@ function start {
     mysql_start init
     apache_start
     mailhog_start
+    authbind_socat_port_redirection
 }
 
 function unpause {
@@ -681,6 +681,7 @@ function unpause {
     mysql_start
     apache_start
     mailhog_start
+    authbind_socat_port_redirection
 }
 
 function clean {
@@ -697,6 +698,14 @@ function stop {
 
     if [ -f $MIGRAW_CURRENT/php/fpm.pid ]; then
         start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/php/fpm.pid
+    fi
+
+    if [ -f $MIGRAW_CURRENT/authbind/authbind-80.pid ]; then
+        start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/authbind/authbind-80.pid
+    fi
+
+    if [ -f $MIGRAW_CURRENT/authbind/authbind-443.pid ]; then
+        start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/authbind/authbind-443.pid
     fi
 
     if [ -f $MIGRAW_CURRENT/mysql/mysql.pid ]; then
@@ -777,6 +786,16 @@ function mailhog_start {
     fi
     mkdir -p $MIGRAW_CURRENT/mailhog/log
     $BIN/opt/MailHog_linux_amd64 > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
+}
+
+function authbind_socat_port_redirection {
+    # authbind and socat must be ready and set up to forward 80 and 443
+    # sudo touch /etc/authbind/byport/{80,443}
+    # sudo chgrp $USERNAME /etc/authbind/byport/{80,443}
+    # sudo chmod 550 /etc/authbind/byport/{80,443}
+    mkdir -p $MIGRAW_CURRENT/authbind
+    authbind socat tcp-l:80,fork,reuseaddr tcp:127.0.0.1:8080 2>&1 & echo "$!" > $MIGRAW_CURRENT/authbind/authbind-80.pid
+    authbind socat tcp-l:443,fork,reuseaddr tcp:127.0.0.1:8443 2>&1 & echo "$!" > $MIGRAW_CURRENT/authbind/authbind-443.pid
 }
 
 function mysql_start {
@@ -875,11 +894,6 @@ PATH="$PATH" LD_LIBRARY_PATH=$LD_LIBRARY_PATH MYSQL_UNIX_PORT=$MYSQL_UNIX_PORT $
 
 }
 
-function setup_port_redirect {
-    check_for_sudo
-    set_path
-    redir :80 :8080
-    redir :443 :8443
 }
 
 # see https://stackoverflow.com/a/38275644
