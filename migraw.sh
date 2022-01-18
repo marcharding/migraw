@@ -805,16 +805,16 @@ function mysql_start {
 
    if [ "$1" == "init" ]; then
        rm -rf $MYSQL_BASE_PATH
-       mkdir -p $MIGRAW_CURRENT/mysql/log
+       mkdir -p $MYSQL_BASE_PATH/log
        mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp $MYSQL_BASE_PATH/log
        chmod -R 777 $MYSQL_BASE_PATH
        create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
        chmod -R 777 $MYSQL_BASE_PATH
        chmod 655 $MYSQL_BASE_PATH/my.cnf
-       PATH="$PATH" LD_LIBRARY_PATH=$LD_LIBRARY_PATH "$BIN/usr/bin/mysql_install_db" --auth-root-authentication-method="normal" --basedir="$BIN/usr" --user="$USER" --lc-messages-dir="$BIN/usr/share/mysql" --datadir=$MYSQL_BASE_PATH/data > $MIGRAW_CURRENT/mysql/log/init.log 2>&1
+       "$BIN/usr/bin/mysql_install_db" --auth-root-authentication-method="normal" --basedir="$BIN/usr" --user="$USER" --lc-messages-dir="$BIN/usr/share/mysql" --datadir=$MYSQL_BASE_PATH/data > $MIGRAW_CURRENT/mysql/log/init.log 2>&1
    fi
 
-  PATH="$PATH" LD_LIBRARY_PATH=$LD_LIBRARY_PATH DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH $BIN_MYSQLD \
+    $BIN_MYSQLD \
      --defaults-file="$MYSQL_BASE_PATH/my.cnf" \
      --lc-messages-dir="$BIN/usr/share/mysql" \
      --log_error="$MIGRAW_CURRENT/mysql/log/log.err" \
@@ -863,7 +863,7 @@ function apache_start {
     mkcert.exe -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
 
     read -r -d "" BIN_HTTPD_CMD <<EOL
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH $BIN_HTTPD \
+    $BIN_HTTPD \
         -f "$MIGRAW_CURRENT/httpd/httpd.conf" \
         -c "PidFile $MIGRAW_CURRENT/httpd/httpd.pid" \
         -c "ServerRoot $BIN/etc/apache2" \
@@ -878,9 +878,7 @@ function apache_start {
 EOL
 
 echo "$BIN_HTTPD_CMD" > $MIGRAW_CURRENT/httpd/cmd && chmod +x $MIGRAW_CURRENT/httpd/cmd
-PATH="$PATH" LD_LIBRARY_PATH=$LD_LIBRARY_PATH MYSQL_UNIX_PORT=$MYSQL_UNIX_PORT $MIGRAW_CURRENT/httpd/cmd &
-
-}
+$MIGRAW_CURRENT/httpd/cmd &
 
 }
 
