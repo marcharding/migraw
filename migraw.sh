@@ -862,13 +862,15 @@ function apache_start {
     mkdir -p $MIGRAW_CURRENT/ssl
     mkcert.exe -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
 
+    SERVER_NAME=$(echo "$MIGRAW_YAML_name" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9-]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
+
     read -r -d "" BIN_HTTPD_CMD <<EOL
     $BIN_HTTPD \
         -f "$MIGRAW_CURRENT/httpd/httpd.conf" \
         -c "PidFile $MIGRAW_CURRENT/httpd/httpd.pid" \
         -c "ServerRoot $BIN/etc/apache2" \
-        -c "ServerName $MIGRAW_YAML_name" \
-        -c "ServerAdmin admin@$MIGRAW_YAML_name" \
+        -c "ServerName $SERVER_NAME" \
+        -c "ServerAdmin admin@$SERVER_NAME" \
         -c "Listen $MIGRAW_YAML_network_ip:8050" \
         -c "Listen $MIGRAW_YAML_network_ip:8080" \
         -c "Listen $MIGRAW_YAML_network_ip:8443" \
