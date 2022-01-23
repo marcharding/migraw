@@ -206,6 +206,9 @@ function create_file_virtual_host_conf {
   <FilesMatch .php$>
       SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
   </FilesMatch>
+  <Location /server-status>
+    SetHandler server-status
+  </Location>
 </VirtualHost>
 
 <VirtualHost *:8443>
@@ -293,6 +296,7 @@ LoadModule dir_module $BIN/usr/lib/apache2/modules/mod_dir.so
 LoadModule env_module $BIN/usr/lib/apache2/modules/mod_env.so
 LoadModule include_module $BIN/usr/lib/apache2/modules/mod_include.so
 LoadModule mpm_worker_module $BIN/usr/lib/apache2/modules/mod_mpm_worker.so
+LoadModule status_module $BIN/usr/lib/apache2/modules/mod_status.so
 LoadModule mime_module $BIN/usr/lib/apache2/modules/mod_mime.so
 LoadModule negotiation_module $BIN/usr/lib/apache2/modules/mod_negotiation.so
 LoadModule rewrite_module $BIN/usr/lib/apache2/modules/mod_rewrite.so
