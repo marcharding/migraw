@@ -146,7 +146,7 @@ pm.min_spare_servers = 16
 pm.max_spare_servers = 32
 pm.max_children = 256
 EOL
-echo "$FPM" >> $1
+echo "$FPM" > $1
 }
 
 function create_file_my_cnf {
