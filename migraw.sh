@@ -119,7 +119,7 @@ extension=xmlwriter.so
 extension=xsl.so
 extension=zip.so
 zend_extension=opcache.so
-zend_extension=xdebug.so
+;zend_extension=xdebug.so
 EOL
 
     LINE=$(grep -n 'extension_dir = "ext"' $1 | cut -d: -f 1)
