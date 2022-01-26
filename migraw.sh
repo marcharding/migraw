@@ -181,7 +181,7 @@ EOL
 function create_file_virtual_host_conf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
-<VirtualHost *:8080>
+<VirtualHost *:8080 *:80>
     AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
@@ -212,7 +212,7 @@ function create_file_virtual_host_conf {
   </Location>
 </VirtualHost>
 
-<VirtualHost *:8443>
+<VirtualHost *:8443 *:443>
 	AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
@@ -674,7 +674,6 @@ function start {
     mysql_start init
     apache_start
     mailhog_start
-    authbind_socat_port_redirection
 }
 
 function unpause {
@@ -682,7 +681,6 @@ function unpause {
     mysql_start
     apache_start
     mailhog_start
-    authbind_socat_port_redirection
 }
 
 function clean {
@@ -699,14 +697,6 @@ function stop {
 
     if [ -f $MIGRAW_CURRENT/php/fpm.pid ]; then
         start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/php/fpm.pid
-    fi
-
-    if [ -f $MIGRAW_CURRENT/authbind/authbind-80.pid ]; then
-        start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/authbind/authbind-80.pid
-    fi
-
-    if [ -f $MIGRAW_CURRENT/authbind/authbind-443.pid ]; then
-        start-stop-daemon --stop --quiet --pidfile $MIGRAW_CURRENT/authbind/authbind-443.pid
     fi
 
     if [ -f $MIGRAW_CURRENT/mysql/mysql.pid ]; then
@@ -789,13 +779,6 @@ function mailhog_start {
     $BIN/opt/MailHog_linux_amd64 > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
 }
 
-function authbind_socat_port_redirection {
-    # authbind and socat must be ready and set up to forward 80 and 443
-    mkdir -p $MIGRAW_CURRENT/authbind
-    authbind socat tcp-l:80,fork,reuseaddr tcp:127.0.0.1:8080 2>&1 & echo "$!" > $MIGRAW_CURRENT/authbind/authbind-80.pid
-    authbind socat tcp-l:443,fork,reuseaddr tcp:127.0.0.1:8443 2>&1 & echo "$!" > $MIGRAW_CURRENT/authbind/authbind-443.pid
-}
-
 function mysql_start {
     if [ "$MIGRAW_YAML_config_mysql" != "true" ]; then
       return
@@ -869,23 +852,38 @@ function apache_start {
 
     SERVER_NAME=$(echo "$MIGRAW_YAML_name" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9-]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
 
+    AUTHBIND_AVAILABLE=$(check_authbind_and_ports)
+
     read -r -d "" BIN_HTTPD_CMD <<EOL
-    $BIN_HTTPD \
-        -f "$MIGRAW_CURRENT/httpd/httpd.conf" \
-        -c "PidFile $MIGRAW_CURRENT/httpd/httpd.pid" \
-        -c "ServerRoot $BIN/etc/apache2" \
-        -c "ServerName $SERVER_NAME" \
-        -c "ServerAdmin admin@$SERVER_NAME" \
-        -c "Listen $MIGRAW_YAML_network_ip:8050" \
-        -c "Listen $MIGRAW_YAML_network_ip:8080" \
-        -c "Listen $MIGRAW_YAML_network_ip:8443" \
-        -c "Include $MIGRAW_CURRENT/httpd/sites/*.conf" \
-        -c "CustomLog  $MIGRAW_CURRENT/httpd/log/access.log common" \
-        -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" &
+        $(
+            if [ -n "$AUTHBIND_AVAILABLE" ]; then
+                echo "authbind"
+            fi
+        ) \
+        $BIN_HTTPD \
+            -f "$MIGRAW_CURRENT/httpd/httpd.conf" \
+            -c "PidFile $MIGRAW_CURRENT/httpd/httpd.pid" \
+            -c "ServerRoot $BIN/etc/apache2" \
+            -c "ServerName $SERVER_NAME" \
+            -c "ServerAdmin admin@$SERVER_NAME" \
+            $(
+                if [ -n "$AUTHBIND_AVAILABLE" ]; then
+                    printf %s " -c \"Listen $MIGRAW_YAML_network_ip:8050\""
+                    printf %s " -c \"Listen $MIGRAW_YAML_network_ip:80\""
+                    printf %s " -c \"Listen $MIGRAW_YAML_network_ip:443 \""
+                else
+                    printf %s " -c \"Listen $MIGRAW_YAML_network_ip:8050\""
+                    printf %s " -c \"Listen $MIGRAW_YAML_network_ip:8080\""
+                    printf %s " -c \"Listen $MIGRAW_YAML_network_ip:8443 \""
+                fi
+            ) \
+            -c "Include $MIGRAW_CURRENT/httpd/sites/*.conf" \
+            -c "CustomLog  $MIGRAW_CURRENT/httpd/log/access.log common" \
+            -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" &
 EOL
 
-echo "$BIN_HTTPD_CMD" > $MIGRAW_CURRENT/httpd/cmd && chmod +x $MIGRAW_CURRENT/httpd/cmd
-$MIGRAW_CURRENT/httpd/cmd &
+    echo "$BIN_HTTPD_CMD" > $MIGRAW_CURRENT/httpd/cmd && chmod +x $MIGRAW_CURRENT/httpd/cmd
+    $MIGRAW_CURRENT/httpd/cmd &
 
 }
 
@@ -995,6 +993,14 @@ function check_for_sudo {
     if ! sudo -n true 2>/dev/null; then
         sudo -v
         echo ""
+    fi
+}
+
+function check_authbind_and_ports {
+    if command -v authbind &> /dev/null; then
+        if [[ -x /etc/authbind/byport/80 && -x /etc/authbind/byport/443 ]];
+            then echo "Authbind available and ports forwarded"
+        fi
     fi
 }
 
