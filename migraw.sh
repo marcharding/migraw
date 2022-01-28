@@ -932,7 +932,7 @@ function self_update {
         exit 1
     fi
 
-    if mv "$0.tmp" "$FILE"; then
+    if mv -f "$0.tmp" "$FILE"; then
         echo -e "${COLOR_CYAN}Update complete.${COLOR_NC}\n"
     else
         echo -e "${COLOR_PURPLE}Update failed while moving update file.${COLOR_NC}\n"
