@@ -619,10 +619,14 @@ function set_path {
     ln -rsf $BIN/opt/node-$NODE_VERSION/bin/node $MIGRAW_CURRENT/bin/node
     ln -rsf $BIN/opt/node-$NODE_VERSION/bin/npm $MIGRAW_CURRENT/bin/npm
 
+    # Composer home
+    COMPOSER_HOME=$SCRIPT_BASE/migraw/var/migraw
+
     # set local binaries first
     PATH=$MIGRAW_CURRENT/bin:$PATH
     PATH=$BIN/usr/bin:"$PATH"
     PATH=$BIN/usr/sbin:"$PATH"
+    PATH=$COMPOSER_HOME/vendor/bin:"$PATH"
     PATH=$BIN/opt:"$PATH"
 
     PATH=$MIGRAW_CURRENT/gem/bin:"$PATH"
@@ -649,9 +653,6 @@ function set_path {
     NPM_CONFIG_PREFIX=$MIGRAW_CURRENT/npm
     NPM_CONFIG_CACHE=$MIGRAW_CURRENT/npm/npm-cache
     NPM_CONFIG_USERCONFIG=$MIGRAW_CURRENT/npm
-
-    # Composer home
-    COMPOSER_HOME=$SCRIPT_BASE/migraw/var
 
     # zsh shell home
     ZDOTDIR=$MIGRAW_CURRENT/shell
