@@ -76,7 +76,7 @@ To forward ports 8080 and 8443 to 80 and 443
 
 ```bash
 sudo touch /etc/authbind/byport/{80,443}
-sudo chgrp $USERNAME /etc/authbind/byport/{80,443}
+sudo chgrp $USER /etc/authbind/byport/{80,443}
 sudo chmod 550 /etc/authbind/byport/{80,443}
 ```
 
