@@ -361,7 +361,7 @@ function migraw_init {
     if [ ! -f  $MIGRAW_CURRENT_BASE/migraw.yml ]; then
     cat > $MIGRAW_CURRENT_BASE/migraw.yml << EOL
 name: migraw.default
-document_root: web
+document_root: public
 network:
 	ip: 127.0.0.1
 	host: migraw.default.com
@@ -390,14 +390,18 @@ trap - DEBUG
 EOL
     fi
 
-    if [ ! -f  $MIGRAW_CURRENT_BASE/destroy.sh ]; then
+    chmod + $MIGRAW_CURRENT_BASE/init.sh
+
+    if [ ! -f $MIGRAW_CURRENT_BASE/destroy.sh ]; then
     cat > $MIGRAW_CURRENT_BASE/destroy.sh << EOL
 # set -o xtrace
 trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: $BASH_COMMAND" && echo -e "\e[0m"' DEBUG
-mysqldump -h127.0.0.1  --opt -uroot application -r application_$(date '+%Y%m%d_%H%M%S').sql
+mysqldump -h127.0.0.1 --opt --hex-blob -uroot application -r application_$(date '+%Y%m%d_%H%M%S').sql
 trap - DEBUG
 EOL
     fi
+
+    chmod + $MIGRAW_CURRENT_BASE/destroy.sh
 }
 
 function find_migraw_yaml {
