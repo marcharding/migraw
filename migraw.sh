@@ -34,7 +34,7 @@ function create_file_php_ini {
     sed -i "s|;opcache.enable=1|opcache.enable=1|g" $1
     sed -i "s|;opcache.enable_cli=0|opcache.enable_cli=1|g" $1
 
-    echo "upload_max_filesize = 512MB" >> $1
+    echo "upload_max_filesize = 512M" >> $1
 
     mkdir -p $MIGRAW_CURRENT/php/tmp
 
