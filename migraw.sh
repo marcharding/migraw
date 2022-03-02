@@ -961,6 +961,7 @@ Commands:
   $(echo -e "${COLOR_GREEN}resume|unpause${COLOR_NC}")      Resume migraw instance.
   $(echo -e "${COLOR_GREEN}bash [cmd]${COLOR_NC}")          Spawns a bash shell within the current migraw enviroment with an optional [cmd].
   $(echo -e "${COLOR_GREEN}zsh [cmd]${COLOR_NC}")           Spawns a zsh shell within the current migraw enviroment  with an optional [cmd].
+  $(echo -e "${COLOR_GREEN}exec [cmd]${COLOR_NC}")          Execute command.
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
   $(echo -e "${COLOR_GREEN}selfupdate${COLOR_NC}")          Update migraw
   $(echo -e "${COLOR_GREEN}init${COLOR_NC}")                Update create demo migraw.yml, init.sh and destroy.sh
@@ -1050,14 +1051,19 @@ if [ "$MIGRAW_YAML" != "" ]; then
     MIGRAW_CURRENT=$(dirname "$MIGRAW_YAML")/.migraw
     MIGRAW_CURRENT_BASE=$(dirname "$MIGRAW_YAML")
 else
-    MIGRAW_CURRENT=$PWD/.migraw
-    MIGRAW_CURRENT_BASE=$PWD
+    TMP_MIGRAW_CURRENT=$SCRIPT_BASE/migraw-data/tmp/$(echo $RANDOM | md5sum | head -c 16)
+    mkdir -p $TMP_MIGRAW_CURRENT
+    MIGRAW_CURRENT=$TMP_MIGRAW_CURRENT/.migraw
+    MIGRAW_CURRENT_BASE=$TMP_MIGRAW_CURRENT
 fi
 
 AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 if [ "$MIGRAW_YAML_config_php" != "" ]; then
     PHP_VERSION=$MIGRAW_YAML_config_php
+fi
+if [ "$MIGRAW_PHP" != "" ]; then
+    PHP_VERSION=$MIGRAW_PHP
 fi
 
 AVAILABLE_NODE_VERSIONS=("12" "14" "16")
@@ -1120,6 +1126,10 @@ case $ACTION in
         set_path
         spawn_zsh "$2"
         ;;
+    exec)
+        set_path
+        spawn_zsh "$2"
+        ;;
     redir)
         setup_port_redirect
         port
@@ -1152,3 +1162,8 @@ case $ACTION in
         usage
         ;;
 esac
+
+# cleanup migraw temp folder
+if [ -d "$TMP_MIGRAW_CURRENT" ]; then
+    rm -rf $TMP_MIGRAW_CURRENT
+fi
