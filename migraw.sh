@@ -49,30 +49,39 @@ function create_file_php_ini {
     case "$PHP_VERSION" in
         "8.1")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20210902
+          PHP_API=20210902
         ;;
         "8.0")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20200930
+          PHP_API=20200930
         ;;
         "7.4")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20190902
+          PHP_API=20190902
         ;;
         "7.3")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20180731
+          PHP_API=20180731
         ;;
         "7.2")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20170718
+          PHP_API=20170718
         ;;
         "7.1")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20160303
+          PHP_API=20160303
         ;;
         "7.0")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20151012
+          PHP_API=20151012
         ;;
         "5.6")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20131226
+          PHP_API=20131226
         ;;
         *)
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20210902
+          PHP_API=20210902
     esac
 
     read -r -d "" EXT <<EOL
@@ -119,7 +128,16 @@ extension=xmlwriter.so
 extension=xsl.so
 extension=zip.so
 zend_extension=opcache.so
-;zend_extension=xdebug.so
+$(
+    if [ "$MIGRAW_XDEBUG" = "1" ]; then
+        echo "zend_extension=xdebug.so"
+    fi
+)
+$(
+    if [ "$MIGRAW_BLACKFIRE" = "1" ]; then
+        echo "extension=$BIN/usr/lib/blackfire-php/amd64/blackfire-$PHP_API.so"
+    fi
+)
 EOL
 
     LINE=$(grep -n 'extension_dir = "ext"' $1 | cut -d: -f 1)
@@ -484,6 +502,8 @@ function install {
         "mariadb-common"
         "mariadb-client"
         "mariadb-server"
+        "blackfire-php"
+        "blackfire"
     )
 
     for i in "${PKG[@]}"
