@@ -486,6 +486,12 @@ function install {
 
     echo "Installing/Downloading."
 
+    # checking for sudo
+    check_for_sudo
+
+    # update apt so all current downloads are working
+    sudo apt-get update
+
     rm -rf $DOWNLOAD
     rm -rf $BIN
 
