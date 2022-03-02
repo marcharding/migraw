@@ -55,7 +55,7 @@ sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
 ```bash
 sudo add-apt-repository ppa:ondrej/php -y
-sudo apt-get update
+sudo apt update
 ```
 
 #### Blackfire
@@ -69,7 +69,7 @@ sudo apt update
 ### Install needed packages globally
 
 ```bash
-apt-get install authbind socat imagemagick
+apt-get install authbind imagemagick
 ```
 
 To forward ports 8080 and 8443 to 80 and 443
