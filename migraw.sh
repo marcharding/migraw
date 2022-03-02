@@ -657,6 +657,7 @@ function set_path {
     PATH=$BIN/usr/bin:"$PATH"
     PATH=$BIN/usr/sbin:"$PATH"
     PATH=$COMPOSER_HOME/vendor/bin:"$PATH"
+    PATH=$MIGRAW_CURRENT/npm/bin:"$PATH"
     PATH=$BIN/opt:"$PATH"
 
     PATH=$MIGRAW_CURRENT/gem/bin:"$PATH"
