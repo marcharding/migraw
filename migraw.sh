@@ -199,7 +199,7 @@ EOL
 function create_file_virtual_host_conf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
-<VirtualHost *:8080 *:80>
+<VirtualHost *:80 *:8080>
     AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
@@ -230,7 +230,7 @@ function create_file_virtual_host_conf {
   </Location>
 </VirtualHost>
 
-<VirtualHost *:8443 *:443>
+<VirtualHost *:443 *:8443>
 	AcceptPathInfo On
     UseCanonicalName Off
     ServerAlias *
