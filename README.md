@@ -9,7 +9,7 @@ Portable (web)development enviroments on wsl2 with ubuntu/debian as an lightweig
 Just download the script to a folder and add a symlink to you path for easier access.
 
 ```bash
-$A_FOLDER_YOU_LIKE=$HOME/migraw
+A_FOLDER_YOU_LIKE=$HOME/migraw
 mkdir -p $A_FOLDER_YOU_LIKE
 sudo curl -s -H 'Cache-Control: no-cache' "https://raw.githubusercontent.com/marcharding/migraw/main-dpkg/migraw.sh" --output "$A_FOLDER_YOU_LIKE/migraw.sh"
 sudo chmod +x $A_FOLDER_YOU_LIKE/migraw.sh
@@ -26,7 +26,7 @@ Add this to `%UserProfile%/.wslconfig`:
 [wsl2]
 memory=4GB
 processors=4
-generateResolvConf = true
+generateResolvConf=true
 ```
 
 See https://docs.microsoft.com/en-us/windows/wsl/wsl-config#set-wsl-launch-settings for further info.

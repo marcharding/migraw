@@ -703,6 +703,7 @@ function set_path {
 
 function start {
     set_path
+    update_hosts
     mysql_start init
     apache_start
     mailhog_start
@@ -710,6 +711,7 @@ function start {
 
 function unpause {
     set_path
+    update_hosts
     mysql_start
     apache_start
     mailhog_start
