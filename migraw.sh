@@ -509,6 +509,9 @@ function install {
         "mariadb-client"
         "mariadb-server"
         "zlib1g-dev"
+        "autoconf"
+        "make"
+        "shtool"
         "blackfire-php"
         "blackfire"
     )
