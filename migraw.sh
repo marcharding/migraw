@@ -508,6 +508,7 @@ function install {
         "mariadb-common"
         "mariadb-client"
         "mariadb-server"
+        "zlib1g-dev"
         "blackfire-php"
         "blackfire"
     )
@@ -547,6 +548,7 @@ function install {
             "php$PHP_VERSION-imagick"
             "php$PHP_VERSION-xdebug"
             "php$PHP_VERSION-fpm"
+            "php$PHP_VERSION-dev"
         )
 
         for i in "${PKG[@]}"
