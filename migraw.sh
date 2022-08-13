@@ -357,7 +357,7 @@ function install {
 
     set_path
 
-    $HOMEBREW_HOME/bin/brew brew tap shivammathur/php
+    $HOMEBREW_HOME/bin/brew tap shivammathur/php
 
     $HOMEBREW_HOME/bin/brew install wget
     $HOMEBREW_HOME/bin/brew install curl
@@ -373,7 +373,7 @@ function install {
 
     $HOMEBREW_HOME/bin/brew install mysql@5.7
     $HOMEBREW_HOME/bin/brew install mysql@8.0
-    $HOMEBREW_HOME/bin/brew brew install mariadb@10.3
+    $HOMEBREW_HOME/bin/brew install mariadb@10.3
 
     $HOMEBREW_HOME/bin/brew install node@12
     $HOMEBREW_HOME/bin/brew install node@14
