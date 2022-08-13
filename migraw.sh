@@ -42,7 +42,9 @@ function create_file_php_ini {
     echo "sys_temp_dir = $MIGRAW_CURRENT/php/tmp" >> $1
     echo "session.save_path = $MIGRAW_CURRENT/php/session" >> $1
     echo "max_input_vars = 4096" >> $1
-    echo 'date.timezone= "Europe/Berlin"' >> $1  
+    echo 'date.timezone = "Europe/Berlin"' >> $1
+
+    echo "extension='/opt/homebrew/opt/imagick@$PHP_VERSION/imagick.so'" >> $1
 }
 
 function create_file_my_cnf {
@@ -358,6 +360,7 @@ function install {
     set_path
 
     $HOMEBREW_HOME/bin/brew tap shivammathur/php
+    $HOMEBREW_HOME/bin/brew tap shivammathur/extensions
 
     $HOMEBREW_HOME/bin/brew install wget
     $HOMEBREW_HOME/bin/brew install curl
@@ -367,7 +370,14 @@ function install {
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.3
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.4
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.0
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.1
     # TODO: Add a check for reinstalling/updating
+
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.2
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.3
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.4
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.0
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.1
 
     $HOMEBREW_HOME/bin/brew install httpd
 
