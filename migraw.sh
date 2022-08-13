@@ -426,7 +426,7 @@ function set_path {
     ADMINER_HOME=$MIGRAW_HOME/adminer
 
     PHP_HOME=$HOMEBREW_HOME/opt/php@$PHP_VERSION/
-    MYSQL_HOME=$HOMEBREW_HOME/opt/mysql@5.7/
+    MYSQL_HOME=$HOMEBREW_HOME/opt/mariadb@10.3/
     NODE_HOME=$HOMEBREW_HOME/opt/node@$NODE_VERSION
     NPM_CONFIG_PREFIX=$NODE_HOME/lib/node_modules
     APACHE_HOME=$HOMEBREW_HOME/opt/httpd
@@ -563,10 +563,11 @@ function mailhog_start {
     $MAILHOG > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
 }
 
-function mysql_start {
+# TOOD: Add support for mysql and mariadb
+function mysql_start_old {
 
     BIN_MYSQL=./bin/mysqld_safe
-    
+
     MYSQL_BASE_PATH=$MIGRAW_CURRENT/mysql
 
     if [ "$1" = "init" ]; then
@@ -595,8 +596,56 @@ function mysql_start {
 
 }
 
-function apache_start {
+function mysql_start {
+    if [ "$MIGRAW_YAML_config_mysql" != "true" ]; then
+      return
+    fi
 
+    set_path
+
+    BIN_MYSQLD="/opt/homebrew/opt/mariadb@10.3/bin/mysqld_safe"
+
+    # for wsl mysql stuff must be inside the wsl filesystem
+    MYSQL_BASE_PATH=$MIGRAW_CURRENT/mysql
+
+   if [ "$1" = "init" ]; then
+       rm -rf $MYSQL_BASE_PATH
+       mkdir -p $MYSQL_BASE_PATH/log
+       mkdir -p $MYSQL_BASE_PATH/data $MYSQL_BASE_PATH/secure $MYSQL_BASE_PATH/tmp $MYSQL_BASE_PATH/log
+       chmod -R 777 $MYSQL_BASE_PATH
+       create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
+       chmod -R 777 $MYSQL_BASE_PATH
+       chmod 655 $MYSQL_BASE_PATH/my.cnf
+       
+       "/opt/homebrew/opt/mariadb@10.3/bin/mysql_install_db" --auth-root-authentication-method="normal" --basedir="$MYSQL_HOME" --user="$USER" --lc-messages-dir="$MYSQL_HOME/share/mysql" --datadir=$MYSQL_BASE_PATH/data > $MIGRAW_CURRENT/mysql/log/init.log 2>&1
+   fi
+
+    $BIN_MYSQLD \
+     --defaults-file="$MYSQL_BASE_PATH/my.cnf" \
+     --lc-messages-dir="$BIN/usr/share/mysql" \
+     --log_error="$MIGRAW_CURRENT/mysql/log/log.err" \
+     --pid_file="$MIGRAW_CURRENT/mysql/mysql.pid" \
+     --basedir="$MYSQL_BASE_PATH" \
+     --secure_file_priv="$MYSQL_BASE_PATH/secure" \
+     --tmpdir="$MYSQL_BASE_PATH/tmp" \
+     --datadir="$MYSQL_BASE_PATH/data" \
+     --socket="$MYSQL_BASE_PATH/mysql.sock" \
+     --user="$USER" >> $MIGRAW_CURRENT/mysql/log/init.log 2>&1 &
+
+    counter=1
+    while ! /opt/homebrew/opt/mariadb@10.3/bin/mysql -h127.0.0.1 -uroot -e "show databases;" > /dev/null 2>&1; do
+        sleep 1
+        counter=`expr $counter + 1`
+        if [ $counter -gt 30 ]; then
+            echo "We have been waiting for MySQL too long already; failing."
+            exit 1
+        fi
+    done
+
+    return 0
+}
+
+function apache_start {
     if [ "$MIGRAW_YAML_config_apache" != "true" ]; then
         return
     fi
