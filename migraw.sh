@@ -354,28 +354,33 @@ parse_yaml() {
 }
 
 function install {
-   
+
     set_path
+
+    $HOMEBREW_HOME/bin/brew brew tap shivammathur/php
 
     $HOMEBREW_HOME/bin/brew install wget
     $HOMEBREW_HOME/bin/brew install curl
+    $HOMEBREW_HOME/bin/brew install md5sha1sum
 
-    $HOMEBREW_HOME/bin/brew install php@7.2
-    # 7.3 not available on homebrew 
-    # $HOMEBREW_HOME/bin/brew install php@7.3
-    $HOMEBREW_HOME/bin/brew install php@7.4
-    $HOMEBREW_HOME/bin/brew install php@8.0
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.2
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.3
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.4
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.0
+    # TODO: Add a check for reinstalling/updating
 
     $HOMEBREW_HOME/bin/brew install httpd
 
     $HOMEBREW_HOME/bin/brew install mysql@5.7
     $HOMEBREW_HOME/bin/brew install mysql@8.0
+    $HOMEBREW_HOME/bin/brew brew install mariadb@10.3
 
     $HOMEBREW_HOME/bin/brew install node@12
     $HOMEBREW_HOME/bin/brew install node@14
     $HOMEBREW_HOME/bin/brew install node@16
+    $HOMEBREW_HOME/bin/brew install node@18
 
-    $HOMEBREW_HOME/bin/brew install imagemagik
+    # $HOMEBREW_HOME/bin/brew install imagemagik
 
     wget https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types -O $MIGRAW_HOME/mime.types
 
@@ -486,35 +491,23 @@ function clean {
 function kill_process_by_pid_file {
     if [ -f $1 ]; then
         PID=`cat "$1" | tr -dc '0-9'`
-        PGID=$(ps -o pgid= $PID | grep -o '[0-9]*')
-
-        if [ -n "$PGID" ]; then
-            PID=PGID
-            kill -9 -$PID
-        else
-            kill -9 $PID
-        fi
-
-        counter=1
-        while $(kill -0 $PID 2>/dev/null); do 
-            sleep 1
-            counter=`expr $counter + 1`        
-            if [ $counter -gt 30 ]; then
-                echo "We have been waiting for MySQL too long already; failing."
-                exit 1
-            fi            
-        done
-        
+        kill -9 $PID
         rm -rf $1
     fi
 }
 
+function kill_apache {
+    FILE=$MIGRAW_CURRENT/httpd/httpd.pid
+    if [ -f $FILE ]; then
+        kill -TERM `cat $FILE`
+        rm -rf $FILE
+    fi
+}
+
 function stop {
-
     kill_process_by_pid_file $MIGRAW_CURRENT/mysql/mysql.pid
-    kill_process_by_pid_file $MIGRAW_CURRENT/httpd/httpd.pid
+    kill_apache
     kill_process_by_pid_file $MIGRAW_CURRENT/mailhog/mailhog.pid
-
 }
 
 function prepare_shell {
