@@ -568,8 +568,11 @@ function spawn_zsh {
         env -i WSLENV=$WSLENV PHPRC=$PHPRC PHP_INI_SCAN_DIR=$PHP_INI_SCAN_DIR TERM=$TERM SSH_AUTH_SOCK=$SSH_AUTH_SOCK MYSQL_HOME=$MYSQL_HOME PATH=$PATH COMPOSER_HOME=$COMPOSER_HOME NODE_HOME=$NODE_HOME NPM_CONFIG_PREFIX=$NPM_CONFIG_PREFIX HOME=$HOME zsh "$1"
     else
         mkdir -p $MIGRAW_CURRENT/shell
-        cp -f ~/.zshrc $MIGRAW_CURRENT/shell/.zshrc
+        if [ -f ~/.zshrc ]; then
+            cp -f ~/.zshrc $MIGRAW_CURRENT/shell/.zshrc
+        fi
         read -r -d "" ZSHRC <<EOL
+        PROMPT='%F{cyan}${MIGRAW_YAML_name}%f %# '
 function prompt_migraw_env() {
     p10k segment -f 208 -i '' -t '${MIGRAW_YAML_name}'
 };
