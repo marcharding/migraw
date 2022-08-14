@@ -86,20 +86,6 @@ function create_file_virtual_host_conf {
     mkdir -p `dirname "$1"`
     rm -rf $1
 
-    if [ "$(id -u)" != 0 ]; then
-    cat >> $1 << EOL
-<VirtualHost *:8080>
-    AcceptPathInfo On
-    UseCanonicalName Off
-    ServerAlias *
-    DocumentRoot "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root"
-    <Directory "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root">
-        AllowOverride All
-        Options FollowSymLinks Indexes
-    </Directory>
-</VirtualHost>
-EOL
-    else
     cat >> $1 << EOL
 <VirtualHost *:80>
     AcceptPathInfo On
@@ -112,7 +98,6 @@ EOL
     </Directory>
 </VirtualHost>
 EOL
-    fi
 
     cat >> $1 << EOL
 <VirtualHost *:8050>
@@ -674,14 +659,8 @@ function apache_start {
         -c "ServerRoot $APACHE_HOME" \
         -c "ServerName $MIGRAW_YAML_name" \
         -c "ServerAdmin admin@$MIGRAW_YAML_name" \
-        $(
-            if [ "$(id -u)" != 0 ];
-            then
-                echo " -c \"Listen $MIGRAW_YAML_network_ip:8080\" -c \"Listen $MIGRAW_YAML_network_ip:8443\""
-            else
-                echo " -c \"Listen $MIGRAW_YAML_network_ip:80\" -c \"Listen $MIGRAW_YAML_network_ip:443\""
-            fi
-        ) \
+        -c "Listen 0.0.0.0:80" \
+        -c "Listen 0.0.0.0:443" \
         -c "Listen $MIGRAW_YAML_network_ip:8050" \
         -c "Include $MIGRAW_CURRENT/httpd/sites/*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" \
@@ -862,9 +841,6 @@ case $ACTION in
         fi
         echo -e "\n${COLOR_CYAN}Starting migraw${COLOR_NC}\n"
         update_hosts
-        if [ "$(id -u)" != 0 ]; then
-            echo -e "${COLOR_PURPLE}No root, apache will start on Port 8080 and 8443.${COLOR_NC}\n"
-        fi
         # https://askubuntu.com/a/357222
         execute_with_progress_spinner "start"
         INIT_SCRIPTS=("${MIGRAW_YAML_start[@]}" "${MIGRAW_YAML_init[@]}" "${MIGRAW_YAML_exec[@]}")
