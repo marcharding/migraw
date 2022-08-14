@@ -677,8 +677,6 @@ function apache_start {
         return
     fi
 
-    set_path
-
     # start php fpm
     create_php_fpm_configs $MIGRAW_CURRENT/php/fpm.conf
     $MIGRAW_CURRENT/bin/php-fpm --fpm-config $MIGRAW_CURRENT/php/fpm.conf
