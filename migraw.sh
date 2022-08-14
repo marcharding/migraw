@@ -915,10 +915,6 @@ case $ACTION in
         set_path
         spawn_zsh "$2"
         ;;
-    bash)
-        set_path
-        spawn_zsh "$2"
-        ;;
     zsh)
         set_path
         spawn_zsh "$2"
