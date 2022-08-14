@@ -47,6 +47,27 @@ function create_file_php_ini {
     echo "extension='/opt/homebrew/opt/imagick@$PHP_VERSION/imagick.so'" >> $1
 }
 
+function create_php_fpm_configs {
+    mkdir -p `dirname "$1"`
+    GROUP=$(id -g -n)
+    read -r -d "" FPM <<EOL
+[global]
+pid = $MIGRAW_CURRENT/php/fpm.pid
+error_log = $MIGRAW_CURRENT/php/fpm.log
+
+[www]
+listen = $MIGRAW_CURRENT/php/fpm.sock
+listen.owner = $USERNAME
+listen.group = $GROUP
+pm = dynamic
+pm.start_servers = 4
+pm.min_spare_servers = 2
+pm.max_spare_servers = 4
+pm.max_children = 24
+EOL
+echo "$FPM" > $1
+}
+
 function create_file_my_cnf {
     mkdir -p `dirname "$1"`
     cat > $1 << EOL
@@ -96,6 +117,9 @@ function create_file_virtual_host_conf {
         AllowOverride All
         Options FollowSymLinks Indexes
     </Directory>
+   <FilesMatch .php$>
+       SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
+   </FilesMatch>
 </VirtualHost>
 EOL
 
@@ -109,6 +133,9 @@ EOL
         AllowOverride All
         Options FollowSymLinks Indexes
     </Directory>
+    <FilesMatch .php$>
+        SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
+    </FilesMatch>
 </VirtualHost>
 EOL
 }
@@ -188,6 +215,9 @@ LoadModule headers_module $APACHE_HOME/lib/httpd/modules/mod_headers.so
 LoadModule ssl_module $APACHE_HOME/lib/httpd/modules/mod_ssl.so
 LoadModule unixd_module $APACHE_HOME/lib/httpd/modules/mod_unixd.so
 LoadModule mpm_prefork_module $APACHE_HOME/lib/httpd/modules/mod_mpm_prefork.so
+LoadModule proxy_module $APACHE_HOME/lib/httpd/modules/mod_proxy.so
+LoadModule proxy_fcgi_module $APACHE_HOME/lib/httpd/modules/mod_proxy_fcgi.so
+
 # ****************************************************************************************************************
 # OTHERS CONFIG
 
@@ -467,6 +497,7 @@ function set_path {
 
 function start {
     set_path
+    prepare_shell
     mysql_start init
     apache_start
     mailhog_start
@@ -474,6 +505,7 @@ function start {
 
 function unpause {
     set_path
+    prepare_shell
     mysql_start
     apache_start
     mailhog_start
@@ -513,6 +545,11 @@ cat > $MIGRAW_CURRENT/bin/php << EOL
     $PHP_HOME/bin/php "\$@"
 EOL
 chmod +x $MIGRAW_CURRENT/bin/php
+
+cat > $MIGRAW_CURRENT/bin/php-fpm << EOL
+    $PHP_HOME/sbin/php-fpm "\$@"
+EOL
+chmod +x $MIGRAW_CURRENT/bin/php-fpm
 
 cat > $MIGRAW_CURRENT/bin/composer << EOL
     $PHP_HOME/bin/php /opt/homebrew/opt/composer/bin/composer "\$@"
@@ -645,6 +682,12 @@ function apache_start {
         return
     fi
 
+    set_path
+
+    # start php fpm
+    create_php_fpm_configs $MIGRAW_CURRENT/php/fpm.conf
+    $MIGRAW_CURRENT/bin/php-fpm --fpm-config $MIGRAW_CURRENT/php/fpm.conf
+
     mkdir -p $MIGRAW_CURRENT/httpd $MIGRAW_CURRENT/httpd/log $MIGRAW_CURRENT/httpd/sites
 
     create_file_httpd_conf $MIGRAW_CURRENT/httpd/httpd.conf
@@ -664,16 +707,7 @@ function apache_start {
         -c "Listen $MIGRAW_YAML_network_ip:8050" \
         -c "Include $MIGRAW_CURRENT/httpd/sites/*.conf" \
         -c "ErrorLog $MIGRAW_CURRENT/httpd/log/error.log" \
-        -c "TypesConfig $MIME_TYPES" \
-        $(
-            if  [[ ${PHP_VERSION:0:1} == 8 ]];
-            then
-                echo " -c \"LoadModule php_module $PHP_HOME/lib/httpd/modules/libphp.so\""
-            else
-                echo " -c \"LoadModule php${PHP_VERSION:0:1}_module $PHP_HOME/lib/httpd/modules/libphp${PHP_VERSION:0:1}.so\""
-            fi
-        ) \
-        -c "PHPIniDir $MIGRAW_CURRENT/php" &
+        -c "TypesConfig $MIME_TYPES" &
 EOL
 
 echo "$BIN_HTTPD_CMD" | tr -s ' ' > $MIGRAW_CURRENT/httpd/httpd.start
