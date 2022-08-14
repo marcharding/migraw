@@ -826,6 +826,9 @@ OPTION="${2//-}"
 # base dir
 BASE="$( cd "$(dirname "$0")" ; pwd -P )"
 
+# script origin base dir
+SCRIPT_BASE="${0:a:h}"
+
 # .migraw base
 MIGRAW_BASE=$BASE/.migraw
 
@@ -835,9 +838,10 @@ if [ "$MIGRAW_YAML" != "" ]; then
     MIGRAW_CURRENT=$(dirname "$MIGRAW_YAML")/.migraw
     MIGRAW_CURRENT_BASE=$(dirname "$MIGRAW_YAML")
 else
-    MIGRAW_YAML_NOT_FOUND=1
-    MIGRAW_CURRENT=$PWD/.migraw
-    MIGRAW_CURRENT_BASE=$PWD
+    TMP_MIGRAW_CURRENT=$SCRIPT_BASE/migraw-data/tmp/$(echo $RANDOM | md5sum | head -c 16)
+    mkdir -p $TMP_MIGRAW_CURRENT
+    MIGRAW_CURRENT=$TMP_MIGRAW_CURRENT/.migraw
+    MIGRAW_CURRENT_BASE=$TMP_MIGRAW_CURRENT
 fi
 
 if [ $MIGRAW_YAML_NOT_FOUND ]; then
@@ -946,3 +950,8 @@ case $ACTION in
         usage
         ;;
 esac
+
+# cleanup migraw temp folder
+if [ -d "$TMP_MIGRAW_CURRENT" ]; then
+    rm -rf $TMP_MIGRAW_CURRENT
+fi
