@@ -518,22 +518,15 @@ function clean {
 function kill_process_by_pid_file {
     if [ -f $1 ]; then
         PID=`cat "$1" | tr -dc '0-9'`
-        kill -9 $PID
+        kill -TERM $PID
         rm -rf $1
     fi
 }
 
-function kill_apache {
-    FILE=$MIGRAW_CURRENT/httpd/httpd.pid
-    if [ -f $FILE ]; then
-        kill -TERM `cat $FILE`
-        rm -rf $FILE
-    fi
-}
-
 function stop {
+    kill_process_by_pid_file $MIGRAW_CURRENT/php/fpm.pid
     kill_process_by_pid_file $MIGRAW_CURRENT/mysql/mysql.pid
-    kill_apache
+    kill_process_by_pid_file $MIGRAW_CURRENT/httpd/httpd.pid
     kill_process_by_pid_file $MIGRAW_CURRENT/mailhog/mailhog.pid
 }
 
