@@ -4,7 +4,7 @@
 VERSION="0.0.0.1-"$(basename "$0.tmp" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
 # update urls
-UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/osx/migraw.sh";
+UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/macos/migraw.sh";
 
 # colors
 COLOR_NC='\e[0m'
