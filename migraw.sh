@@ -911,9 +911,6 @@ case $ACTION in
         ;&
     unpause)
         echo -e "\n${COLOR_CYAN}Unpause migraw.${COLOR_NC}\n"
-        if [ "$(id -u)" != 0 ]; then
-            echo -e "${COLOR_PURPLE}No root, apache will start on Port 8080 and 8443.${COLOR_NC}\n"
-        fi
         execute_with_progress_spinner "unpause"
         ;;
     shell)
