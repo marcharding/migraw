@@ -64,6 +64,7 @@ pm.start_servers = 4
 pm.min_spare_servers = 2
 pm.max_spare_servers = 4
 pm.max_children = 24
+clear_env = no
 EOL
 echo "$FPM" > $1
 }
