@@ -406,7 +406,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install node@16
     $HOMEBREW_HOME/bin/brew install node@18
 
-    # $HOMEBREW_HOME/bin/brew install imagemagik
+    $HOMEBREW_HOME/bin/brew install composer
 
     wget https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types -O $MIGRAW_HOME/mime.types
 
