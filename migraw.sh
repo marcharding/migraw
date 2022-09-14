@@ -402,10 +402,10 @@ function install {
     $HOMEBREW_HOME/bin/brew install mysql@8.0
     $HOMEBREW_HOME/bin/brew install mariadb@10.3
 
-    $HOMEBREW_HOME/bin/brew install node@12
-    $HOMEBREW_HOME/bin/brew install node@14
-    $HOMEBREW_HOME/bin/brew install node@16
     $HOMEBREW_HOME/bin/brew install node@18
+    $HOMEBREW_HOME/bin/brew install node@16
+    $HOMEBREW_HOME/bin/brew install node@14
+    $HOMEBREW_HOME/bin/brew install node@12
 
     $HOMEBREW_HOME/bin/brew install composer
 
