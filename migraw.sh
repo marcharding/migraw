@@ -556,9 +556,17 @@ cat > $MIGRAW_CURRENT/bin/node << EOL
 EOL
 chmod +x $MIGRAW_CURRENT/bin/node
 
+if [ -d "$NODE_HOME/libexec" ]; then
+# node > 18 does things a little different
+cat > $MIGRAW_CURRENT/bin/npm << EOL
+    $NODE_HOME/libexec/lib/node_modules/npm/bin/npm-cli.js "\$@"
+EOL
+else
+# node < 18
 cat > $MIGRAW_CURRENT/bin/npm << EOL
     $NODE_HOME/lib/node_modules/bin/npm "\$@"
 EOL
+fi
 chmod +x $MIGRAW_CURRENT/bin/npm
 
 }
