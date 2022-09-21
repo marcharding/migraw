@@ -124,6 +124,27 @@ function create_file_virtual_host_conf {
 </VirtualHost>
 EOL
 
+if [[ -f $MIGRAW_CURRENT/ssl/host.pem && -f $MIGRAW_CURRENT/ssl/host-key.pem ]]; then
+    cat >> $1 << EOL
+<VirtualHost *:443>
+    AcceptPathInfo On
+    UseCanonicalName Off
+    ServerAlias *
+    DocumentRoot "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root"
+    SSLEngine on
+    SSLCertificateFile "$MIGRAW_CURRENT/ssl/host.pem"
+    SSLCertificateKeyFile "$MIGRAW_CURRENT/ssl/host-key.pem"
+    <Directory "$MIGRAW_CURRENT_BASE/$MIGRAW_YAML_document_root">
+        AllowOverride All
+        Options FollowSymLinks Indexes
+    </Directory>
+   <FilesMatch .php$>
+       SetHandler "proxy:unix:$MIGRAW_CURRENT/php/fpm.sock|fcgi://localhost"
+   </FilesMatch>
+</VirtualHost>
+EOL
+fi
+
     cat >> $1 << EOL
 <VirtualHost *:8050>
     AcceptPathInfo On
@@ -382,6 +403,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install curl
     $HOMEBREW_HOME/bin/brew install md5sha1sum
     $HOMEBREW_HOME/bin/brew install mailhog
+    $HOMEBREW_HOME/bin/brew install mkcert
 
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.2
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.3
@@ -691,7 +713,9 @@ function apache_start {
     create_php_fpm_configs $MIGRAW_CURRENT/php/fpm.conf
     $MIGRAW_CURRENT/bin/php-fpm --fpm-config $MIGRAW_CURRENT/php/fpm.conf
 
-    mkdir -p $MIGRAW_CURRENT/httpd $MIGRAW_CURRENT/httpd/log $MIGRAW_CURRENT/httpd/sites
+    mkdir -p $MIGRAW_CURRENT/httpd $MIGRAW_CURRENT/httpd/log $MIGRAW_CURRENT/httpd/sites $MIGRAW_CURRENT/ssl
+
+    mkcert -cert-file "$MIGRAW_CURRENT/ssl/host.pem" -key-file "$MIGRAW_CURRENT/ssl/host-key.pem" 127.0.0.1 $MIGRAW_YAML_network_host > $MIGRAW_CURRENT/ssl/mkcert.log 2>&1
 
     create_file_httpd_conf $MIGRAW_CURRENT/httpd/httpd.conf
     create_file_virtual_host_conf $MIGRAW_CURRENT/httpd/sites/default.conf

@@ -38,6 +38,8 @@ curl https://raw.githubusercontent.com/marcharding/migraw/macos/install.sh | bas
 
 Call `migraw install` to install all migraw dependencies.
 
+Execute `mkcert -install` to enable local ssl certificates.
+
 ## Usage
 
 Enter `migraw` to see the possible options.
