@@ -688,8 +688,7 @@ function set_path {
     NODE_PATH=$MIGRAW_CURRENT/node
     NPM_CONFIG_PREFIX=$MIGRAW_CURRENT/npm
     NPM_CONFIG_CACHE=$MIGRAW_CURRENT/npm/npm-cache
-    NPM_CONFIG_USERCONFIG=$MIGRAW_CURRENT/npm
-
+    
     # zsh shell home
     ZDOTDIR=$MIGRAW_CURRENT/shell
 
