@@ -404,6 +404,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install md5sha1sum
     $HOMEBREW_HOME/bin/brew install mailhog
     $HOMEBREW_HOME/bin/brew install mkcert
+    $HOMEBREW_HOME/bin/brew install zlib
 
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.2
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.3
