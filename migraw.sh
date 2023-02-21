@@ -411,6 +411,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@7.4
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.0
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.1
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.2
     # TODO: Add a check for reinstalling/updating
 
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.2
@@ -418,6 +419,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.4
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.0
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.1
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.2
 
     $HOMEBREW_HOME/bin/brew install httpd
 
