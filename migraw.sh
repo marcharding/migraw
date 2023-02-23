@@ -2,7 +2,7 @@
 
 VERSION="0.0.0.1-"$(cat "$0" | md5sum | cut -d ' ' -f 1 | cut -c1-8);
 
-UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/main-dpkg/migraw.sh";
+UPDATE_URL="https://raw.githubusercontent.com/marcharding/migraw/main/migraw.sh";
 
 # Colors
 COLOR_NC='\e[0m'
