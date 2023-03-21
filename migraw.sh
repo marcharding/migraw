@@ -893,7 +893,7 @@ if [ -n "$MIGRAW_YAML_config_node" ]; then
     NODE_VERSION=$MIGRAW_YAML_config_node
 fi
 
-AVAILABLE_PHP_VERSIONS=("7.2" "7.3" "7.4" "8.0" "8.1")
+AVAILABLE_PHP_VERSIONS=("7.2" "7.3" "7.4" "8.0" "8.1" "8.2")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 if [ -n "$MIGRAW_YAML_config_php" ]; then
     PHP_VERSION=$MIGRAW_YAML_config_php
