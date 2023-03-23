@@ -412,7 +412,6 @@ function install {
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.0
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.1
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.2
-    # TODO: Add a check for reinstalling/updating
 
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.2
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.3
@@ -678,7 +677,7 @@ function mysql_start {
        create_file_my_cnf $MYSQL_BASE_PATH/my.cnf
        chmod -R 777 $MYSQL_BASE_PATH
        chmod 655 $MYSQL_BASE_PATH/my.cnf
-       
+
        "/opt/homebrew/opt/mariadb@10.3/bin/mysql_install_db" --auth-root-authentication-method="normal" --basedir="$MYSQL_HOME" --user="$USER" --lc-messages-dir="$MYSQL_HOME/share/mysql" --datadir=$MYSQL_BASE_PATH/data > $MIGRAW_CURRENT/mysql/log/init.log 2>&1
    fi
 
@@ -835,7 +834,7 @@ EOF
 function update_hosts
 {
     if [ "$MIGRAW_YAML_network_host" != "" ]; then
-        HOSTS=/etc/hosts 
+        HOSTS=/etc/hosts
         if ! grep -q "$MIGRAW_YAML_network_host" $HOSTS; then
             if [ "$(id -u)" != 0 ]; then
                 echo -e "${COLOR_PURPLE}No root, hosts will not be updated.${COLOR_NC}\n"
@@ -917,7 +916,7 @@ case $ACTION in
           if [[ ! -z "$i" ]]; then
             echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} $i"
             spawn_zsh "$i"
-          fi;  
+          fi;
         done
         ;;
     destroy)
@@ -932,7 +931,7 @@ case $ACTION in
           if [[ ! -z "$i" ]]; then
             echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} $i"
             spawn_zsh "$i"
-          fi;  
+          fi;
         done
         execute_with_progress_spinner "stop"
         clean
