@@ -45,6 +45,7 @@ function create_file_php_ini {
     echo 'date.timezone = "Europe/Berlin"' >> $1
 
     echo "extension='/opt/homebrew/opt/imagick@$PHP_VERSION/imagick.so'" >> $1
+    echo "imagick.skip_version_check = 1" >> $1
 }
 
 function create_php_fpm_configs {
