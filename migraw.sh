@@ -46,6 +46,18 @@ function create_file_php_ini {
 
     echo "extension='/opt/homebrew/opt/imagick@$PHP_VERSION/imagick.so'" >> $1
     echo "imagick.skip_version_check = 1" >> $1
+
+    create_additional_file_php_ini
+}
+
+function create_additional_file_php_ini {
+    PHP_SPX=$MIGRAW_CURRENT/php_spx.ini
+    echo "extension = $MIGRAW_HOME/php-spx-$PHP_VERSION/modules/spx.so" > $PHP_SPX
+    echo "spx.data_dir = $MIGRAW_HOME/php-spx/data_dir" >> $PHP_SPX
+    echo "spx.http_ui_assets_dir = $MIGRAW_HOME/php-spx/assets/web-ui" >> $PHP_SPX
+    echo "spx.http_enabled= 1 " >> $PHP_SPX
+    echo "spx.http_key = dev " >> $PHP_SPX
+    echo "spx.http_ip_whitelist = 127.0.0.1" >> $PHP_SPX
 }
 
 function create_php_fpm_configs {
@@ -435,6 +447,24 @@ function install {
     $HOMEBREW_HOME/bin/brew install composer
 
     wget https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types -O $MIGRAW_HOME/mime.types
+
+    # php-spx
+    git clone https://github.com/NoiseByNorthwest/php-spx.git $MIGRAW_HOME/php-spx
+
+    find $MIGRAW_HOME/php-spx -type d -exec chmod 755 {} \;
+    find $MIGRAW_HOME/php-spx -type f -exec chmod 644 {} \;
+
+    ZLIB_DIR=$(ls -td /opt/homebrew/Cellar/zlib/* | head -1)
+
+    # build for each available php version
+    for PHP_VERSION in "${AVAILABLE_PHP_VERSIONS[@]}"
+    do
+        echo "Build php-spx for php $PHP_VERSION"
+        cp -r $MIGRAW_HOME/php-spx $MIGRAW_HOME/php-spx-$PHP_VERSION
+        (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && /opt/homebrew/opt/php@$PHP_VERSION/bin/phpize)
+        (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && ./configure --with-zlib-dir=$ZLIB_DIR --with-php-config=/opt/homebrew/opt/php@$PHP_VERSION/bin/php-config)
+        (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && make)
+    done
 
     # adminer
     mkdir -p $MIGRAW_HOME/adminer

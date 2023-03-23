@@ -61,3 +61,13 @@ config:
     mysql: true
     mailhog: true
 ```
+
+## php-spx
+
+You can also use [php-spx](https://github.com/NoiseByNorthwest/php-spx) to profile your applications.
+
+Just open http://127.0.0.1/?SPX_KEY=dev&SPX_UI_URI=/ and enable profiling. The result can also be accessed via this url.
+
+Command line request can also be easily profiled by adding the cookie, e.g. `curl --cookie "SPX_ENABLED=1; SPX_KEY=dev" http://127.0.0.1/`
+
+Detailed intructions can be found in the php-spx repo.
