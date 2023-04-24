@@ -665,7 +665,6 @@ function set_path {
     PATH=$MIGRAW_CURRENT/bin:$PATH
     PATH=$BIN/usr/bin:"$PATH"
     PATH=$BIN/usr/sbin:"$PATH"
-    PATH=$COMPOSER_HOME/vendor/bin:"$PATH"
     PATH=$MIGRAW_CURRENT/npm/bin:"$PATH"
     PATH=$BIN/opt:"$PATH"
 
@@ -1013,7 +1012,8 @@ function update_hosts
 {
     if [ $? == 0 ]; then
         if [ "$MIGRAW_YAML_network_host" != "" ]; then
-            HOSTS=/mnt/c/System32/drivers/etc/hosts
+            HOSTS="/mnt/c/Windows/System32/drivers/etc/hosts"
+
             if ! grep -q "$MIGRAW_YAML_network_host" $HOSTS; then
                 check_for_sudo
                 check_for_sudo echo "127.0.0.1 $MIGRAW_YAML_network_host" >> $HOSTS
