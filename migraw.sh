@@ -594,7 +594,7 @@ function install {
     chmod +x $BIN/opt/mkcert.exe
 
     # Node.js
-    AVAILABLE_NODE_VERSIONS=("12" "14" "16")
+    AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18")
 
     for NODE_VERSION in "${AVAILABLE_NODE_VERSIONS[@]}"
     do
@@ -1103,7 +1103,7 @@ if [ "$MIGRAW_PHP" != "" ]; then
     PHP_VERSION=$MIGRAW_PHP
 fi
 
-AVAILABLE_NODE_VERSIONS=("12" "14" "16")
+AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18")
 NODE_VERSION=${AVAILABLE_NODE_VERSIONS[-1]}
 if [ "$MIGRAW_YAML_config_node" != "" ]; then
     NODE_VERSION=$MIGRAW_YAML_config_node
