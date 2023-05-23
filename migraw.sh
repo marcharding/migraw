@@ -313,7 +313,7 @@ config:
 		php: ${AVAILABLE_PHP_VERSIONS[-1]}
 		apache: true
 		mysql: true
-		mailhog: true
+		mailpit: true
 exec:
 	- ./init.sh
 shutdown:
@@ -411,11 +411,12 @@ function install {
 
     $HOMEBREW_HOME/bin/brew tap shivammathur/php
     $HOMEBREW_HOME/bin/brew tap shivammathur/extensions
+    $HOMEBREW_HOME/bin/brew tap axllent/apps
 
     $HOMEBREW_HOME/bin/brew install wget
     $HOMEBREW_HOME/bin/brew install curl
     $HOMEBREW_HOME/bin/brew install md5sha1sum
-    $HOMEBREW_HOME/bin/brew install mailhog
+    $HOMEBREW_HOME/bin/brew install mailpit
     $HOMEBREW_HOME/bin/brew install mkcert
     $HOMEBREW_HOME/bin/brew install zlib
 
@@ -514,6 +515,7 @@ function set_path {
     APACHE_HOME=$HOMEBREW_HOME/opt/httpd
     MIME_TYPES=$MIGRAW_HOME/mime.types
     MAILHOG=$HOMEBREW_HOME/opt/mailhog/bin/MailHog
+    MAILPIT=$HOMEBREW_HOME/bin/mailpit
 
     PATH=$MIGRAW_CURRENT_BASE/bin:$PATH
     PATH=$MIGRAW_CURRENT_BASE/vendor/bin:$PATH
@@ -542,7 +544,7 @@ function set_path {
     export NPM_CONFIG_PREFIX
     export APACHE_HOME
     export MIME_TYPES
-    export MAILHOG
+    export MAILPIT
 
     export PATH
     export COMPOSER_HOME
@@ -557,7 +559,7 @@ function start {
     prepare_shell
     mysql_start init
     apache_start
-    mailhog_start
+    mailpit_start
 }
 
 function unpause {
@@ -565,7 +567,7 @@ function unpause {
     prepare_shell
     mysql_start
     apache_start
-    mailhog_start
+    mailpit_start
 }
 
 function clean {
@@ -584,7 +586,7 @@ function stop {
     kill_process_by_pid_file $MIGRAW_CURRENT/php/fpm.pid
     kill_process_by_pid_file $MIGRAW_CURRENT/mysql/mysql.pid
     kill_process_by_pid_file $MIGRAW_CURRENT/httpd/httpd.pid
-    kill_process_by_pid_file $MIGRAW_CURRENT/mailhog/mailhog.pid
+    kill_process_by_pid_file $MIGRAW_CURRENT/mailpit/mailpit.pid
 }
 
 function prepare_shell {
@@ -651,9 +653,13 @@ EOL
     fi
 }
 
-function mailhog_start {
-    mkdir -p $MIGRAW_CURRENT/mailhog/log
-    $MAILHOG > $MIGRAW_CURRENT/mailhog/log/mailhog.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailhog/mailhog.pid
+function mailpit_start {
+    if [ "$MIGRAW_YAML_config_mailhog" != "true" ] && [ "$MIGRAW_YAML_config_mailpit" != "true" ]; then
+        return
+    fi
+
+    mkdir -p $MIGRAW_CURRENT/mailpit/log
+    $MAILPIT > $MIGRAW_CURRENT/mailpit/log/mailpit.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailpit/mailpit.pid
 }
 
 # TOOD: Add support for mysql and mariadb
