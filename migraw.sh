@@ -47,6 +47,10 @@ function create_file_php_ini {
     echo 'date.timezone= "Europe/Berlin"' >> $1
 
     case "$PHP_VERSION" in
+        "8.3")
+          PHP_EXTENSION_DIR=$BIN/usr/lib/php/20230831
+          PHP_API=20220829
+        ;;
         "8.2")
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20220829
           PHP_API=20220829
@@ -85,7 +89,7 @@ function create_file_php_ini {
         ;;
         *)
           PHP_EXTENSION_DIR=$BIN/usr/lib/php/20220829
-          PHP_API=20220829
+          PHP_API=20230831
     esac
 
     read -r -d "" EXT <<EOL
@@ -104,7 +108,7 @@ extension=iconv.so
 extension=imagick.so
 extension=intl.so
 $(
-    if [ "$PHP_VERSION" != "8.0" ] && [ "$PHP_VERSION" != "8.1" ] && [ "$PHP_VERSION" != "8.2" ]; then
+    if [ "$PHP_VERSION" != "8.0" ] && [ "$PHP_VERSION" != "8.1" ] && [ "$PHP_VERSION" != "8.2" ] && [ "$PHP_VERSION" != "8.3" ]; then
         echo "extension=json.so"
     fi
 )
@@ -525,7 +529,7 @@ function install {
         apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances $i | grep "^\w" | sort -u)
     done
 
-    AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2")
+    AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3")
 
     for PHP_VERSION in "${AVAILABLE_PHP_VERSIONS[@]}"
     do
@@ -1094,7 +1098,7 @@ else
     MIGRAW_CURRENT_BASE=$TMP_MIGRAW_CURRENT
 fi
 
-AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2")
+AVAILABLE_PHP_VERSIONS=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 if [ "$MIGRAW_YAML_config_php" != "" ]; then
     PHP_VERSION=$MIGRAW_YAML_config_php
