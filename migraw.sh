@@ -384,8 +384,9 @@ EOL
 }
 
 function migraw_init {
-    if [ ! -f  $MIGRAW_CURRENT_BASE/migraw.yml ]; then
-    cat > $MIGRAW_CURRENT_BASE/migraw.yml << EOL
+    x=`pwd`;
+    if [ "$MIGRAW_YAML" == "" ]; then
+    cat > $x/migraw.yaml << EOL
 name: migraw.default
 document_root: public
 network:
@@ -393,6 +394,7 @@ network:
 	host: migraw.default.com
 config:
 	php: ${AVAILABLE_PHP_VERSIONS[-1]}
+	node: ${AVAILABLE_NODE_VERSIONS[-1]}
 	apache: true
 	mysql: true
 	mailhog: true
@@ -404,30 +406,28 @@ EOL
     fi
 
     # see https://stackoverflow.com/questions/5750450/how-can-i-print-each-command-before-executing
-    if [ ! -f  $MIGRAW_CURRENT_BASE/init.sh ]; then
-    cat > $MIGRAW_CURRENT_BASE/init.sh << EOL
+    if [ ! -f "$x/init.sh" ]; then
+        cat > "$x/init.sh" << EOL
 # set -o xtrace
-trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: $BASH_COMMAND" && echo -e "\e[0m"' DEBUG
-composer install
-npm install
-mysql -h127.0.0.1 -uroot -e "CREATE DATABASE application"
-mysql -h127.0.0.1 -uroot application < application.sql
+trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: \$BASH_COMMAND" && echo -e "\e[0m"' DEBUG
+# composer install
+# npm install
+# mysql -h127.0.0.1 -uroot -e "CREATE DATABASE application"
+# mysql -h127.0.0.1 -uroot application < application.sql
 trap - DEBUG
 EOL
     fi
+    chmod +x $x/init.sh
 
-    chmod + $MIGRAW_CURRENT_BASE/init.sh
-
-    if [ ! -f $MIGRAW_CURRENT_BASE/destroy.sh ]; then
-    cat > $MIGRAW_CURRENT_BASE/destroy.sh << EOL
+    if [ ! -f "$x/destroy.sh" ]; then
+        cat > "$x/destroy.sh" << EOL
 # set -o xtrace
-trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: $BASH_COMMAND" && echo -e "\e[0m"' DEBUG
-mysqldump -h127.0.0.1 --opt --hex-blob -uroot application -r application_$(date '+%Y%m%d_%H%M%S').sql
+trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: \$BASH_COMMAND" && echo -e "\e[0m"' DEBUG
+# mysqldump -h127.0.0.1  --opt -uroot application -r application_\$(date '+%Y%m%d_%H%M%S').sql
 trap - DEBUG
 EOL
     fi
-
-    chmod + $MIGRAW_CURRENT_BASE/destroy.sh
+    chmod +x $x/destroy.sh
 }
 
 function find_migraw_yaml {
@@ -1004,7 +1004,7 @@ Commands:
   $(echo -e "${COLOR_GREEN}exec [cmd]${COLOR_NC}")          Execute command.
   $(echo -e "${COLOR_GREEN}install${COLOR_NC}")             Install all binaries, can also be used to update.
   $(echo -e "${COLOR_GREEN}selfupdate${COLOR_NC}")          Update migraw
-  $(echo -e "${COLOR_GREEN}init${COLOR_NC}")                Update create demo migraw.yml, init.sh and destroy.sh
+  $(echo -e "${COLOR_GREEN}init${COLOR_NC}")                Update create demo migraw.yaml, init.sh and destroy.sh
   $(echo -e "${COLOR_GREEN}mkcert${COLOR_NC}")              Install root ssl certificates (only needed once)
   $(echo -e "${COLOR_GREEN}info${COLOR_NC}")                Display info and help
 
