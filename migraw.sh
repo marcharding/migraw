@@ -426,6 +426,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.0
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.1
     $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.2
+    $HOMEBREW_HOME/bin/brew install shivammathur/php/php@8.3
 
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.2
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@7.3
@@ -433,6 +434,15 @@ function install {
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.0
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.1
     $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.2
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/imagick@8.3
+
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@7.2
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@7.3
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@7.4
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@8.0
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@8.1
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@8.2
+    $HOMEBREW_HOME/bin/brew install shivammathur/extensions/xdebug@8.3
 
     $HOMEBREW_HOME/bin/brew install httpd
 
@@ -440,6 +450,7 @@ function install {
     $HOMEBREW_HOME/bin/brew install mysql@8.0
     $HOMEBREW_HOME/bin/brew install mariadb@10.3
 
+    $HOMEBREW_HOME/bin/brew install node@20
     $HOMEBREW_HOME/bin/brew install node@18
     $HOMEBREW_HOME/bin/brew install node@16
     $HOMEBREW_HOME/bin/brew install node@14
@@ -923,13 +934,13 @@ fi
 
 MIGRAW_CURRENT=$MIGRAW_CURRENT
 
-AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18")
+AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18" "20")
 NODE_VERSION=${AVAILABLE_NODE_VERSIONS[-1]}
 if [ -n "$MIGRAW_YAML_config_node" ]; then
     NODE_VERSION=$MIGRAW_YAML_config_node
 fi
 
-AVAILABLE_PHP_VERSIONS=("7.2" "7.3" "7.4" "8.0" "8.1" "8.2")
+AVAILABLE_PHP_VERSIONS=("7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3")
 PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 if [ -n "$MIGRAW_YAML_config_php" ]; then
     PHP_VERSION=$MIGRAW_YAML_config_php
