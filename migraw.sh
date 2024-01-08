@@ -461,6 +461,7 @@ function install {
     wget https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types -O $MIGRAW_HOME/mime.types
 
     # php-spx
+    rm -rf $MIGRAW_HOME/php-spx
     git clone https://github.com/NoiseByNorthwest/php-spx.git $MIGRAW_HOME/php-spx
 
     find $MIGRAW_HOME/php-spx -type d -exec chmod 755 {} \;
@@ -472,7 +473,11 @@ function install {
     for PHP_VERSION in "${AVAILABLE_PHP_VERSIONS[@]}"
     do
         echo "Build php-spx for php $PHP_VERSION"
+        rm -rf $MIGRAW_HOME/php-spx-$PHP_VERSION
         cp -r $MIGRAW_HOME/php-spx $MIGRAW_HOME/php-spx-$PHP_VERSION
+        find $MIGRAW_HOME/php-spx-$PHP_VERSION -type d -exec chmod 755 {} \;
+        find $MIGRAW_HOME/php-spx-$PHP_VERSION -type f -exec chmod 644 {} \;
+        (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && make clean)
         (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && /opt/homebrew/opt/php@$PHP_VERSION/bin/phpize)
         (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && ./configure --with-zlib-dir=$ZLIB_DIR --with-php-config=/opt/homebrew/opt/php@$PHP_VERSION/bin/php-config)
         (cd $MIGRAW_HOME/php-spx-$PHP_VERSION && make)
