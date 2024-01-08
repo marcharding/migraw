@@ -51,13 +51,25 @@ function create_file_php_ini {
 }
 
 function create_additional_file_php_ini {
-    PHP_SPX=$MIGRAW_CURRENT/php_spx.ini
-    echo "extension = $MIGRAW_HOME/php-spx-$PHP_VERSION/modules/spx.so" > $PHP_SPX
-    echo "spx.data_dir = $MIGRAW_HOME/php-spx/data_dir" >> $PHP_SPX
-    echo "spx.http_ui_assets_dir = $MIGRAW_HOME/php-spx/assets/web-ui" >> $PHP_SPX
-    echo "spx.http_enabled= 1 " >> $PHP_SPX
-    echo "spx.http_key = dev " >> $PHP_SPX
-    echo "spx.http_ip_whitelist = 127.0.0.1" >> $PHP_SPX
+    PHP_INI_ADDITIONAL=$MIGRAW_CURRENT/php_ini_additional.ini
+    echo ""  > $PHP_INI_ADDITIONAL
+
+    echo "[spx]" >> $PHP_INI_ADDITIONAL
+    echo "extension = $MIGRAW_HOME/php-spx-$PHP_VERSION/modules/spx.so" >> $PHP_INI_ADDITIONAL
+    echo "spx.data_dir = $MIGRAW_HOME/php-spx/data_dir" >> $PHP_INI_ADDITIONAL
+    echo "spx.http_ui_assets_dir = $MIGRAW_HOME/php-spx/assets/web-ui" >> $PHP_INI_ADDITIONAL
+    echo "spx.http_enabled= 1 " >> $PHP_INI_ADDITIONAL
+    echo "spx.http_key = dev " >> $PHP_INI_ADDITIONAL
+    echo "spx.http_ip_whitelist = 127.0.0.1" >> $PHP_INI_ADDITIONAL
+
+    echo "[xdebug]" >> $PHP_INI_ADDITIONAL
+    echo "zend_extension=/opt/homebrew/opt/xdebug@$PHP_VERSION/xdebug.so" >> $PHP_INI_ADDITIONAL
+    echo "xdebug.mode=debug" >> $PHP_INI_ADDITIONAL
+    echo "xdebug.discover_client_host=1" >> $PHP_INI_ADDITIONAL
+    echo "xdebug.client_host=127.0.0.1" >> $PHP_INI_ADDITIONAL
+    echo "xdebug.client_port=9003" >> $PHP_INI_ADDITIONAL
+
+    [ -e $MIGRAW_CURRENT/php_spx.ini ] && rm $MIGRAW_CURRENT/php_spx.ini # remove legacy named file
 }
 
 function create_php_fpm_configs {
@@ -950,6 +962,7 @@ PHP_VERSION=${AVAILABLE_PHP_VERSIONS[-1]}
 if [ -n "$MIGRAW_YAML_config_php" ]; then
     PHP_VERSION=$MIGRAW_YAML_config_php
 fi
+PHP_API_LEVEL=$(/opt/homebrew/opt/php@$PHP_VERSION/bin/phpize -v | grep Zend\ M | grep -oE '([0-9]+)')
 
 case $ACTION in
     up)
