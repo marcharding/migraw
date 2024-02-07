@@ -687,6 +687,11 @@ function mailpit_start {
     fi
 
     mkdir -p $MIGRAW_CURRENT/mailpit/log
+
+    if [ -e "$MIGRAW_CURRENT/mailpit.yaml" ]; then
+        export MP_SMTP_RELAY_CONFIG=$MIGRAW_CURRENT/mailpit.yaml
+    fi
+
     $MAILPIT > $MIGRAW_CURRENT/mailpit/log/mailpit.log 2>&1 & echo "$!" > $MIGRAW_CURRENT/mailpit/mailpit.pid
 }
 
