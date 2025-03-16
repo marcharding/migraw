@@ -409,7 +409,7 @@ EOL
     if [ ! -f "$x/init.sh" ]; then
         cat > "$x/init.sh" << EOL
 # set -o xtrace
-trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: \$BASH_COMMAND" && echo -e "\e[0m"' DEBUG
+trap 'echo -e "\e[0;32m" && echo -ne \$(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: \$BASH_COMMAND" && echo -e "\e[0m"' DEBUG
 # composer install
 # npm install
 # mysql -h127.0.0.1 -uroot -e "CREATE DATABASE application"
@@ -422,7 +422,7 @@ EOL
     if [ ! -f "$x/destroy.sh" ]; then
         cat > "$x/destroy.sh" << EOL
 # set -o xtrace
-trap 'echo -e "\e[0;32m" && echo -ne $(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: \$BASH_COMMAND" && echo -e "\e[0m"' DEBUG
+trap 'echo -e "\e[0;32m" && echo -ne \$(date "+%Y-%m-%d %H:%M:%S") && echo " >> Executing: \$BASH_COMMAND" && echo -e "\e[0m"' DEBUG
 # mysqldump -h127.0.0.1  --opt -uroot application -r application_\$(date '+%Y%m%d_%H%M%S').sql
 trap - DEBUG
 EOL
@@ -1136,7 +1136,7 @@ case $ACTION in
     destroy)
         ;&
     stop)
-        echo -e "\n${COLOR_RED}Are you sure to destroy th current instance (db instance data will be lost). (Yes or No) ${COLOR_NC}"
+        echo -e "\n${COLOR_RED}Are you sure to destroy the current instance (db instance data will be lost). (Yes or No) ${COLOR_NC}"
         are_you_sure
         set_path
         echo -e "\n${COLOR_CYAN}Stoping migraw.${COLOR_NC}\n"
