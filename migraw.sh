@@ -1140,6 +1140,11 @@ case $ACTION in
         are_you_sure
         set_path
         echo -e "\n${COLOR_CYAN}Stoping migraw.${COLOR_NC}\n"
+        for i in "${MIGRAW_YAML_shutdown[@]}"
+          do :
+          echo -e "\n${COLOR_CYAN}Executing:${COLOR_NC} $i\n"
+          spawn_bash "$i"
+        done
         execute_with_progress_spinner "stop"
         clean
         ;;
