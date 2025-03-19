@@ -112,9 +112,13 @@ extension=iconv.so
 extension=imagick.so
 extension=intl.so
 $(
-    if [ "$PHP_VERSION" != "8.0" ] && [ "$PHP_VERSION" != "8.1" ] && [ "$PHP_VERSION" != "8.2" ] && [ "$PHP_VERSION" != "8.3" ]; then
-        echo "extension=json.so"
-    fi
+    case "$PHP_VERSION" in
+        8.[0-9])
+            ;;
+        *)
+            echo "extension=json.so"
+            ;;
+    esac
 )
 extension=mbstring.so
 extension=sqlite3.so
