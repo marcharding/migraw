@@ -606,11 +606,11 @@ function install {
     chmod +x $BIN/opt/mkcert.exe
 
     # Node.js
-    AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18" "20")
+    AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18" "20" "22")
 
     for NODE_VERSION in "${AVAILABLE_NODE_VERSIONS[@]}"
     do
-        COMPLETE_NODE_VERSION_NAME=$(curl --silent https://nodejs.org/dist/latest-v$NODE_VERSION.x/ | grep -Po '(?<=href=")node-v[0-9\.]+-linux-x64\.tar\.gz[^"]*(?=")' | tr -d '\0')
+        COMPLETE_NODE_VERSION_NAME=$(curl --silent https://nodejs.org/dist/latest-v$NODE_VERSION.x/ | grep -Po 'node-v[0-9\.]+-linux-x64\.tar\.gz' | head -n 1)
         wget -q -O "$DOWNLOAD/$COMPLETE_NODE_VERSION_NAME" "https://nodejs.org/dist/latest-v$NODE_VERSION.x/$COMPLETE_NODE_VERSION_NAME"
         tar xfz $DOWNLOAD/$COMPLETE_NODE_VERSION_NAME -C $DOWNLOAD
         mv $DOWNLOAD/$(basename -- "$COMPLETE_NODE_VERSION_NAME" .tar.gz) $BIN/opt/node-$NODE_VERSION
@@ -1115,7 +1115,7 @@ if [ "$MIGRAW_PHP" != "" ]; then
     PHP_VERSION=$MIGRAW_PHP
 fi
 
-AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18" "20")
+AVAILABLE_NODE_VERSIONS=("12" "14" "16" "18" "20" "22")
 NODE_VERSION=${AVAILABLE_NODE_VERSIONS[-1]}
 if [ "$MIGRAW_YAML_config_node" != "" ]; then
     NODE_VERSION=$MIGRAW_YAML_config_node
